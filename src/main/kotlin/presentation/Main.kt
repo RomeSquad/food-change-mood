@@ -11,6 +11,6 @@ fun main (){
    // println(mealsRepository.getAllMeals().map { it.id }.joinToString(","))
 
     // Amr Nasser Task 4
-    val getTenRandomMealsEasyToPrepare = GetTenRandomEasyMealsUseCase(mealsRepository)
-    println(getTenRandomMealsEasyToPrepare.getTenRandomEasyMeals())
+    //val getTenRandomMealsEasyToPrepare = GetTenRandomEasyMealsUseCase(mealsRepository)
+   // println(getTenRandomMealsEasyToPrepare.getTenRandomEasyMeals())
 }
