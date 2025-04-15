@@ -3,7 +3,7 @@ package logic.use_case
 import logic.MealsRepository
 import model.Meal
 
-class GetTenRandomMealsIncludePotatoesUseCase(
+class GetLimitRandomMealsIncludePotatoesUseCase(
     private val mealsRepository: MealsRepository,
 ) {
     fun getLimitRandomMealsIncludePotatoes(limit: Int = 10): List<Meal> {
