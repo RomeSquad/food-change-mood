@@ -9,8 +9,8 @@ class GetTenRandomEasyMealsUseCase(
     fun getTenRandomEasyMeals(): List<String> {
         return mealsRepository.getAllMeals()
             .filter(::isEasyMeal)
-            .take(10)
             .shuffled()
+            .take(10)
             .map { it.name }
     }
 
