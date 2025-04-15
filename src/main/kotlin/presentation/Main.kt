@@ -1,6 +1,7 @@
+package presentation
+
 import data.CsvMealsRepository
 import data.utils.CsvParserImpl
-import logic.use_case.GetTenRandomEasyMealsUseCase
 import java.io.File
 
 fun main (){
