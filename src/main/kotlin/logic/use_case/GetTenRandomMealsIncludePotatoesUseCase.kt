@@ -6,7 +6,7 @@ import model.Meal
 class GetTenRandomMealsIncludePotatoesUseCase(
     private val mealsRepository: MealsRepository,
 ) {
-    fun getTenRandomMealsIncludePotatoes(limit: Int = 10): List<Meal> {
+    fun getLimitRandomMealsIncludePotatoes(limit: Int = 10): List<Meal> {
         return mealsRepository.getAllMeals()
             .filter(::onlyHighQualityData)
             .shuffled()
