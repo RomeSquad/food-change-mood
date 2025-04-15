@@ -31,7 +31,7 @@ class CsvMealsRepository(
 
     private fun parseRecords(rows: List<List<String>>): List<Meal> {
         val meals = mutableListOf<Meal>()
-        val dateFormat = SimpleDateFormat("m/d/yyy")
+        val dateFormat = SimpleDateFormat("yyyy-mm-dd")
 
         for ((index, meal) in rows.drop(1).withIndex()) {
             try {
