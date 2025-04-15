@@ -15,6 +15,4 @@ data class Meal(
     val description: String?,
     val ingredients: List<String>,
     val nIngredients: Int,
-    val addDate: Date
 )
-// mohaemd ,  5 ,  5  , 5  , 25/11/1970  ,  [1,2,3]  , 1,2,3,4,5,6,7,  5  , [1,2,3] , moha?,[1,2,3], 5, 25/11/2001
