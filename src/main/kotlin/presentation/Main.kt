@@ -1,6 +1,6 @@
 import data.CsvMealsRepository
 import data.utils.CsvParserImpl
-import logic.use_case.GetTenRandomEasyMealsUseCase
+import logic.IdentifyIraqiMealsUseCase
 import java.io.File
 
 fun main (){
@@ -8,9 +8,9 @@ fun main (){
 
     val csvParser = CsvParserImpl()
     val mealsRepository = CsvMealsRepository(file,csvParser)
-   // println(mealsRepository.getAllMeals().map { it.id }.joinToString(","))
 
-    // Amr Nasser Task 4
-    //val getTenRandomMealsEasyToPrepare = GetTenRandomEasyMealsUseCase(mealsRepository)
-   // println(getTenRandomMealsEasyToPrepare.getTenRandomEasyMeals())
+    val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
+    identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
+        println(it)
+    }
 }
