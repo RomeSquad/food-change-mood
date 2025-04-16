@@ -1,6 +1,6 @@
 import data.CsvMealsRepository
 import data.utils.CsvParserImpl
-import logic.IdentifyIraqiMealsUseCase
+import logic.use_case.IdentifyIraqiMealsUseCase
 import java.io.File
 
 fun main (){
