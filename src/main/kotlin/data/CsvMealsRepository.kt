@@ -1,17 +1,16 @@
 package data
 
+import data.utils.CsvFileReader
 import data.utils.CsvParser
 import data.utils.MealColumnIndex
 import data.utils.NutritionColumnIndex
 import model.Meal
 import logic.MealsRepository
 import model.Nutrition
-import java.io.File
-import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 
 class CsvMealsRepository(
-    private val csvFile: File,
+    private val csvFileReader: CsvFileReader,
     private val csvParser: CsvParser
 ) : MealsRepository {
 
@@ -20,12 +19,7 @@ class CsvMealsRepository(
 
 
     private fun loadMeals(): List<Meal> {
-        if (!csvFile.exists()) {
-            throw FileNotFoundException(
-                "${csvFile.absolutePath} does not exist"
-            )
-        }
-        val csvLines = csvFile.readLines()
+        val csvLines = csvFileReader.readLines()
         return parseRecords(csvParser.parseCsv(csvLines.joinToString("\n")))
     }
 
