@@ -1,5 +1,6 @@
 import data.CsvMealsRepository
 import data.utils.CsvParserImpl
+import logic.IdentifyIraqiMealsUseCase
 import java.io.File
 
 fun main (){
@@ -7,5 +8,9 @@ fun main (){
 
     val csvParser = CsvParserImpl()
     val mealsRepository = CsvMealsRepository(file,csvParser)
-    println(mealsRepository.getAllMeals().map { it.id }.joinToString(","))
+
+    val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
+    identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
+        println(it)
+    }
 }
