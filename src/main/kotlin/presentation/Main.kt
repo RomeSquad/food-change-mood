@@ -3,7 +3,6 @@ import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
 import logic.use_case.IdentifyIraqiMealsUseCase
 import java.io.File
-import java.io.FileReader
 
 fun main (){
     val file = File("food.csv")
@@ -13,4 +12,8 @@ fun main (){
     val mealsRepository = CsvMealsRepository(fileReader,csvParser)
     mealsRepository.getAllMeals().let { println(it.size) }
     // test your code here
+    val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
+    identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
+        println(it)
+    }
 }
