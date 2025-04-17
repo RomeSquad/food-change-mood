@@ -11,6 +11,11 @@ fun main (){
 
     val csvParser = CsvParserImpl()
     val mealsRepository = CsvMealsRepository(fileReader,csvParser)
-    mealsRepository.getAllMeals().let { println(it.size) }
+    //mealsRepository.getAllMeals().let { println(it.size) }
     // test your code here
+
+    val startApp = App(
+        mealsRepository,
+    )
+    startApp.start()
 }

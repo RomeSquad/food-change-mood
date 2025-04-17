@@ -1,5 +1,6 @@
-package logic
+package logic.use_case
 
+import logic.MealsRepository
 import model.Meal
 import kotlin.math.absoluteValue
 
