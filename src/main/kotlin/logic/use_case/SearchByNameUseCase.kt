@@ -8,5 +8,5 @@ class SearchByNameUseCase(
     private val repository: MealsRepository,
     private val searchAlgorithm: SearchAlgorithm
 ) {
-    operator fun invoke(query: String): Result<List<Meal>>  = searchAlgorithm.search(repository.getAllMeals(),query)
+     fun searchByName(query: String): Result<List<Meal>>  = searchAlgorithm.search(repository.getAllMeals(),query)
 }
