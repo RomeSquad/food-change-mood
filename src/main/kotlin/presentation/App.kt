@@ -1,39 +1,39 @@
 package presentation
 
 import data.CsvMealsRepository
-import logic.GetMealsContainsCaloriesProteinUseCase
-import logic.IdentifyIraqiMealsUseCase
 import logic.MealsRepository
-import logic.use_case.GetLimitRandomMealsIncludePotatoesUseCase
-import logic.use_case.GetTenRandomEasyMealsUseCase
 
 class App(
     private val mealsRepository: CsvMealsRepository,
-    private val getLimitRandomMealsIncludePotatoesUseCase: GetLimitRandomMealsIncludePotatoesUseCase,
-    private val getTenRandomEasyMealsUseCase: GetTenRandomEasyMealsUseCase,
-    private val identifyIraqiMealsUseCase: IdentifyIraqiMealsUseCase,
-    private val getMealsContainsCaloriesProteinUseCase: GetMealsContainsCaloriesProteinUseCase
 ) {
     fun start() {
-        do {
+        while (true) {
             printMenu()
             val selectedAction = getSelectedAction()
+
             if (selectedAction == MenuItemUi.EXIT) break
 
             executeAction(selectedAction, mealsRepository)
-        } while (true)
+        }
     }
 
     private fun printMenu() {
         MenuItemUi.entries.forEachIndexed { index, action ->
             println("${index + 1}- ${action.description}")
         }
-        print("Choose the action \u001B[33m*enter (8) or anything else to exit*\u001B[0m: ")
+        print(coloredPrompt("Choose the action *enter (8) or anything else to exit*: "))
+    }
+
+    private fun coloredPrompt(text: String): String {
+        val yellow = "\u001B[33m"
+        val reset = "\u001B[0m"
+        return "$yellow$text$reset"
     }
 
     private fun getSelectedAction(): MenuItemUi {
-        return (readln().toIntOrNull() ?: -1).toMenuItem()
+        return readln().toIntOrNull()?.toMenuItem() ?: MenuItemUi.EXIT
     }
+
 
     private fun executeAction(selectedAction: MenuItemUi, mealsRepository: MealsRepository) {
         when (selectedAction) {
@@ -45,10 +45,10 @@ class App(
             MenuItemUi.EGG_FREE_SWEETS -> showEggFreeSweets()
             MenuItemUi.KETO_DIET_MEAL -> showKetoDietMeals()
             MenuItemUi.MEAL_BY_DATE -> showMealByDate()
-            MenuItemUi.CALCULATED_CALORIES_MEAL -> showMealsByCaloriesAndProtein()
+            MenuItemUi.CALCULATED_CALORIES_PROTEIN_MEAL -> showMealsByCaloriesAndProtein()
             MenuItemUi.MEAL_BY_COUNTRY -> showMealByCountry()
-            MenuItemUi.INGREDIENT_GAME -> showIngredientGame()
-            MenuItemUi.POTATO_MEALS -> showPotatoMeals(mealsRepository)
+            MenuItemUi.INGREDIENT_GAME_MEAL -> showIngredientGame()
+            MenuItemUi.POTATO_MEALS -> showPotatoMeals()
             MenuItemUi.FOR_THIN_MEAL -> showForThinMeal()
             MenuItemUi.SEAFOOD_MEALS -> showSeafoodMeals()
             MenuItemUi.ITALIAN_MEAL_FOR_GROUPS -> showItalianMealForGroups()
@@ -56,67 +56,74 @@ class App(
         }
     }
 
-    private fun showHealthyFastFood() {
-        getTenRandomEasyMealsUseCase.getTenRandomEasyMeals().forEach { println(it) }
+    private fun showHealthyFastFood() = handleAction {
+        // Implement the logic for Healthy Fast Food
     }
 
-    private fun showMealByName() {
+    // Implement the logic for Healthy Fast Food
+
+
+    private fun showMealByName() = handleAction {
         // Implement the logic for Meal By Name
     }
 
-    private fun showIraqiMeals() {
-        identifyIraqiMealsUseCase.identifyIraqiMeals().forEach { println(it.name) }
+    private fun showIraqiMeals() = handleAction {
+        // Implement the logic for Iraqi Meals
     }
 
-    private fun showEasyFoodSuggestionGame() {
+    private fun showEasyFoodSuggestionGame() = handleAction {
         // Implement the logic for Easy Food Suggestion Game
     }
 
-    private fun showPreparationTimeGuessingGame() {
+    private fun showPreparationTimeGuessingGame() = handleAction {
         // Implement the logic for Preparation Time Guessing Game
     }
 
-    private fun showEggFreeSweets() {
+    private fun showEggFreeSweets() = handleAction {
         // Implement the logic for Egg-Free Sweets
     }
 
-    private fun showKetoDietMeals() {
+    private fun showKetoDietMeals() = handleAction {
         // Implement the logic for Keto Diet Meals
     }
 
-    private fun showMealByDate() {
+    private fun showMealByDate() = handleAction {
         // Implement the logic for Meal by Date
     }
 
-    private fun showMealsByCaloriesAndProtein() {
-        getMealsContainsCaloriesProteinUseCase
-            .getMealsContainCaloriesAndProtein(targetCalories = 200.0, targetProtein = 20.0)
-            .forEach { println("${it.name}: ${it.nutrition.calories} calories, ${it.nutrition.protein}g protein") }
+    private fun showMealsByCaloriesAndProtein() = handleAction {
+        // Implement the logic for Meals by Calories and Protein
     }
 
-    private fun showMealByCountry() {
+    private fun showMealByCountry() = handleAction {
         // Implement the logic for Meal By Country
     }
 
-    private fun showIngredientGame() {
+    private fun showIngredientGame() = handleAction {
         // Implement the logic for Ingredient Game
     }
 
-    private fun showPotatoMeals(mealsRepository: MealsRepository) {
-        getLimitRandomMealsIncludePotatoesUseCase
-            .getLimitRandomMealsIncludePotatoes(10)
-            .forEach { println(it) }
+    private fun showPotatoMeals() = handleAction {
+        // Implement the logic for Potato Meals
     }
 
-    private fun showForThinMeal() {
+    private fun showForThinMeal() = handleAction {
         // Implement the logic for For Thin Meal
     }
 
-    private fun showSeafoodMeals() {
+    private fun showSeafoodMeals() = handleAction {
         // Implement the logic for Seafood Meals
     }
 
-    private fun showItalianMealForGroups() {
+    private fun showItalianMealForGroups() = handleAction {
         // Implement the logic for Italian Meal for Groups
+    }
+
+    private inline fun handleAction(action: () -> Unit) {
+        try {
+            action()
+        } catch (e: Exception) {
+            println("Error: ${e.message}")
+        }
     }
 }
