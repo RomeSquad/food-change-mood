@@ -2,7 +2,7 @@ package logic.utils
 
 import model.Meal
 
-class SimpleSearchAlgorithm : SearchAlgorithm {
+class LinearSearchAlgorithm : SearchAlgorithm {
     override fun search(data: List<Meal>, query: String): Result<List<Meal>> {
         if (query.isBlank()) return Result.failure(Exception("Query must not be empty."))
         val lowerCaseQuery = query.lowercase()
