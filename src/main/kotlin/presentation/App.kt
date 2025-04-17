@@ -2,6 +2,7 @@ package presentation
 
 import data.CsvMealsRepository
 import logic.MealsRepository
+import logic.use_case.*
 
 class App(
     private val mealsRepository: CsvMealsRepository,
@@ -44,7 +45,7 @@ class App(
             MenuItemUi.PREPARATION_TIME_GUESSING_GAME -> showPreparationTimeGuessingGame()
             MenuItemUi.EGG_FREE_SWEETS -> showEggFreeSweets()
             MenuItemUi.KETO_DIET_MEAL -> showKetoDietMeals()
-            MenuItemUi.MEAL_BY_DATE -> showMealByDate()
+            MenuItemUi.MEAL_BY_DATE -> showMealByDate(mealsRepository)
             MenuItemUi.CALCULATED_CALORIES_PROTEIN_MEAL -> showMealsByCaloriesAndProtein()
             MenuItemUi.MEAL_BY_COUNTRY -> showMealByCountry()
             MenuItemUi.INGREDIENT_GAME_MEAL -> showIngredientGame()
@@ -87,8 +88,30 @@ class App(
         // Implement the logic for Keto Diet Meals
     }
 
-    private fun showMealByDate() = handleAction {
-        // Implement the logic for Meal by Date
+    private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {
+        print("Enter the date (dd-mm-yyyy): ")
+        val date = readln()
+        val resultMeals = GetByDate(mealsRepository).getByDate(date)
+        resultMeals.onSuccess { meals ->
+            println("Meals for date $date: \n")
+            println(" ---------------------------------- ")
+            println("|      ID       |         Name        ")
+            println(" ---------------------------------- ")
+            meals.forEach {
+                println("|      ${it.id}      |     ${it.name}   ")
+            }
+
+            println("Enter the meal ID to get more details: ")
+            val mealId = readln()
+            if (mealId != "q") {  // Exit if user enters 'q'
+                val mealResult = GetById().getById(mealId, meals)
+                mealResult.onSuccess { println("Meal details:\n$it") }
+                    .onFailure { error -> println("Sorry. ${error.message}") }
+            }
+
+        }.onFailure { error ->
+            println("Sorry. ${error.message}")
+        }
     }
 
     private fun showMealsByCaloriesAndProtein() = handleAction {
