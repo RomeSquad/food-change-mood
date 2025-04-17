@@ -100,7 +100,36 @@ class App(
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
-        // Implement the logic for Preparation Time Guessing Game
+        val useCase = GuessGameUseCase(mealsRepository)
+
+        useCase.getRandomGuessableMeal()
+            .takeIf { it != null }
+            ?.let { meal ->
+                val correctTime = meal.minutes
+                println("Guess Game: ${meal.name}")
+                println("You have 3 attempts to guess the preparation time (in minutes):")
+
+                repeat(3) { attempt ->
+                    print("Attempt ${attempt + 1}: ")
+                    val guess = readLine()?.toIntOrNull()
+
+                    if (guess == null) {
+                        println("Please enter a valid number.")
+                        return@repeat
+                    }
+
+                    when (useCase.evaluateGuess(guess, correctTime)) {
+                        GuessGameUseCase.GuessResult.CORRECT -> {
+                            println("Correct answer! Preparation time is $correctTime  minutes")
+                            return
+                        }
+                        GuessGameUseCase.GuessResult.TOO_LOW -> println("Less than the correct time.")
+                        GuessGameUseCase.GuessResult.TOO_HIGH -> println("More than the correct time.")
+                    }
+                }
+
+                println("Attempts are over. Correct time is: $correctTime minutes.")
+            } ?: println("No meals suitable for the game.")
     }
 
     private fun showEggFreeSweets() = handleAction {
