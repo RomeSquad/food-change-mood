@@ -87,6 +87,10 @@ class App(
 
     private fun showIraqiMeals() = handleAction {
         // Implement the logic for Iraqi Meals
+        val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
+        identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
+            println(it)
+        }
     }
 
     private fun showEasyFoodSuggestionGame() = handleAction {
@@ -157,6 +161,10 @@ class App(
 
     private fun showItalianMealForGroups() = handleAction {
         // Implement the logic for Italian Meal for Groups
+        val suggestItalianMealsForLargeGroupsUseCase = SuggestItalianMealsForLargeGroupsUseCase(mealsRepository)
+        suggestItalianMealsForLargeGroupsUseCase.suggestItalianMealsForLargeGroups().forEach {
+            println(it)
+        }
     }
 
     private inline fun handleAction(action: () -> Unit) {
