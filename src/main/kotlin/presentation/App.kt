@@ -4,13 +4,18 @@ import data.CsvMealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
 import logic.MealsRepository
+import logic.use_case.BaseUseCases
+import logic.use_case.IdentifyIraqiMealsUseCase
 import logic.use_case.SearchByNameUseCase
 import logic.utils.SearchAlgorithm
 import logic.utils.SearchAlgorithmFactory
 import java.io.File
 
 class App(
-    private val mealsRepository: CsvMealsRepository,
+    // private val mealsRepository: CsvMealsRepository,
+    // private val baseUseCases: BaseUseCases
+    // private val identifyIraqiMealsUseCase: IdentifyIraqiMealsUseCase,
+    private val searchByNameUseCase: SearchByNameUseCase
 ) {
     fun start() {
         while (true) {
@@ -19,7 +24,7 @@ class App(
 
             if (selectedAction == MenuItemUi.EXIT) break
 
-            executeAction(selectedAction, mealsRepository)
+            executeAction(selectedAction, /* mealsRepository */)
         }
     }
 
@@ -41,7 +46,7 @@ class App(
     }
 
 
-    private fun executeAction(selectedAction: MenuItemUi, mealsRepository: MealsRepository) {
+    private fun executeAction(selectedAction: MenuItemUi, /* mealsRepository: MealsRepository*/) {
         when (selectedAction) {
             MenuItemUi.HEALTHY_FAST_FOOD -> showHealthyFastFood()
             MenuItemUi.MEAL_BY_NAME -> showMealByName()
@@ -68,12 +73,12 @@ class App(
 
 
     private fun showMealByName() = handleAction {
-        val file = File("food.csv")
-        val fileReader = CsvFileReader(file)
-        val csvParser = CsvParserImpl()
-        val mealsRepository = CsvMealsRepository(fileReader,csvParser)
+        // val file = File("food.csv")
+        // val fileReader = CsvFileReader(file)
+        // val csvParser = CsvParserImpl()
+        // val mealsRepository = CsvMealsRepository(fileReader,csvParser)
         val searchAlgorithm = SearchAlgorithmFactory().createSearchAlgorithm()
-        val searchByNameUseCase = SearchByNameUseCase(mealsRepository,searchAlgorithm)
+        // val searchByNameUseCase = SearchByNameUseCase(mealsRepository,searchAlgorithm)
         println("Enter the name of the meal")
         val query = readln()
         searchByNameUseCase.searchByName(query).onSuccess {meals->
@@ -88,6 +93,9 @@ class App(
 
     private fun showIraqiMeals() = handleAction {
         // Implement the logic for Iraqi Meals
+//        identifyIraqiMealsUseCase.identifyIraqiMeals().also {
+//            println(it)
+//        }
     }
 
     private fun showEasyFoodSuggestionGame() = handleAction {
