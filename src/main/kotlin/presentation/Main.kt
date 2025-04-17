@@ -3,8 +3,9 @@ import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
 import presentation.App
 import java.io.File
+import java.io.FileReader
 
-fun main() {
+fun main (){
     val file = File("food.csv")
     val fileReader = CsvFileReader(file)
 

@@ -61,8 +61,6 @@ class App(
         // Implement the logic for Healthy Fast Food
     }
 
-    // Implement the logic for Healthy Fast Food
-
 
     private fun showMealByName() = handleAction {
         // Implement the logic for Meal By Name
