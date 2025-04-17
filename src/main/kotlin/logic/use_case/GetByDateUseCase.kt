@@ -5,7 +5,7 @@ import model.Meal
 import java.text.ParseException
 import java.text.SimpleDateFormat
 
-class GetByDate(
+class GetByDateUseCase(
     private val mealsRepository: MealsRepository,
 ) {
     fun getByDate(date: String): Result<List<Meal>> {

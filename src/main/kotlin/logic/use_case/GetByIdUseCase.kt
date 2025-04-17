@@ -2,7 +2,7 @@ package logic.use_case
 
 import model.Meal
 
-class GetById {
+class GetByIdUseCase {
 
     fun getById(id: String, meals: List<Meal>): Result<Meal> {
         val trimmedId = id.trim()

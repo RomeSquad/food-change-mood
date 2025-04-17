@@ -5,8 +5,6 @@ import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
 import logic.MealsRepository
 import logic.use_case.*
-import logic.use_case.SearchByNameUseCase
-import logic.utils.SearchAlgorithm
 import logic.utils.SearchAlgorithmFactory
 import java.io.File
 
@@ -110,7 +108,7 @@ class App(
     private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {
         print("Enter the date (dd-mm-yyyy): ")
         val date = readln()
-        val resultMeals = GetByDate(mealsRepository).getByDate(date)
+        val resultMeals = GetByDateUseCase(mealsRepository).getByDate(date)
         resultMeals.onSuccess { meals ->
             println("Meals for date $date: \n")
             println(" ---------------------------------- ")
@@ -123,7 +121,7 @@ class App(
             println("Enter the meal ID to get more details: ")
             val mealId = readln()
             if (mealId != "q") {  // Exit if user enters 'q'
-                val mealResult = GetById().getById(mealId, meals)
+                val mealResult = GetByIdUseCase().getById(mealId, meals)
                 mealResult.onSuccess { println("Meal details:\n$it") }
                     .onFailure { error -> println("Sorry. ${error.message}") }
             }
