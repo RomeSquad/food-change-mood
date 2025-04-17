@@ -1,7 +1,8 @@
 import data.CsvMealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
-import logic.use_case.IdentifyIraqiMealsUseCase
+import logic.use_case.SearchByNameUseCase
+import logic.utils.SimpleSearchAlgorithm
 import java.io.File
 
 fun main (){
@@ -10,10 +11,16 @@ fun main (){
 
     val csvParser = CsvParserImpl()
     val mealsRepository = CsvMealsRepository(fileReader,csvParser)
-    mealsRepository.getAllMeals().let { println(it.size) }
+
     // test your code here
-    val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
-    identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
+    val searchAlgorithm = SimpleSearchAlgorithm()
+    val searchUseCase = SearchByNameUseCase(mealsRepository, searchAlgorithm)
+
+    searchUseCase("Pizza").onSuccess {
+        it.forEach { meal ->
+            println(meal.name)
+        }
+    }.onFailure {
         println(it)
     }
 }
