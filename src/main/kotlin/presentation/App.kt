@@ -4,7 +4,10 @@ import data.CsvMealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
 import logic.MealsRepository
-import logic.use_case.*
+import logic.use_case.GetByDateUseCase
+import logic.use_case.GetByIdUseCase
+import logic.use_case.KetoDietHelper
+import logic.use_case.SearchByNameUseCase
 import logic.utils.SearchAlgorithmFactory
 import java.io.File
 
@@ -70,12 +73,12 @@ class App(
         val file = File("food.csv")
         val fileReader = CsvFileReader(file)
         val csvParser = CsvParserImpl()
-        val mealsRepository = CsvMealsRepository(fileReader,csvParser)
+        val mealsRepository = CsvMealsRepository(fileReader, csvParser)
         val searchAlgorithm = SearchAlgorithmFactory().createSearchAlgorithm()
-        val searchByNameUseCase = SearchByNameUseCase(mealsRepository,searchAlgorithm)
+        val searchByNameUseCase = SearchByNameUseCase(mealsRepository, searchAlgorithm)
         println("Enter the name of the meal")
         val query = readln()
-        searchByNameUseCase.searchByName(query).onSuccess {meals->
+        searchByNameUseCase.searchByName(query).onSuccess { meals ->
             meals.forEach { meal ->
                 println(meal)
             }
@@ -102,7 +105,26 @@ class App(
     }
 
     private fun showKetoDietMeals() = handleAction {
-        // Implement the logic for Keto Diet Meals
+
+        println("Welcome to your keto Diet Helper ")
+        var ketoMealSuggestion = KetoDietHelper(mealsRepository.getAllMeals())
+        val message = "we suggest to you : \n"
+
+        while (true) {
+            try {
+
+                println( message + ketoMealSuggestion.getNextKetoMeal())
+            } catch (e: Exception) {
+                println(e.message)
+            }
+            println("Do you want to see another keto meal suggestion? (y/n): ")
+            when (readln().lowercase().trim()) {
+                "y" -> println(" here is another one ")
+                "n" -> break
+            }
+        }
+
+
     }
 
     private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {
