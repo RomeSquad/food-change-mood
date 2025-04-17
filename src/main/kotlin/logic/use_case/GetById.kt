@@ -1,15 +1,24 @@
 package logic.use_case
 
-import logic.MealsRepository
 import model.Meal
-import java.util.*
 
-class GetById(
-    private val mealsRepository: MealsRepository,
-    private val id: Int
-) {
-    fun getByDate(): List<Meal> {
-        return mealsRepository.getAllMeals()
-            .filter { it.id == id }
+class GetById {
+
+    fun getById(id: String, meals: List<Meal>): Result<Meal> {
+        val trimmedId = id.trim()
+        return if (trimmedId.isEmpty())
+            Result.failure(Exception("ID cannot be empty"))
+        else if (!trimmedId.all { it.isDigit() })
+            Result.failure(Exception("$id is not valid. ID consists of digits only."))
+        else {
+            val meal = meals.find { it.id == trimmedId.toInt() }
+            if (meal != null) {
+                Result.success(meal)
+            } else {
+                Result.failure(Exception("No meal found with id: $trimmedId"))
+            }
+        }
     }
+
+
 }
