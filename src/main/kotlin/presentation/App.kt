@@ -70,12 +70,12 @@ class App(
         val file = File("food.csv")
         val fileReader = CsvFileReader(file)
         val csvParser = CsvParserImpl()
-        val mealsRepository = CsvMealsRepository(fileReader,csvParser)
+        val mealsRepository = CsvMealsRepository(fileReader, csvParser)
         val searchAlgorithm = SearchAlgorithmFactory().createSearchAlgorithm()
-        val searchByNameUseCase = SearchByNameUseCase(mealsRepository,searchAlgorithm)
+        val searchByNameUseCase = SearchByNameUseCase(mealsRepository, searchAlgorithm)
         println("Enter the name of the meal")
         val query = readln()
-        searchByNameUseCase.searchByName(query).onSuccess {meals->
+        searchByNameUseCase.searchByName(query).onSuccess { meals ->
             meals.forEach { meal ->
                 println(meal)
             }
@@ -90,7 +90,9 @@ class App(
     }
 
     private fun showEasyFoodSuggestionGame() = handleAction {
-        // Implement the logic for Easy Food Suggestion Game
+        val getTenRandomEasyMealsUseCase = GetTenRandomEasyMealsUseCase(mealsRepository)
+        println(MenuItemUi.EASY_FOOD_SUGGESTION_GAME)
+        println(getTenRandomEasyMealsUseCase.getTenRandomEasyMeals())
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
@@ -148,7 +150,7 @@ class App(
     }
 
     private fun showForThinMeal() = handleAction {
-        // Implement the logic for For Thin Meal
+        // Implement the logic For Thin Meal
     }
 
     private fun showSeafoodMeals() = handleAction {
