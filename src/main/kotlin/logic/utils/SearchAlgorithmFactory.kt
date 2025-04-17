@@ -5,7 +5,7 @@ class SearchAlgorithmFactory{
         LinearSearchAlgorithm,
         KMPSearchAlgorithm,
     }
-    fun createSearchAlgorithm(type: SearchType) : SearchAlgorithm {
+    fun createSearchAlgorithm(type: SearchType = SearchType.KMPSearchAlgorithm) : SearchAlgorithm {
         return when(type){
             SearchType.LinearSearchAlgorithm -> LinearSearchAlgorithm()
             SearchType.KMPSearchAlgorithm -> KMPSearchAlgorithm()

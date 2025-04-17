@@ -1,7 +1,13 @@
 package presentation
 
 import data.CsvMealsRepository
+import data.utils.CsvFileReader
+import data.utils.CsvParserImpl
 import logic.MealsRepository
+import logic.use_case.SearchByNameUseCase
+import logic.utils.SearchAlgorithm
+import logic.utils.SearchAlgorithmFactory
+import java.io.File
 
 class App(
     private val mealsRepository: CsvMealsRepository,
@@ -62,7 +68,22 @@ class App(
 
 
     private fun showMealByName() = handleAction {
-        // Implement the logic for Meal By Name
+        val file = File("food.csv")
+        val fileReader = CsvFileReader(file)
+        val csvParser = CsvParserImpl()
+        val mealsRepository = CsvMealsRepository(fileReader,csvParser)
+        val searchAlgorithm = SearchAlgorithmFactory().createSearchAlgorithm()
+        val searchByNameUseCase = SearchByNameUseCase(mealsRepository,searchAlgorithm)
+        println("Enter the name of the meal")
+        val query = readln()
+        searchByNameUseCase.searchByName(query).onSuccess {meals->
+            meals.forEach { meal ->
+                println(meal)
+            }
+        }.onFailure {
+            println(it)
+        }
+
     }
 
     private fun showIraqiMeals() = handleAction {
