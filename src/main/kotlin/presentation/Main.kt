@@ -4,6 +4,7 @@ import data.utils.CsvParserImpl
 import logic.use_case.SearchByNameUseCase
 import logic.utils.SimpleSearchAlgorithm
 import java.io.File
+import java.io.FileReader
 
 fun main (){
     val file = File("food.csv")
@@ -11,16 +12,8 @@ fun main (){
 
     val csvParser = CsvParserImpl()
     val mealsRepository = CsvMealsRepository(fileReader,csvParser)
-
-    // test your code here
-    val searchAlgorithm = SimpleSearchAlgorithm()
-    val searchUseCase = SearchByNameUseCase(mealsRepository, searchAlgorithm)
-
-    searchUseCase("Pizza").onSuccess {
-        it.forEach { meal ->
-            println(meal.name)
-        }
-    }.onFailure {
-        println(it)
-    }
+    val startApp = App(
+        mealsRepository,
+    )
+    startApp.start()
 }
