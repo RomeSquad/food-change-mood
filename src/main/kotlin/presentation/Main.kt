@@ -10,7 +10,7 @@ fun main (){
 
     val csvParser = CsvParserImpl()
     val mealsRepository = CsvMealsRepository(fileReader,csvParser)
-    mealsRepository.getAllMeals().let { println(it.size) }
+    //mealsRepository.getAllMeals().let { println(it.size) }
     // test your code here
     val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
     identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
