@@ -1,8 +1,7 @@
-package presentation
-
 import data.CsvMealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
+import presentation.App
 import java.io.File
 
 fun main (){
