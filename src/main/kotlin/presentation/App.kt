@@ -44,7 +44,7 @@ class App(
 
     private fun executeAction(selectedAction: MenuItemUi, mealsRepository: MealsRepository) {
         when (selectedAction) {
-            MenuItemUi.HEALTHY_FAST_FOOD -> showHealthyFastFood()
+            MenuItemUi.HEALTHY_FAST_FOOD -> showHealthyFastFood(mealsRepository)
             MenuItemUi.MEAL_BY_NAME -> showMealByName()
             MenuItemUi.IRAQI_MEALS -> showIraqiMeals()
             MenuItemUi.EASY_FOOD_SUGGESTION_GAME -> showEasyFoodSuggestionGame()
@@ -63,11 +63,7 @@ class App(
         }
     }
 
-    private fun showHealthyFastFood() = handleAction {
-        val file = File("src/main/resources/food.csv")
-        val fileReader = CsvFileReader(file)
-        val csvParser = CsvParserImpl()
-        val mealsRepository = CsvMealsRepository(fileReader, csvParser)
+    private fun showHealthyFastFood(mealsRepository: MealsRepository) = handleAction {
         val allMeals = mealsRepository.getAllMeals()
         val healthyMeals = HealthyMealsFilter().getHealthyFastMeals(allMeals)
 
