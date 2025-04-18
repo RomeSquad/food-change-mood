@@ -154,39 +154,42 @@ class App(
     }
 
     private fun showEggFreeSweets() = handleAction {
+
         println("I will Show you random Sweet without eggs please Wait ..... ")
         val sweetsWithoutEggs = GetSweetsWithoutEggsUseCase(mealsRepository)
+
         val endLoopText = "exit"
         var isUserLikeSweet = "n"
+
         do {
             val randomSweet = sweetsWithoutEggs.getRandomSweet()
+
             randomSweet.fold(
                 onSuccess = { sweet ->
                     println("__________________________________________________________\n" +
                             "You get this random sweet : \n" +
                             "Meal name   :  ${sweet.name} \n" +
                             "description :  ${sweet.description} \n" )
-                    print("Do you like this sweet ? (y , n ) : ")
-                    isUserLikeSweet = readln().trim()
-                    while (isUserLikeSweet != "y" && isUserLikeSweet != "n") {
+
+                    do{
                         print(
-                            "__________________________________________________________\n"+
-                            "if you like this sweet enter    : y \n" +
-                            "if you dislike this sweet enter : n \n" +
+                                    "Do you like this sweet ? ( y , n )  \n"+
                                     "Your Choose : "
                         )
                         isUserLikeSweet = readln().trim()
-                    }
+                    }while (isUserLikeSweet != "y" && isUserLikeSweet != "n")
+
 
                     if (isUserLikeSweet == "y") {
-                        println(sweet)
+                        println("your Final sweet is : /n $sweet")
                     }
                 },
                 onFailure = { exception ->
                     println(exception.message)
-                     isUserLikeSweet = endLoopText
+                    isUserLikeSweet = endLoopText
                 }
             )
+
         } while (isUserLikeSweet == "n")
 
     }
