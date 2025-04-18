@@ -5,7 +5,6 @@ import data.meal.MealsRepository
 import domain.use_case.*
 import domain.utils.SearchAlgorithmFactory
 import logic.use_case.GetKetoDietMealsUseCase
-import model.Meal
 
 class App(
     private val mealsRepository: CsvMealsRepository,
@@ -18,6 +17,12 @@ class App(
             if (selectedAction == MenuItemUi.EXIT) break
 
             executeAction(selectedAction, mealsRepository)
+            print("Do you want to perform another action? (y/n): ")
+            val continueChoice = readln().lowercase()
+            if (continueChoice != "y") {
+                println("Goodbye")
+                break
+            }
         }
     }
 
@@ -88,7 +93,7 @@ class App(
         }.onFailure {
             println(it)
         }
-
+        println("------------------------------------------------------------")
     }
 
     private fun showIraqiMeals() = handleAction {
