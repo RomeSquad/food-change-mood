@@ -1,4 +1,4 @@
-package logic.utils
+package domain.utils
 
 class KMPPatternMatcher : PatternMatcher {
     override fun match(text: String, pattern: String): Boolean {

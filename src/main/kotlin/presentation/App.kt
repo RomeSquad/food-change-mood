@@ -1,14 +1,16 @@
 package presentation
 
-import data.CsvMealsRepository
+import data.meal.CsvMealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
-import logic.MealsRepository
-import logic.use_case.*
-import logic.utils.SearchAlgorithmFactory
+import data.meal.MealsRepository
+import domain.use_case.*
+import domain.utils.SearchAlgorithmFactory
+import model.Meal
 import java.io.File
 
 class App(
+
     private val mealsRepository: CsvMealsRepository,
 ) {
     fun start() {
@@ -42,7 +44,7 @@ class App(
 
     private fun executeAction(selectedAction: MenuItemUi, mealsRepository: MealsRepository) {
         when (selectedAction) {
-            MenuItemUi.HEALTHY_FAST_FOOD -> showHealthyFastFood()
+            MenuItemUi.HEALTHY_FAST_FOOD -> showHealthyFastFood(mealsRepository)
             MenuItemUi.MEAL_BY_NAME -> showMealByName()
             MenuItemUi.IRAQI_MEALS -> showIraqiMeals()
             MenuItemUi.EASY_FOOD_SUGGESTION_GAME -> showEasyFoodSuggestionGame()
@@ -54,17 +56,26 @@ class App(
             MenuItemUi.MEAL_BY_COUNTRY -> showMealByCountry()
             MenuItemUi.INGREDIENT_GAME_MEAL -> showIngredientGame()
             MenuItemUi.POTATO_MEALS -> showPotatoMeals()
-            MenuItemUi.FOR_THIN_MEAL -> showForThinMeal()
+            MenuItemUi.FOR_THIN_MEAL -> showForThinMeal(mealsRepository)
             MenuItemUi.SEAFOOD_MEALS -> showSeafoodMeals()
             MenuItemUi.ITALIAN_MEAL_FOR_GROUPS -> showItalianMealForGroups()
             MenuItemUi.EXIT -> Unit // Exit will break the loop
         }
     }
 
-    private fun showHealthyFastFood() = handleAction {
-        // Implement the logic for Healthy Fast Food
-    }
+    private fun showHealthyFastFood(mealsRepository: MealsRepository) = handleAction {
+        val allMeals = mealsRepository.getAllMeals()
+        val healthyMeals = HealthyMealsFilter().getHealthyFastMeals(allMeals)
 
+        println("=== Healthy Fast Meals take  15 minutes ===")
+        if (healthyMeals.isEmpty()) {
+            println("No healthy fast meals found.")
+        } else {
+            healthyMeals.forEachIndexed { index, meal ->
+                println("${index + 1}. ${meal.name} - ${meal.minutes} min")
+            }
+        }
+    }
 
     private fun showMealByName() = handleAction {
         val file = File("food.csv")
@@ -94,21 +105,93 @@ class App(
     }
 
     private fun showEasyFoodSuggestionGame() = handleAction {
-        val getTenRandomEasyMealsUseCase = GetTenRandomEasyMealsUseCase(mealsRepository)
-        println(MenuItemUi.EASY_FOOD_SUGGESTION_GAME)
-        println(getTenRandomEasyMealsUseCase.getTenRandomEasyMeals())
+
+        val getTenRandomEasyMealsUseCase = GetRandomMealsUseCase(mealsRepository)
+        println("\n${MenuItemUi.EASY_FOOD_SUGGESTION_GAME}, TEN RANDOM MEALS : ")
+        getTenRandomEasyMealsUseCase.getTenRandomEasyMeals().forEach { println("\nMeal Name is : ${it.name}\n") }
+
+        print("\nEnter number of meals you want : ")
+        val count = readln().trim().toIntOrNull()
+
+
+        if (count != null)
+            getTenRandomEasyMealsUseCase.getNRandomEasyMeals(count).forEach { println("\nMeal Name is : ${it.name}\n") }
+
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
-        // Implement the logic for Preparation Time Guessing Game
+        val useCase = GuessGameUseCase(mealsRepository)
+
+        useCase.getRandomGuessableMeal()
+            .takeIf { it != null }
+            ?.let { meal ->
+                val correctTime = meal.minutes
+                println("Guess Game: ${meal.name}")
+                println("You have 3 attempts to guess the preparation time (in minutes):")
+
+                repeat(3) { attempt ->
+                    print("Attempt ${attempt + 1}: ")
+                    val guess = readLine()?.toIntOrNull()
+
+                    if (guess == null) {
+                        println("Please enter a valid number.")
+                        return@repeat
+                    }
+
+                    when (useCase.evaluateGuess(guess, correctTime)) {
+                        GuessGameUseCase.GuessResult.CORRECT -> {
+                            println("Correct answer! Preparation time is $correctTime  minutes")
+                            return
+                        }
+
+                        GuessGameUseCase.GuessResult.TOO_LOW -> println("Less than the correct time.")
+                        GuessGameUseCase.GuessResult.TOO_HIGH -> println("More than the correct time.")
+                    }
+                }
+
+                println("Attempts are over. Correct time is: $correctTime minutes.")
+            } ?: println("No meals suitable for the game.")
     }
 
     private fun showEggFreeSweets() = handleAction {
-        // Implement the logic for Egg-Free Sweets
+        println("I will Show you random Sweet with no eggs ")
+        val getSweetsWithNoEggsUseCase = GetSweetsWithNoEggsUseCase(mealsRepository)
+        try {
+            var result: Meal
+            do {
+                result = getSweetsWithNoEggsUseCase.getRandomSweetWithNoEggs()
+                println("meal name : ${result.name}")
+                println("description : ${result.description}")
+                print("Do you like that ? (y , n ) : ")
+                val likeMeal = readln().trim()
+            } while (likeMeal == "n")
+            println(result)
+        } catch (e: Exception) {
+            println(e.message)
+        }
     }
 
     private fun showKetoDietMeals() = handleAction {
-        // Implement the logic for Keto Diet Meals
+
+        println("Welcome to your keto Diet Helper ")
+        var ketoMealSuggestion = KetoDietHelper(mealsRepository.getAllMeals())
+        val message = "we suggest to you : \n"
+
+        while (true) {
+            try {
+
+                println(message + ketoMealSuggestion.getNextKetoMeal())
+            } catch (e: Exception) {
+                println(e.message)
+            }
+            println("Do you want to see another keto meal suggestion? (y/n): ")
+            when (readln().lowercase().trim()) {
+                "y" -> println(" here is another one ")
+                "n" -> break
+            }
+        }
+
+
     }
 
     private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {
@@ -138,11 +221,35 @@ class App(
     }
 
     private fun showMealsByCaloriesAndProtein() = handleAction {
-        // Implement the logic for Meals by Calories and Protein
+        println("--- Find Meals by Calories & Protein ---")
+        print("Enter desired calories (e.g., 500): ")
+        val caloriesInput = readln().toDoubleOrNull()
+        print("Enter desired protein in grams (e.g., 30): ")
+        val proteinInput = readln().toDoubleOrNull()
+
+        if (caloriesInput != null && proteinInput != null) {
+            val getMealsByCaloriesAndProteinUseCase = GetMealsContainsCaloriesProteinUseCase(mealsRepository)
+            val meals =
+                getMealsByCaloriesAndProteinUseCase.getMealsContainCaloriesAndProtein(caloriesInput, proteinInput)
+            println("Meals with more than $caloriesInput calories and $proteinInput protein:")
+            meals.forEach { meal ->
+                val calories = meal.nutrition.calories.toString()
+                val protein = meal.nutrition.protein.toString()
+                println("- ${meal.name} (Calories: $calories, Protein: ${protein}g)")
+            }
+        } else {
+            println("Invalid input. Please enter valid numbers.")
+        }
     }
 
     private fun showMealByCountry() = handleAction {
-        // Implement the logic for Meal By Country
+        print("Enter Country and discover their meals : ")
+        val countryName: String = readlnOrNull().toString()
+        val exploreMealsByCountryUseCase = ExploreMealsByCountryUseCase(mealsRepository)
+
+        exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName).forEach {
+            println(it)
+        }
     }
 
     private fun showIngredientGame() = handleAction {
@@ -150,15 +257,58 @@ class App(
     }
 
     private fun showPotatoMeals() = handleAction {
-        // Implement the logic for Potato Meals
+        val potatoMealsUseCase = GetLimitRandomMealsIncludePotatoesUseCase(mealsRepository)
+        println("=== Potato Meals ===")
+        val potatoMeals = potatoMealsUseCase.getLimitRandomMealsIncludePotatoes()
+        if (potatoMeals.isEmpty()) {
+            println("No potato meals found.")
+        } else {
+            potatoMeals.forEachIndexed { index, meal ->
+                println("${index + 1}. ${meal.name} - ${meal.description}")
+            }
+        }
+        println("-------------------------------------------------------")
     }
 
-    private fun showForThinMeal() = handleAction {
-        // Implement the logic For Thin Meal
+    private fun showForThinMeal(mealsRepository: MealsRepository) = handleAction {
+        println("=== Meal with high calories for Thin People ===")
+        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository)
+
+        while (true) {
+            println("Here is a meal for you:")
+            val meal = suggestForThinMealsUseCase.getNextMeal()
+
+            println("\nMeal        : ${meal.name} ")
+            println("Description : ${meal.description}\n")
+            println("Did you like this meal? (y/n)")
+            when (readln().trim().lowercase()) {
+                "y" -> {
+                    println("Great! Enjoy your meal.")
+                    println(meal)
+                    break
+                }
+
+                "n" -> {
+                    println("Let's try another one.")
+                }
+
+                else -> {
+                    println("Invalid input. Please enter 'y' or 'n'.")
+                }
+            }
+        }
     }
 
     private fun showSeafoodMeals() = handleAction {
-        // Implement the logic for Seafood Meals
+        val getRankedSeafoodByProteinUseCase = GetRankedSeafoodByProteinUseCase(
+            mealsRepository
+        )
+        println("--- Seafood Meals Sorted by Protein (Highest First) ---")
+        val rankedSeafoodMeals = getRankedSeafoodByProteinUseCase.getSeafoodMealsSortedByProtein()
+        rankedSeafoodMeals.forEach { meal ->
+            println(meal)
+        }
+        println("-------------------------------------------------------")
     }
 
     private fun showItalianMealForGroups() = handleAction {
