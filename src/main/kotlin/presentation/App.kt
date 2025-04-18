@@ -1,9 +1,9 @@
 package presentation
 
 import data.meal.CsvMealsRepository
+import data.meal.MealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
-import data.meal.MealsRepository
 import domain.use_case.*
 import domain.utils.SearchAlgorithmFactory
 import model.Meal
@@ -28,7 +28,7 @@ class App(
         MenuItemUi.entries.forEachIndexed { index, action ->
             println("${index + 1}- ${action.description}")
         }
-        print(coloredPrompt("Choose the action *enter (8) or anything else to exit*: "))
+        print(coloredPrompt("Choose the action *enter (15) or anything else to exit*: "))
     }
 
     private fun coloredPrompt(text: String): String {
@@ -59,13 +59,13 @@ class App(
             MenuItemUi.FOR_THIN_MEAL -> showForThinMeal(mealsRepository)
             MenuItemUi.SEAFOOD_MEALS -> showSeafoodMeals()
             MenuItemUi.ITALIAN_MEAL_FOR_GROUPS -> showItalianMealForGroups()
-            MenuItemUi.EXIT -> Unit // Exit will break the loop
+            MenuItemUi.EXIT -> Unit
         }
     }
 
     private fun showHealthyFastFood(mealsRepository: MealsRepository) = handleAction {
         val allMeals = mealsRepository.getAllMeals()
-        val healthyMeals = HealthyMealsFilter().getHealthyFastMeals(allMeals)
+        val healthyMeals = HealthyMealsFilterUseCase().getHealthyFastMeals(allMeals)
 
         println("=== Healthy Fast Meals take  15 minutes ===")
         if (healthyMeals.isEmpty()) {
@@ -97,7 +97,6 @@ class App(
     }
 
     private fun showIraqiMeals() = handleAction {
-        // Implement the logic for Iraqi Meals
         val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
         identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
             println(it)
@@ -174,7 +173,7 @@ class App(
     private fun showKetoDietMeals() = handleAction {
 
         println("Welcome to your keto Diet Helper ")
-        var ketoMealSuggestion = KetoDietHelper(mealsRepository.getAllMeals())
+        var ketoMealSuggestion = KetoDietHelperUseCase(mealsRepository)
         val message = "we suggest to you : \n"
 
         while (true) {
@@ -272,7 +271,7 @@ class App(
 
     private fun showForThinMeal(mealsRepository: MealsRepository) = handleAction {
         println("=== Meal with high calories for Thin People ===")
-        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository)
+        val suggestForThinMealsUseCase = GetMealsContainsHighCaloriesUseCase(mealsRepository)
 
         while (true) {
             println("Here is a meal for you:")
@@ -312,7 +311,6 @@ class App(
     }
 
     private fun showItalianMealForGroups() = handleAction {
-        // Implement the logic for Italian Meal for Groups
         val suggestItalianMealsForLargeGroupsUseCase = SuggestItalianMealsForLargeGroupsUseCase(mealsRepository)
         suggestItalianMealsForLargeGroupsUseCase.suggestItalianMealsForLargeGroups().forEach {
             println(it)

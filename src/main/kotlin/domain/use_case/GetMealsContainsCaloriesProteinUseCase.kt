@@ -16,13 +16,13 @@ class GetMealsContainsCaloriesProteinUseCase(
         validateUserInput(targetCalories, targetProtein)
 
         val allMeals = mealsRepository.getAllMeals()
-        val highQualityMeals = allMeals.filter(::onlyHighQualityData)
+        val highQualityMeals = allMeals.filter(::isMealsHaveCaloriesProtein)
         return highQualityMeals.findMatchesMealsBasedOn(targetCalories, targetProtein, tolerance)
             .takeIf { it.isNotEmpty() }
             ?: findClosestMealsBasedOn(highQualityMeals, targetCalories, targetProtein)
     }
 
-    private fun onlyHighQualityData(meal: Meal): Boolean {
+    private fun isMealsHaveCaloriesProtein(meal: Meal): Boolean {
         return meal.nutrition.calories > 0 && meal.nutrition.protein > 0
     }
 
