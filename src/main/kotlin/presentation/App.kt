@@ -8,7 +8,6 @@ import logic.use_case.*
 import logic.utils.SearchAlgorithmFactory
 import model.Meal
 import java.io.File
-import logic.use_case.HealthyMealsFilter
 
 class App(
 
@@ -225,7 +224,17 @@ class App(
     }
 
     private fun showPotatoMeals() = handleAction {
-        // Implement the logic for Potato Meals
+        val potatoMealsUseCase = GetLimitRandomMealsIncludePotatoesUseCase(mealsRepository)
+        println("=== Potato Meals ===")
+        val potatoMeals = potatoMealsUseCase.getLimitRandomMealsIncludePotatoes()
+        if (potatoMeals.isEmpty()) {
+            println("No potato meals found.")
+        } else {
+            potatoMeals.forEachIndexed { index, meal ->
+                println("${index + 1}. ${meal.name} - ${meal.description}")
+            }
+        }
+        println("-------------------------------------------------------")
     }
 
     private fun showForThinMeal(mealsRepository: MealsRepository) = handleAction {
