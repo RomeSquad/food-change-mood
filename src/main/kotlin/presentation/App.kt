@@ -1,19 +1,16 @@
 package presentation
 
-import data.meal.CsvMealsRepository
-import data.meal.MealsRepository
-import domain.search.KMPSearchAlgorithm
-import domain.search.LinearSearchAlgorithm
-import domain.search.SearchAlgorithmFactory
 import domain.use_case.*
 import logic.use_case.GetKetoDietMealsUseCase
+import domain.use_case.GetIngredientGameUseCase
 
 
 class App (
-    private val healthyMealsFilterUseCase: HealthyMealsFilterUseCase,
+    private val getHealthyMealsFilterUseCase: GetHealthyMealsFilterUseCase,
     private val getByNameUseCase: GetByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
     private val getRandomMealsUseCase: GetRandomMealsUseCase,
+    private val getsGetIngredientGameUseCase : GetIngredientGameUseCase,
     private val guessGameUseCase: GuessGameUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithoutEggsUseCase,
     private val getKetoDietMealsUseCase: GetKetoDietMealsUseCase,
@@ -82,7 +79,7 @@ class App (
     }
 
     private fun showHealthyFastFood() = handleAction {
-        val healthyMeals = healthyMealsFilterUseCase.getHealthyFastMeals()
+        val healthyMeals = getHealthyMealsFilterUseCase.getHealthyFastMeals()
         println("=== Healthy Fast Meals take  15 minutes ===")
         if (healthyMeals.isEmpty()) {
             println("No healthy fast meals found.")
@@ -206,6 +203,7 @@ class App (
 
         while (true) {
             try {
+
                 println( message + getKetoDietMealsUseCase.getNextKetoMeal())
             } catch (e: Exception) {
                 println(e.message)
@@ -276,23 +274,44 @@ class App (
 
         try {
             if (exploreMeals.isEmpty()) {
-                println("No meals found for '$countryName'.")
-            }else {
-                println("Meals related to '$countryName':")
+                print("No meals found for '$countryName'.")
+            } else {
+                println("Please Enter Your Country:$countryName")
                 exploreMeals.forEachIndexed { index, meal ->
                     println("${index + 1} ${meal.name}")
                 }
             }
-        }catch (
+        } catch (
             e: Exception
-        ){
+        ) {
             println("Error: ${e.message}")
         }
         println("------------------------------------------------------------")
     }
 
     private fun showIngredientGame() = handleAction {
-        // Implement the logic for Ingredient Game
+
+
+
+        while (getsGetIngredientGameUseCase.correctCount != 15) {
+            val question = getsGetIngredientGameUseCase.getNextQuestion()
+            println("Guess the ingredient from the ingredients")
+            println("Question mealName=${question!!.mealName} \noptions(${question.options})")
+
+            print("Enter Answer : ")
+            val answer = readln()
+            if (getsGetIngredientGameUseCase.submitAnswer(answer, question!!.correctAnswer)) {
+                getsGetIngredientGameUseCase.correctCount++
+                println("Current Score: ${getsGetIngredientGameUseCase.getScore()} points")
+            } else {
+                println(" :( try again")
+                println("Current Score: ${getsGetIngredientGameUseCase.getScore()} points")
+                break
+            }
+
+
+
+        }
     }
 
     private fun showPotatoMeals() = handleAction {
