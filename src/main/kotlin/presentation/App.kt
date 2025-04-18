@@ -56,7 +56,7 @@ class App(
             MenuItemUi.MEAL_BY_COUNTRY -> showMealByCountry()
             MenuItemUi.INGREDIENT_GAME_MEAL -> showIngredientGame()
             MenuItemUi.POTATO_MEALS -> showPotatoMeals()
-            MenuItemUi.FOR_THIN_MEAL -> showForThinMeal()
+            MenuItemUi.FOR_THIN_MEAL -> showForThinMeal(mealsRepository)
             MenuItemUi.SEAFOOD_MEALS -> showSeafoodMeals()
             MenuItemUi.ITALIAN_MEAL_FOR_GROUPS -> showItalianMealForGroups()
             MenuItemUi.EXIT -> Unit // Exit will break the loop
@@ -111,7 +111,36 @@ class App(
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
-        // Implement the logic for Preparation Time Guessing Game
+        val useCase = GuessGameUseCase(mealsRepository)
+
+        useCase.getRandomGuessableMeal()
+            .takeIf { it != null }
+            ?.let { meal ->
+                val correctTime = meal.minutes
+                println("Guess Game: ${meal.name}")
+                println("You have 3 attempts to guess the preparation time (in minutes):")
+
+                repeat(3) { attempt ->
+                    print("Attempt ${attempt + 1}: ")
+                    val guess = readLine()?.toIntOrNull()
+
+                    if (guess == null) {
+                        println("Please enter a valid number.")
+                        return@repeat
+                    }
+
+                    when (useCase.evaluateGuess(guess, correctTime)) {
+                        GuessGameUseCase.GuessResult.CORRECT -> {
+                            println("Correct answer! Preparation time is $correctTime  minutes")
+                            return
+                        }
+                        GuessGameUseCase.GuessResult.TOO_LOW -> println("Less than the correct time.")
+                        GuessGameUseCase.GuessResult.TOO_HIGH -> println("More than the correct time.")
+                    }
+                }
+
+                println("Attempts are over. Correct time is: $correctTime minutes.")
+            } ?: println("No meals suitable for the game.")
     }
 
     private fun showEggFreeSweets() = handleAction {
@@ -164,8 +193,31 @@ class App(
         // Implement the logic for Potato Meals
     }
 
-    private fun showForThinMeal() = handleAction {
-        // Implement the logic For Thin Meal
+    private fun showForThinMeal(mealsRepository: MealsRepository) = handleAction {
+        val calories = 700.0
+        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository).getCaloriesMoreThan(calories)
+        suggestForThinMealsUseCase.onSuccess { mealsVal ->
+            var meals = mealsVal
+            while (meals.isNotEmpty()) {
+                val randomIndex = (Math.random() * meals.size).toInt()
+                val randomMeal = meals[randomIndex]
+                println("Here is a meal for you:")
+                println(randomMeal.name)
+                println(randomMeal.description)
+                println("Did you like the meal? (y/n)")
+                val answer = readln()
+                if (answer.lowercase() == "y") {
+                    println("Here is the meal you selected:\n$randomMeal")
+                    return
+                } else {
+                    println("Lets try another meal")
+                    meals = meals.filter { it != randomMeal }
+                }
+            }
+            println("Sorry, we don't have any more meals for you.")
+        }.onFailure { error ->
+            println("Sorry. ${error.message}")
+        }
     }
 
     private fun showSeafoodMeals() = handleAction {
