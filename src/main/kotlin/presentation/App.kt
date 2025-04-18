@@ -2,13 +2,10 @@ package presentation
 
 import data.meal.CsvMealsRepository
 import data.meal.MealsRepository
-import data.utils.CsvFileReader
-import data.utils.CsvParserImpl
 import domain.use_case.*
 import domain.utils.SearchAlgorithmFactory
 import logic.use_case.GetKetoDietMealsUseCase
 import model.Meal
-import java.io.File
 
 class App(
 
@@ -22,6 +19,13 @@ class App(
             if (selectedAction == MenuItemUi.EXIT) break
 
             executeAction(selectedAction, mealsRepository)
+
+            print("Do you want to perform another action? (y/n): ")
+            val continueChoice = readln().lowercase()
+            if (continueChoice != "y") {
+                println("Goodbye")
+                break
+            }
         }
     }
 
@@ -79,10 +83,10 @@ class App(
     }
 
     private fun showMealByName() = handleAction {
-        val file = File("food.csv")
-        val fileReader = CsvFileReader(file)
-        val csvParser = CsvParserImpl()
-        val mealsRepository = CsvMealsRepository(fileReader, csvParser)
+//        val file = File("food.csv")
+//        val fileReader = CsvFileReader(file)
+//        val csvParser = CsvParserImpl()
+//        val mealsRepository = CsvMealsRepository(fileReader, csvParser)
         val searchAlgorithm = SearchAlgorithmFactory().createSearchAlgorithm()
         val searchByNameUseCase = SearchByNameUseCase(mealsRepository, searchAlgorithm)
         println("Enter the name of the meal")

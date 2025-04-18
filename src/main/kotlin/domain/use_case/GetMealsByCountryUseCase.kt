@@ -17,6 +17,7 @@ class GetMealsByCountryUseCase (
 
 
     fun getLimitRandomMealsRelatedToCountry(countryName : String ,limit : Int= 20): List<Meal> {
+        if (countryName.isBlank()) return emptyList()
         return mealsRepository.getAllMeals()
             .filter {meal -> isMealRelatedToCountry(meal , countryName)
             }
