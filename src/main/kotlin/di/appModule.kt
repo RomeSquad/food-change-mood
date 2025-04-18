@@ -5,6 +5,9 @@ import data.meal.MealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParser
 import data.utils.CsvParserImpl
+import domain.search.KMPSearchAlgorithm
+import domain.search.LinearSearchAlgorithm
+import domain.search.SearchAlgorithmFactory
 import org.koin.dsl.module
 import presentation.App
 import java.io.File
@@ -29,7 +32,10 @@ val appModule = module {
         get(),
         get(),
         get(),
-//        get()
+        get()
         )
     }
+    single { LinearSearchAlgorithm() }
+    single { KMPSearchAlgorithm() }
+    single{SearchAlgorithmFactory(get(),get())}
 }

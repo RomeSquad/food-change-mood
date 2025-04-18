@@ -1,12 +1,17 @@
 package presentation
 
+import data.meal.CsvMealsRepository
+import data.meal.MealsRepository
+import domain.search.KMPSearchAlgorithm
+import domain.search.LinearSearchAlgorithm
+import domain.search.SearchAlgorithmFactory
 import domain.use_case.*
 import logic.use_case.GetKetoDietMealsUseCase
 
 
 class App (
     private val healthyMealsFilterUseCase: HealthyMealsFilterUseCase,
-//    private val searchByNameUseCase: SearchByNameUseCase,
+    private val getByNameUseCase: GetByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
     private val getRandomMealsUseCase: GetRandomMealsUseCase,
     private val guessGameUseCase: GuessGameUseCase,
@@ -90,17 +95,17 @@ class App (
     }
 
     private fun showMealByName() = handleAction {
-//        val searchAlgorithm = SearchAlgorithmFactory().createSearchAlgorithm()
-//        val searchByNameUseCase = SearchByNameUseCase(mealsRepository, searchAlgorithm)
-//        println("Enter the name of the meal")
-//        val query = readln()
-//        searchByNameUseCase.searchByName(query).onSuccess { meals ->
-//            meals.forEach { meal ->
-//                println(meal)
-//            }
-//        }.onFailure {
-//            println(it)
-//        }
+        println("Enter the name of the meal:")
+        val query = readln()
+        getByNameUseCase.getByName(query).onSuccess { meals ->
+            meals.forEach { meal ->
+                println("\n Meal found:")
+                println(meal)
+            }
+        }.onFailure {
+            println(it)
+        }
+        println("------------------------------------------------------------")
     }
 
     private fun showIraqiMeals() = handleAction {

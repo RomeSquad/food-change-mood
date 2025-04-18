@@ -52,6 +52,6 @@ data class Meal(
 
 
     companion object {
-        const val DATE_FORMAT = "dd-mm-yyyy"
+        const val DATE_FORMAT = "yyyy-mm-dd"
     }
 }
