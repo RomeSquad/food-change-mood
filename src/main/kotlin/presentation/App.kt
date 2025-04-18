@@ -145,7 +145,7 @@ class App(
     }
 
     private fun showEggFreeSweets() = handleAction {
-
+        println("I will Show you random Sweet with no eggs ")
         val getSweetsWithNoEggsUseCase = GetSweetsWithNoEggsUseCase(mealsRepository)
         try{
             var result : Meal
