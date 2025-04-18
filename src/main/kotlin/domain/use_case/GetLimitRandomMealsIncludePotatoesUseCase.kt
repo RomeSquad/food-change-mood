@@ -8,12 +8,12 @@ class GetLimitRandomMealsIncludePotatoesUseCase(
 ) {
     fun getLimitRandomMealsIncludePotatoes(limit: Int = 10): List<Meal> {
         return mealsRepository.getAllMeals()
-            .filter(::onlyHighQualityData)
+            .filter(::isPotatoesMeals)
             .shuffled()
             .take(limit)
     }
 
-    private fun onlyHighQualityData(meal: Meal): Boolean {
+    private fun isPotatoesMeals(meal: Meal): Boolean {
         return meal.ingredients.any { it.contains("potato", ignoreCase = true) }
     }
 }
