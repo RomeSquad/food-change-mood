@@ -6,7 +6,9 @@ import data.utils.CsvParserImpl
 import data.meal.MealsRepository
 import domain.use_case.*
 import domain.utils.SearchAlgorithmFactory
+import logic.use_case.IngredientGameUseCase
 import model.Meal
+import model.ingredient_game.Question
 import java.io.File
 
 class App(
@@ -253,7 +255,23 @@ class App(
     }
 
     private fun showIngredientGame() = handleAction {
-        // Implement the logic for Ingredient Game
+
+        val ingredientGameUseCase = IngredientGameUseCase(mealsRepository)
+
+        while (ingredientGameUseCase.correctCount != 15){
+            val question = ingredientGameUseCase.getNextQuestion()
+            println(question.toString())
+            print("Enter Answer : ")
+            val answer = readln()
+            if(ingredientGameUseCase.submitAnswer(answer,question!!.correctAnswer)) {
+                ingredientGameUseCase.correctCount++
+                println("${ingredientGameUseCase.getScore()} :)" )
+            }else {
+                println("${ingredientGameUseCase.getScore()} :( try again" )
+                break
+            }
+
+        }
     }
 
     private fun showPotatoMeals() = handleAction {
