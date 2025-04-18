@@ -6,6 +6,7 @@ import data.utils.CsvParserImpl
 import data.meal.MealsRepository
 import domain.use_case.*
 import domain.utils.SearchAlgorithmFactory
+import logic.use_case.GetKetoDietMealsUseCase
 import model.Meal
 import java.io.File
 
@@ -174,7 +175,7 @@ class App(
 
         println("Welcome to your keto Diet Helper ")
 
-        var ketoMealSuggestion = GetKetoDietMealsUseCase(mealsRepository)
+        val ketoMealSuggestion = GetKetoDietMealsUseCase(mealsRepository)
         val message = "we suggest to you : \n"
 
         while (true) {
@@ -190,8 +191,6 @@ class App(
                 "n" -> break
             }
         }
-
-
     }
 
     private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {

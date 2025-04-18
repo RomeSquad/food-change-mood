@@ -1,18 +1,17 @@
 package logic.use_case
 
-import logic.MealsRepository
+
+import data.meal.MealsRepository
 import model.Meal
 
 class GetKetoDietMealsUseCase(private val mealsRepository: MealsRepository) {
 
     fun getKetoMeals(): List<Meal> {
-
         return mealsRepository.getAllMeals().filter {
             it.nutrition.carbohydrates < TEN_ITEM &&
                     it.nutrition.totalFat >= FIFTEN_ITEM &&
                     it.nutrition.protein >= TEN_ITEM
         }.shuffled()
-
     }
 
     fun getNextKetoMeal(): Meal {
