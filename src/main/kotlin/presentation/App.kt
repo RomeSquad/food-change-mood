@@ -1,7 +1,10 @@
 package presentation
 
+import data.meal.CsvMealsRepository
+import data.meal.MealsRepository
 import domain.use_case.*
 import logic.use_case.GetKetoDietMealsUseCase
+import model.Meal
 import domain.use_case.GetIngredientGameUseCase
 
 
