@@ -151,13 +151,14 @@ class App(
     private fun showKetoDietMeals() = handleAction {
 
         println("Welcome to your keto Diet Helper ")
-        var ketoMealSuggestion = GetKetoDietMealsUseCase(mealsRepository.getAllMeals())
+
+        var ketoMealSuggestion = GetKetoDietMealsUseCase(mealsRepository)
         val message = "we suggest to you : \n"
 
         while (true) {
             try {
 
-                println(message + ketoMealSuggestion.getNextKetoMeal())
+                println( message + ketoMealSuggestion.getNextKetoMeal())
             } catch (e: Exception) {
                 println(e.message)
             }
