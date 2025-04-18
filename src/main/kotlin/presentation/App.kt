@@ -6,6 +6,7 @@ import data.utils.CsvParserImpl
 import logic.MealsRepository
 import logic.use_case.*
 import logic.utils.SearchAlgorithmFactory
+import model.Meal
 import java.io.File
 
 class App(
@@ -144,7 +145,21 @@ class App(
     }
 
     private fun showEggFreeSweets() = handleAction {
-        // Implement the logic for Egg-Free Sweets
+        println("I will Show you random Sweet with no eggs ")
+        val getSweetsWithNoEggsUseCase = GetSweetsWithNoEggsUseCase(mealsRepository)
+        try{
+            var result : Meal
+            do {
+                result = getSweetsWithNoEggsUseCase.getRandomSweetWithNoEggs()
+                println("meal name : ${result.name}")
+                println("description : ${result.description}")
+                print("Do you like that ? (y , n ) : ")
+                val likeMeal = readln().trim()
+            }while (likeMeal == "n")
+            println(result)
+        }catch (e:Exception){
+            println( e.message )
+        }
     }
 
     private fun showKetoDietMeals() = handleAction {
