@@ -30,7 +30,7 @@ class App(
         MenuItemUi.entries.forEachIndexed { index, action ->
             println("${index + 1}- ${action.description}")
         }
-        print(coloredPrompt("Choose the action *enter (15) or anything else to exit*: "))
+        print(coloredPrompt("Choose the action from (1)..(15) or anything else to fetch: "))
     }
 
     private fun coloredPrompt(text: String): String {
@@ -104,7 +104,6 @@ class App(
     }
 
     private fun showEasyFoodSuggestionGame() = handleAction {
-
         val getTenRandomEasyMealsUseCase = GetRandomMealsUseCase(mealsRepository)
         println("\n${MenuItemUi.EASY_FOOD_SUGGESTION_GAME}, TEN RANDOM MEALS : ")
         getTenRandomEasyMealsUseCase.getTenRandomEasyMeals().forEach { println("\nMeal Name is : ${it.name}\n") }
@@ -115,7 +114,7 @@ class App(
 
         if (count != null)
             getTenRandomEasyMealsUseCase.getNRandomEasyMeals(count).forEach { println("\nMeal Name is : ${it.name}\n") }
-
+        println("------------------------------------------------------------")
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
@@ -150,6 +149,7 @@ class App(
 
                 println("Attempts are over. Correct time is: $correctTime minutes.")
             } ?: println("No meals suitable for the game.")
+        println("------------------------------------------------------------")
     }
 
     private fun showEggFreeSweets() = handleAction {
@@ -212,6 +212,7 @@ class App(
                 "n" -> break
             }
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {
@@ -238,6 +239,7 @@ class App(
         }.onFailure { error ->
             println("Sorry. ${error.message}")
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealsByCaloriesAndProtein() = handleAction {
@@ -260,6 +262,7 @@ class App(
         } else {
             println("Invalid input. Please enter valid numbers.")
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealByCountry() = handleAction {
@@ -283,6 +286,7 @@ class App(
         ){
             println("Error: ${e.message}")
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showIngredientGame() = handleAction {
