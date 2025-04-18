@@ -9,7 +9,6 @@ fun main() {
     startKoin {
         modules(appModule, useCaseModule)
     }
-
     val app: App = getKoin().get()
     app.start()
 }

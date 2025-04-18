@@ -1,10 +1,10 @@
-package logic.use_case
+package domain.use_case
 
 import data.meal.MealsRepository
 import model.Meal
 import model.ingredient_game.Question
 
-class IngredientGameUseCase(
+class GetIngredientGameUseCase(
     private val mealsRepository: MealsRepository
 ) {
     private var score = 0
