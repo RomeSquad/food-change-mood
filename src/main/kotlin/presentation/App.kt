@@ -2,7 +2,7 @@ package presentation
 
 import domain.use_case.*
 import logic.use_case.GetKetoDietMealsUseCase
-import model.Meal
+
 
 class App (
     private val healthyMealsFilterUseCase: HealthyMealsFilterUseCase,
@@ -27,7 +27,13 @@ class App (
 
             if (selectedAction == MenuItemUi.EXIT) break
 
-            executeAction(selectedAction)
+            executeAction(selectedAction, mealsRepository)
+            print("Do you want to perform another action? (y/n): ")
+            val continueChoice = readln().lowercase()
+            if (continueChoice != "y") {
+                println("Goodbye")
+                break
+            }
         }
     }
 
@@ -35,7 +41,7 @@ class App (
         MenuItemUi.entries.forEachIndexed { index, action ->
             println("${index + 1}- ${action.description}")
         }
-        print(coloredPrompt("Choose the action *enter (15) or anything else to exit*: "))
+        print(coloredPrompt("Choose the action from (1)..(15) or anything else to fetch: "))
     }
 
     private fun coloredPrompt(text: String): String {
@@ -66,7 +72,7 @@ class App (
             MenuItemUi.FOR_THIN_MEAL -> showForThinMeal()
             MenuItemUi.SEAFOOD_MEALS -> showSeafoodMeals()
             MenuItemUi.ITALIAN_MEAL_FOR_GROUPS -> showItalianMealForGroups()
-            MenuItemUi.EXIT -> Unit // Exit will break the loop
+            MenuItemUi.EXIT -> println("See you soon!!")
         }
     }
 
@@ -80,6 +86,7 @@ class App (
                 println("${index + 1}. ${meal.name} - ${meal.minutes} min")
             }
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealByName() = handleAction {
@@ -111,7 +118,7 @@ class App (
 
         if (count != null)
             getRandomMealsUseCase.getNRandomEasyMeals(count).forEach { println("\nMeal Name is : ${it.name}\n") }
-
+        println("------------------------------------------------------------")
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
@@ -144,23 +151,47 @@ class App (
 
                 println("Attempts are over. Correct time is: $correctTime minutes.")
             } ?: println("No meals suitable for the game.")
+        println("------------------------------------------------------------")
     }
 
     private fun showEggFreeSweets() = handleAction {
-        println("I will Show you random Sweet with no eggs ")
-        try {
-            var result: Meal
-            do {
-                result = getSweetsWithNoEggsUseCase.getRandomSweetWithNoEggs()
-                println("meal name : ${result.name}")
-                println("description : ${result.description}")
-                print("Do you like that ? (y , n ) : ")
-                val likeMeal = readln().trim()
-            } while (likeMeal == "n")
-            println(result)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+
+        println("I will Show you random Sweet without eggs please Wait ..... ")
+
+        val endLoopText = "exit"
+        var isUserLikeSweet = "n"
+
+        do {
+            val randomSweet = getSweetsWithNoEggsUseCase.getRandomSweet()
+
+            randomSweet.fold(
+                onSuccess = { sweet ->
+                    println("__________________________________________________________\n" +
+                            "You get this random sweet : \n" +
+                            "Meal name   :  ${sweet.name} \n" +
+                            "description :  ${sweet.description} \n" )
+
+                    do{
+                        print(
+                                    "Do you like this sweet ? ( y , n )  \n"+
+                                    "Your Choose : "
+                        )
+                        isUserLikeSweet = readln().trim()
+                    }while (isUserLikeSweet != "y" && isUserLikeSweet != "n")
+
+
+                    if (isUserLikeSweet == "y") {
+                        println("your Final sweet is : /n $sweet")
+                    }
+                },
+                onFailure = { exception ->
+                    println(exception.message)
+                    isUserLikeSweet = endLoopText
+                }
+            )
+
+        } while (isUserLikeSweet == "n")
+
     }
 
     private fun showKetoDietMeals() = handleAction {
@@ -170,7 +201,6 @@ class App (
 
         while (true) {
             try {
-
                 println( message + getKetoDietMealsUseCase.getNextKetoMeal())
             } catch (e: Exception) {
                 println(e.message)
@@ -181,6 +211,7 @@ class App (
                 "n" -> break
             }
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealByDate() = handleAction {
@@ -207,6 +238,7 @@ class App (
         }.onFailure { error ->
             println("Sorry. ${error.message}")
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealsByCaloriesAndProtein() = handleAction {
@@ -228,10 +260,10 @@ class App (
         } else {
             println("Invalid input. Please enter valid numbers.")
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealByCountry() = handleAction {
-
         print("Enter Country and discover their meals : ")
 
         var countryName: String = readlnOrNull().toString().trim()
@@ -239,9 +271,9 @@ class App (
 
         try {
             if (exploreMeals.isEmpty()) {
-                print("No meals found for '$countryName'.")
+                println("No meals found for '$countryName'.")
             }else {
-                println("Please Enter Your Country:$countryName")
+                println("Meals related to '$countryName':")
                 exploreMeals.forEachIndexed { index, meal ->
                     println("${index + 1} ${meal.name}")
                 }
@@ -251,6 +283,7 @@ class App (
         ){
             println("Error: ${e.message}")
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showIngredientGame() = handleAction {
@@ -295,6 +328,7 @@ class App (
                     println("Invalid input. Please enter 'y' or 'n'.")
                 }
             }
+            println("------------------------------------------------------------")
         }
     }
 
@@ -308,9 +342,10 @@ class App (
     }
 
     private fun showItalianMealForGroups() = handleAction {
-        getItalianMealsForLargeGroupsUseCase.getItalianMealsForLargeGroups().forEach {
-            println(it)
+        getItalianMealsForLargeGroupsUseCase.getItalianMealsForLargeGroups().forEachIndexed { index, meal ->
+            println("${index + 1}. ${meal.name}")
         }
+        println("------------------------------------------------------------")
     }
 
     private inline fun handleAction(action: () -> Unit) {
