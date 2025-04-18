@@ -4,10 +4,7 @@ import data.CsvMealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
 import logic.MealsRepository
-import logic.use_case.GetByDateUseCase
-import logic.use_case.GetByIdUseCase
-import logic.use_case.KetoDietHelper
-import logic.use_case.SearchByNameUseCase
+import logic.use_case.*
 import logic.utils.SearchAlgorithmFactory
 import java.io.File
 import logic.use_case.HealthyMealsFilter
@@ -137,6 +134,7 @@ class App(
                             println("Correct answer! Preparation time is $correctTime  minutes")
                             return
                         }
+
                         GuessGameUseCase.GuessResult.TOO_LOW -> println("Less than the correct time.")
                         GuessGameUseCase.GuessResult.TOO_HIGH -> println("More than the correct time.")
                     }
@@ -159,7 +157,7 @@ class App(
         while (true) {
             try {
 
-                println( message + ketoMealSuggestion.getNextKetoMeal())
+                println(message + ketoMealSuggestion.getNextKetoMeal())
             } catch (e: Exception) {
                 println(e.message)
             }
