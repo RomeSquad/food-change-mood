@@ -153,21 +153,36 @@ class App(
     }
 
     private fun showEggFreeSweets() = handleAction {
-        println("I will Show you random Sweet with no eggs ")
-        val getSweetsWithNoEggsUseCase = GetSweetsWithNoEggsUseCase(mealsRepository)
-        try {
-            var result: Meal
-            do {
-                result = getSweetsWithNoEggsUseCase.getRandomSweetWithNoEggs()
-                println("meal name : ${result.name}")
-                println("description : ${result.description}")
-                print("Do you like that ? (y , n ) : ")
-                val likeMeal = readln().trim()
-            } while (likeMeal == "n")
-            println(result)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+        println("I will Show you random Sweet without eggs ")
+        val sweetsWithoutEggs = GetSweetsWithoutEggsUseCase(mealsRepository)
+        var isUserLikeSweet = "n"
+        do {
+            val randomSweet = sweetsWithoutEggs.getRandomSweet()
+            randomSweet.fold(
+                onSuccess = { sweet ->
+                    println("meal name : ${sweet.name}")
+                    println("description : ${sweet.description}")
+                    print("Do you like this sweet ? (y , n ) : ")
+                    isUserLikeSweet = readln().trim()
+                    while (isUserLikeSweet != "y" && isUserLikeSweet != "n") {
+                        print(
+                            "Enter y : if you like this sweet.\n" +
+                                    "Enter n : if you dislike this sweet.\n" +
+                                    "Your Choose : "
+                        )
+                        isUserLikeSweet = readln().trim()
+                    }
+
+                    if (isUserLikeSweet == "y") {
+                        println(sweet)
+                    }
+                },
+                onFailure = { exception ->
+                    println(exception.message)
+                }
+            )
+        } while (isUserLikeSweet == "n")
+
     }
 
     private fun showKetoDietMeals() = handleAction {
