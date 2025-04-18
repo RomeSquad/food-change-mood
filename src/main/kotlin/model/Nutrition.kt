@@ -10,6 +10,16 @@ data class Nutrition(
     val carbohydrates: Double
 ) {
     override fun toString(): String {
-        return "Nutrition: calories=$calories, totalFat=$totalFat, sugar=$sugar, sodium=$sodium, protein=$protein, saturatedFat=$saturatedFat, carbohydrates=$carbohydrates"
+        return String.format(
+            "%-10s %-18s %-13s %-13s %-15s %-15s %-15s %-13s",
+            "Nutrition",
+            "calories = $calories",
+            "fat = $totalFat",
+            "sugar = $sugar",
+            "sodium = $sodium",
+            "protein = $protein",
+            "satFat = $saturatedFat",
+            "carbs = $carbohydrates"
+        )
     }
 }

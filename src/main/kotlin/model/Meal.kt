@@ -17,20 +17,41 @@ data class Meal(
     val ingredients: List<String>,
     val nIngredients: Int,
 ) {
-    override fun toString(): String {
-        return "Id=$id      Name='$name'\n" +
-                "Time to prepare=$minutes \n" +
-                "description=$description \n" +
-                "$nutrition \n" +
-                "consists of $nIngredients ingredients " +
-                "ingredients: $ingredients  " +
-                "How to prepare =$nSteps steps=$steps,\n" +
-                "Shared by contributor $contributorId on ${submitted.date}-${submitted.month}-${submitted.year}\n" +
-                "tags=$tags \n"
 
+    override fun toString(): String {
+        val builder = StringBuilder()
+
+        builder.appendLine("=".repeat(50))
+        builder.appendLine(String.format("%-20s: %s", "Meal", name))
+        builder.appendLine(String.format("%-20s: %s", "Description", description ?: "No description"))
+        builder.appendLine(String.format("%-20s: %s", "Preparation Time", "$minutes minutes"))
+        builder.appendLine(String.format("%-20s: %s", "Ingredients", "$nIngredients items"))
+        builder.appendLine(String.format("%-20s: %s", "Steps", "$nSteps steps"))
+        builder.appendLine(String.format("%-20s: %s", "Tags", tags.joinToString(", ")))
+        builder.appendLine("-".repeat(50))
+
+        builder.appendLine("Ingredients List:")
+        val columns = 4
+        ingredients.chunked(columns).forEach { row ->
+            val formattedRow = row.joinToString(" ") { ingredient ->
+                String.format("%-30s", "- $ingredient")
+            }
+            builder.appendLine(formattedRow)
+        }
+
+        builder.appendLine("\nPreparation Steps:")
+        steps.withIndex().forEach { (i, step) ->
+            builder.appendLine("  ${i + 1}. $step")
+        }
+
+        builder.appendLine("\n$nutrition")
+
+        builder.appendLine("=".repeat(50))
+        return builder.toString()
     }
 
-    companion object{
+
+    companion object {
         const val DATE_FORMAT = "dd-mm-yyyy"
     }
 }
