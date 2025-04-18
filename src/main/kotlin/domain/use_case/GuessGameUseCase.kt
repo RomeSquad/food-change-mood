@@ -1,5 +1,5 @@
-package logic.use_case
-import logic.MealsRepository
+package domain.use_case
+import data.meal.MealsRepository
 import model.Meal
 
 class GuessGameUseCase(

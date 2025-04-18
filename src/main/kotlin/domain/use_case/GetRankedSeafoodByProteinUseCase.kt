@@ -1,6 +1,6 @@
-package logic.use_case
+package domain.use_case
 
-import logic.MealsRepository
+import data.meal.MealsRepository
 import model.Meal
 
 class GetRankedSeafoodByProteinUseCase(

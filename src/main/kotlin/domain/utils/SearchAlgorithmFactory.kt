@@ -1,4 +1,4 @@
-package logic.utils
+package domain.utils
 
 class SearchAlgorithmFactory{
     enum class SearchType{

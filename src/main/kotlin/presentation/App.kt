@@ -1,11 +1,11 @@
 package presentation
 
-import data.CsvMealsRepository
+import data.meal.CsvMealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
-import logic.MealsRepository
-import logic.use_case.*
-import logic.utils.SearchAlgorithmFactory
+import data.meal.MealsRepository
+import domain.use_case.*
+import domain.utils.SearchAlgorithmFactory
 import model.Meal
 import java.io.File
 
@@ -103,9 +103,18 @@ class App(
     }
 
     private fun showEasyFoodSuggestionGame() = handleAction {
-        val getTenRandomEasyMealsUseCase = GetTenRandomEasyMealsUseCase(mealsRepository)
-        println(MenuItemUi.EASY_FOOD_SUGGESTION_GAME)
-        println(getTenRandomEasyMealsUseCase.getTenRandomEasyMeals())
+
+        val getTenRandomEasyMealsUseCase = GetRandomMealsUseCase(mealsRepository)
+        println("\n${MenuItemUi.EASY_FOOD_SUGGESTION_GAME}, TEN RANDOM MEALS : ")
+        getTenRandomEasyMealsUseCase.getTenRandomEasyMeals().forEach { println("\nMeal Name is : ${it.name}\n") }
+
+        print("\nEnter number of meals you want : ")
+        val count = readln().trim().toIntOrNull()
+
+
+        if (count != null)
+            getTenRandomEasyMealsUseCase.getNRandomEasyMeals(count).forEach { println("\nMeal Name is : ${it.name}\n") }
+
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
@@ -232,7 +241,13 @@ class App(
     }
 
     private fun showMealByCountry() = handleAction {
-        // Implement the logic for Meal By Country
+        print("Enter Country and discover their meals : ")
+        val countryName: String = readlnOrNull().toString()
+        val exploreMealsByCountryUseCase = ExploreMealsByCountryUseCase(mealsRepository)
+
+        exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName).forEach {
+            println(it)
+        }
     }
 
     private fun showIngredientGame() = handleAction {
