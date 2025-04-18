@@ -9,6 +9,7 @@ import domain.utils.SearchAlgorithmFactory
 import logic.use_case.GetKetoDietMealsUseCase
 import logic.use_case.IngredientGameUseCase
 import model.Meal
+import model.ingredient_game.Question
 import java.io.File
 
 class App(
@@ -272,17 +273,20 @@ class App(
 
         while (ingredientGameUseCase.correctCount != 15) {
             val question = ingredientGameUseCase.getNextQuestion()
-            println(question.toString())
+            println("Guess the ingredient from the ingredients")
+            println("Question mealName=${question!!.mealName} \noptions(${question.options})")
+
             print("Enter Answer : ")
             val answer = readln()
             if (ingredientGameUseCase.submitAnswer(answer, question!!.correctAnswer)) {
                 ingredientGameUseCase.correctCount++
                 println("Current Score: ${ingredientGameUseCase.getScore()} points")
             } else {
-                println("${ingredientGameUseCase.getScore()} :( try again")
+                println(" :( try again")
                 println("Current Score: ${ingredientGameUseCase.getScore()} points")
                 break
             }
+
 
 
         }

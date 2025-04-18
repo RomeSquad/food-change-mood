@@ -46,5 +46,8 @@ class IngredientGameUseCase(
 
     fun getScore() = score
 }
+fun Question.display(): String {
+    return "Question(mealName=$mealName, options=$options)"
+}
 
 
