@@ -154,21 +154,25 @@ class App(
     }
 
     private fun showEggFreeSweets() = handleAction {
-        println("I will Show you random Sweet without eggs ")
+        println("I will Show you random Sweet without eggs please Wait ..... ")
         val sweetsWithoutEggs = GetSweetsWithoutEggsUseCase(mealsRepository)
+        val endLoopText = "exit"
         var isUserLikeSweet = "n"
         do {
             val randomSweet = sweetsWithoutEggs.getRandomSweet()
             randomSweet.fold(
                 onSuccess = { sweet ->
-                    println("meal name : ${sweet.name}")
-                    println("description : ${sweet.description}")
+                    println("__________________________________________________________\n" +
+                            "You get this random sweet : \n" +
+                            "Meal name   :  ${sweet.name} \n" +
+                            "description :  ${sweet.description} \n" )
                     print("Do you like this sweet ? (y , n ) : ")
                     isUserLikeSweet = readln().trim()
                     while (isUserLikeSweet != "y" && isUserLikeSweet != "n") {
                         print(
-                            "Enter y : if you like this sweet.\n" +
-                                    "Enter n : if you dislike this sweet.\n" +
+                            "__________________________________________________________\n"+
+                            "if you like this sweet enter    : y \n" +
+                            "if you dislike this sweet enter : n \n" +
                                     "Your Choose : "
                         )
                         isUserLikeSweet = readln().trim()
@@ -180,6 +184,7 @@ class App(
                 },
                 onFailure = { exception ->
                     println(exception.message)
+                     isUserLikeSweet = endLoopText
                 }
             )
         } while (isUserLikeSweet == "n")
