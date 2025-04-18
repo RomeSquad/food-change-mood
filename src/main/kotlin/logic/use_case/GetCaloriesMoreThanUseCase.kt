@@ -7,7 +7,7 @@ class GetCaloriesMoreThanUseCase(
     private val mealsRepository: MealsRepository,
 ) {
     fun getCaloriesMoreThan(
-        calories: Double
+        calories: Double = 700.0
     ): Result<List<Meal>> {
         return try {
             val meals = mealsRepository.getAllMeals()
