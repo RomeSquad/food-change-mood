@@ -1,4 +1,4 @@
-package logic.use_case
+package domain.use_case
 import model.Meal
 
 class KetoDietHelper(private val meals: List<Meal>) {

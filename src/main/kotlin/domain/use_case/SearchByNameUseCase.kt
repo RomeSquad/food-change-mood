@@ -1,7 +1,7 @@
-package logic.use_case
+package domain.use_case
 
-import logic.MealsRepository
-import logic.utils.SearchAlgorithm
+import data.meal.MealsRepository
+import domain.utils.SearchAlgorithm
 import model.Meal
 
 class SearchByNameUseCase(

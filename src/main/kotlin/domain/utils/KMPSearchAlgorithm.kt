@@ -1,4 +1,4 @@
-package logic.utils
+package domain.utils
 
 import model.Meal
 
