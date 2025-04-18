@@ -2,8 +2,10 @@ package presentation
 
 import data.meal.CsvMealsRepository
 import data.meal.MealsRepository
+import domain.search.KMPSearchAlgorithm
+import domain.search.LinearSearchAlgorithm
+import domain.search.SearchAlgorithmFactory
 import domain.use_case.*
-import domain.utils.SearchAlgorithmFactory
 import logic.use_case.GetKetoDietMealsUseCase
 
 class App(
@@ -81,11 +83,16 @@ class App(
     }
 
     private fun showMealByName() = handleAction {
-        val searchAlgorithm = SearchAlgorithmFactory().createSearchAlgorithm()
-        val searchByNameUseCase = SearchByNameUseCase(mealsRepository, searchAlgorithm)
+        val linearSearchAlgorithm = LinearSearchAlgorithm()
+        val kmpSearchAlgorithm =  KMPSearchAlgorithm()
+        val searchAlgorithmFactory = SearchAlgorithmFactory(
+            linearSearchAlgorithm = linearSearchAlgorithm,
+            kmpSearchAlgorithm = kmpSearchAlgorithm
+        )
+        val getByNameUseCase = GetByNameUseCase(mealsRepository, searchAlgorithmFactory)
         println("Enter the name of the meal:")
         val query = readln()
-        searchByNameUseCase.searchByName(query).onSuccess { meals ->
+        getByNameUseCase.getByName(query).onSuccess { meals ->
             meals.forEach { meal ->
                 println("\n Meal found:")
                 println(meal)

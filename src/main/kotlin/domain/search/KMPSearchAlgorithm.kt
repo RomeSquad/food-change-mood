@@ -1,10 +1,10 @@
-package domain.utils
+package domain.search
 
 import model.Meal
 
 class KMPSearchAlgorithm(
     private val patternMatcher: PatternMatcher = KMPPatternMatcher(),
-):SearchAlgorithm{
+): SearchAlgorithm {
     override fun search(data: List<Meal>, query: String): Result<List<Meal>> {
         if(query.isBlank()) return Result.failure(Exception("Query must not be empty"))
         val result = data.filter { meal->
