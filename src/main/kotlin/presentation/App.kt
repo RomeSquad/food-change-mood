@@ -2,16 +2,11 @@ package presentation
 
 import data.meal.CsvMealsRepository
 import data.meal.MealsRepository
-import data.utils.CsvFileReader
-import data.utils.CsvParserImpl
 import domain.use_case.*
 import domain.utils.SearchAlgorithmFactory
 import logic.use_case.GetKetoDietMealsUseCase
-import model.Meal
-import java.io.File
 
 class App(
-
     private val mealsRepository: CsvMealsRepository,
 ) {
     fun start() {
@@ -22,6 +17,12 @@ class App(
             if (selectedAction == MenuItemUi.EXIT) break
 
             executeAction(selectedAction, mealsRepository)
+            print("Do you want to perform another action? (y/n): ")
+            val continueChoice = readln().lowercase()
+            if (continueChoice != "y") {
+                println("Goodbye")
+                break
+            }
         }
     }
 
@@ -29,7 +30,7 @@ class App(
         MenuItemUi.entries.forEachIndexed { index, action ->
             println("${index + 1}- ${action.description}")
         }
-        print(coloredPrompt("Choose the action *enter (15) or anything else to exit*: "))
+        print(coloredPrompt("Choose the action from (1)..(15) or anything else to fetch: "))
     }
 
     private fun coloredPrompt(text: String): String {
@@ -60,7 +61,7 @@ class App(
             MenuItemUi.FOR_THIN_MEAL -> showForThinMeal(mealsRepository)
             MenuItemUi.SEAFOOD_MEALS -> showSeafoodMeals()
             MenuItemUi.ITALIAN_MEAL_FOR_GROUPS -> showItalianMealForGroups()
-            MenuItemUi.EXIT -> Unit // Exit will break the loop
+            MenuItemUi.EXIT -> println("See you soon!!")
         }
     }
 
@@ -76,25 +77,23 @@ class App(
                 println("${index + 1}. ${meal.name} - ${meal.minutes} min")
             }
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealByName() = handleAction {
-        val file = File("food.csv")
-        val fileReader = CsvFileReader(file)
-        val csvParser = CsvParserImpl()
-        val mealsRepository = CsvMealsRepository(fileReader, csvParser)
         val searchAlgorithm = SearchAlgorithmFactory().createSearchAlgorithm()
         val searchByNameUseCase = SearchByNameUseCase(mealsRepository, searchAlgorithm)
-        println("Enter the name of the meal")
+        println("Enter the name of the meal:")
         val query = readln()
         searchByNameUseCase.searchByName(query).onSuccess { meals ->
             meals.forEach { meal ->
+                println("\n Meal found:")
                 println(meal)
             }
         }.onFailure {
             println(it)
         }
-
+        println("------------------------------------------------------------")
     }
 
     private fun showIraqiMeals() = handleAction {
@@ -105,7 +104,6 @@ class App(
     }
 
     private fun showEasyFoodSuggestionGame() = handleAction {
-
         val getTenRandomEasyMealsUseCase = GetRandomMealsUseCase(mealsRepository)
         println("\n${MenuItemUi.EASY_FOOD_SUGGESTION_GAME}, TEN RANDOM MEALS : ")
         getTenRandomEasyMealsUseCase.getTenRandomEasyMeals().forEach { println("\nMeal Name is : ${it.name}\n") }
@@ -116,7 +114,7 @@ class App(
 
         if (count != null)
             getTenRandomEasyMealsUseCase.getNRandomEasyMeals(count).forEach { println("\nMeal Name is : ${it.name}\n") }
-
+        println("------------------------------------------------------------")
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
@@ -151,6 +149,7 @@ class App(
 
                 println("Attempts are over. Correct time is: $correctTime minutes.")
             } ?: println("No meals suitable for the game.")
+        println("------------------------------------------------------------")
     }
 
     private fun showEggFreeSweets() = handleAction {
@@ -213,6 +212,7 @@ class App(
                 "n" -> break
             }
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {
@@ -239,6 +239,7 @@ class App(
         }.onFailure { error ->
             println("Sorry. ${error.message}")
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealsByCaloriesAndProtein() = handleAction {
@@ -261,10 +262,10 @@ class App(
         } else {
             println("Invalid input. Please enter valid numbers.")
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showMealByCountry() = handleAction {
-
         print("Enter Country and discover their meals : ")
 
         var countryName: String = readlnOrNull().toString().trim()
@@ -273,9 +274,9 @@ class App(
 
         try {
             if (exploreMeals.isEmpty()) {
-                print("No meals found for '$countryName'.")
+                println("No meals found for '$countryName'.")
             }else {
-                println("Please Enter Your Country:$countryName")
+                println("Meals related to '$countryName':")
                 exploreMeals.forEachIndexed { index, meal ->
                     println("${index + 1} ${meal.name}")
                 }
@@ -285,6 +286,7 @@ class App(
         ){
             println("Error: ${e.message}")
         }
+        println("------------------------------------------------------------")
     }
 
     private fun showIngredientGame() = handleAction {
@@ -331,6 +333,7 @@ class App(
                     println("Invalid input. Please enter 'y' or 'n'.")
                 }
             }
+            println("------------------------------------------------------------")
         }
     }
 
@@ -348,9 +351,10 @@ class App(
 
     private fun showItalianMealForGroups() = handleAction {
         val getItalianMealsForLargeGroupsUseCase = GetItalianMealsForLargeGroupsUseCase(mealsRepository)
-        getItalianMealsForLargeGroupsUseCase.getItalianMealsForLargeGroups().forEach {
-            println(it)
+        getItalianMealsForLargeGroupsUseCase.getItalianMealsForLargeGroups().forEachIndexed { index, meal ->
+            println("${index + 1}. ${meal.name}")
         }
+        println("------------------------------------------------------------")
     }
 
     private inline fun handleAction(action: () -> Unit) {
