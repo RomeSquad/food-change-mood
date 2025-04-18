@@ -134,6 +134,7 @@ class App(
                             println("Correct answer! Preparation time is $correctTime  minutes")
                             return
                         }
+
                         GuessGameUseCase.GuessResult.TOO_LOW -> println("Less than the correct time.")
                         GuessGameUseCase.GuessResult.TOO_HIGH -> println("More than the correct time.")
                     }
@@ -148,7 +149,26 @@ class App(
     }
 
     private fun showKetoDietMeals() = handleAction {
-        // Implement the logic for Keto Diet Meals
+
+        println("Welcome to your keto Diet Helper ")
+        var ketoMealSuggestion = KetoDietHelper(mealsRepository.getAllMeals())
+        val message = "we suggest to you : \n"
+
+        while (true) {
+            try {
+
+                println(message + ketoMealSuggestion.getNextKetoMeal())
+            } catch (e: Exception) {
+                println(e.message)
+            }
+            println("Do you want to see another keto meal suggestion? (y/n): ")
+            when (readln().lowercase().trim()) {
+                "y" -> println(" here is another one ")
+                "n" -> break
+            }
+        }
+
+
     }
 
     private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {
