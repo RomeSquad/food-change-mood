@@ -1,11 +1,12 @@
 package presentation
 
 import data.meal.CsvMealsRepository
+import data.meal.MealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
-import data.meal.MealsRepository
 import domain.use_case.*
 import domain.utils.SearchAlgorithmFactory
+import logic.use_case.GetKetoDietMealsUseCase
 import model.Meal
 import java.io.File
 
@@ -28,7 +29,7 @@ class App(
         MenuItemUi.entries.forEachIndexed { index, action ->
             println("${index + 1}- ${action.description}")
         }
-        print(coloredPrompt("Choose the action *enter (8) or anything else to exit*: "))
+        print(coloredPrompt("Choose the action *enter (15) or anything else to exit*: "))
     }
 
     private fun coloredPrompt(text: String): String {
@@ -65,7 +66,7 @@ class App(
 
     private fun showHealthyFastFood(mealsRepository: MealsRepository) = handleAction {
         val allMeals = mealsRepository.getAllMeals()
-        val healthyMeals = HealthyMealsFilter().getHealthyFastMeals(allMeals)
+        val healthyMeals = HealthyMealsFilterUseCase().getHealthyFastMeals(allMeals)
 
         println("=== Healthy Fast Meals take  15 minutes ===")
         if (healthyMeals.isEmpty()) {
@@ -188,13 +189,13 @@ class App(
     private fun showKetoDietMeals() = handleAction {
 
         println("Welcome to your keto Diet Helper ")
-        var ketoMealSuggestion = KetoDietHelper(mealsRepository.getAllMeals())
+        val ketoMealSuggestion = GetKetoDietMealsUseCase(mealsRepository)
         val message = "we suggest to you : \n"
 
         while (true) {
             try {
 
-                println(message + ketoMealSuggestion.getNextKetoMeal())
+                println( message + ketoMealSuggestion.getNextKetoMeal())
             } catch (e: Exception) {
                 println(e.message)
             }
@@ -204,8 +205,6 @@ class App(
                 "n" -> break
             }
         }
-
-
     }
 
     private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {
@@ -257,12 +256,26 @@ class App(
     }
 
     private fun showMealByCountry() = handleAction {
-        print("Enter Country and discover their meals : ")
-        val countryName: String = readlnOrNull().toString()
-        val exploreMealsByCountryUseCase = ExploreMealsByCountryUseCase(mealsRepository)
 
-        exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName).forEach {
-            println(it)
+        print("Enter Country and discover their meals : ")
+
+        var countryName: String = readlnOrNull().toString().trim()
+        val exploreMealsByCountryUseCase = GetMealsByCountryUseCase(mealsRepository)
+        val exploreMeals = exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName)
+
+        try {
+            if (exploreMeals.isEmpty()) {
+                print("No meals found for '$countryName'.")
+            }else {
+                println("Please Enter Your Country:$countryName")
+                exploreMeals.forEachIndexed { index, meal ->
+                    println("${index + 1} ${meal.name}")
+                }
+            }
+        }catch (
+            e: Exception
+        ){
+            println("Error: ${e.message}")
         }
     }
 
@@ -286,7 +299,7 @@ class App(
 
     private fun showForThinMeal(mealsRepository: MealsRepository) = handleAction {
         println("=== Meal with high calories for Thin People ===")
-        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository)
+        val suggestForThinMealsUseCase = GetMealsContainsHighCaloriesUseCase(mealsRepository)
 
         while (true) {
             println("Here is a meal for you:")
