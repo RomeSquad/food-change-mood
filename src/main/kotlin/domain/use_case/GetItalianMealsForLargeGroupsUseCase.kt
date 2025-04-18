@@ -1,12 +1,12 @@
-package logic.use_case
+package domain.use_case
 
-import logic.MealsRepository
+import data.meal.MealsRepository
 import model.Meal
 
-class SuggestItalianMealsForLargeGroupsUseCase (
+class GetItalianMealsForLargeGroupsUseCase (
     private val mealsRepository: MealsRepository
 ) {
-    fun suggestItalianMealsForLargeGroups(): List<Meal> {
+    fun getItalianMealsForLargeGroups(): List<Meal> {
         return mealsRepository.getAllMeals()
             .filter { meal ->
                 checkForLargeGroupsInTag(meal) && (checkItalianMealsInTag(meal) || checkItalianMealsInDescription(meal))
@@ -14,14 +14,19 @@ class SuggestItalianMealsForLargeGroupsUseCase (
     }
 
     private fun checkForLargeGroupsInTag(meal: Meal): Boolean {
-        return meal.tags.toString().contains("for-large-groups")
+        return meal.tags.toString().contains(LARGE_GROUPS)
     }
 
     private fun checkItalianMealsInTag(meal: Meal): Boolean {
-        return meal.tags.toString().contains("itali")
+        return meal.tags.toString().contains(ITALI)
     }
 
     private fun checkItalianMealsInDescription(meal: Meal): Boolean {
-        return meal.description?.contains("itali") ?: false
+        return meal.description?.contains(ITALI) ?: false
+    }
+
+    companion object {
+        private const val LARGE_GROUPS = "for-large-groups"
+        private const val ITALI = "itali"
     }
 }

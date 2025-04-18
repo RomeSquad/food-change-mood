@@ -1,11 +1,10 @@
-package data
+package data.meal
 
 import data.utils.CsvFileReader
 import data.utils.CsvParser
 import data.utils.MealColumnIndex
 import data.utils.NutritionColumnIndex
 import model.Meal
-import logic.MealsRepository
 import model.Nutrition
 import java.text.SimpleDateFormat
 

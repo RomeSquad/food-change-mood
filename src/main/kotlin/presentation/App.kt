@@ -1,13 +1,13 @@
 package presentation
 
-import data.CsvMealsRepository
+import data.meal.CsvMealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
-import logic.MealsRepository
-import logic.use_case.*
-import logic.utils.SearchAlgorithmFactory
+import data.meal.MealsRepository
+import domain.use_case.*
+import domain.utils.SearchAlgorithmFactory
+import model.Meal
 import java.io.File
-import logic.use_case.HealthyMealsFilter
 
 class App(
 
@@ -97,17 +97,25 @@ class App(
     }
 
     private fun showIraqiMeals() = handleAction {
-        // Implement the logic for Iraqi Meals
-        val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
-        identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
+        val getIraqiMealsUseCase = GetIraqiMealsUseCase(mealsRepository)
+        getIraqiMealsUseCase.getIraqiMeals().forEach {
             println(it)
         }
     }
 
     private fun showEasyFoodSuggestionGame() = handleAction {
-        val getTenRandomEasyMealsUseCase = GetTenRandomEasyMealsUseCase(mealsRepository)
-        println(MenuItemUi.EASY_FOOD_SUGGESTION_GAME)
-        println(getTenRandomEasyMealsUseCase.getTenRandomEasyMeals())
+
+        val getTenRandomEasyMealsUseCase = GetRandomMealsUseCase(mealsRepository)
+        println("\n${MenuItemUi.EASY_FOOD_SUGGESTION_GAME}, TEN RANDOM MEALS : ")
+        getTenRandomEasyMealsUseCase.getTenRandomEasyMeals().forEach { println("\nMeal Name is : ${it.name}\n") }
+
+        print("\nEnter number of meals you want : ")
+        val count = readln().trim().toIntOrNull()
+
+
+        if (count != null)
+            getTenRandomEasyMealsUseCase.getNRandomEasyMeals(count).forEach { println("\nMeal Name is : ${it.name}\n") }
+
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
@@ -145,7 +153,21 @@ class App(
     }
 
     private fun showEggFreeSweets() = handleAction {
-        // Implement the logic for Egg-Free Sweets
+        println("I will Show you random Sweet with no eggs ")
+        val getSweetsWithNoEggsUseCase = GetSweetsWithNoEggsUseCase(mealsRepository)
+        try {
+            var result: Meal
+            do {
+                result = getSweetsWithNoEggsUseCase.getRandomSweetWithNoEggs()
+                println("meal name : ${result.name}")
+                println("description : ${result.description}")
+                print("Do you like that ? (y , n ) : ")
+                val likeMeal = readln().trim()
+            } while (likeMeal == "n")
+            println(result)
+        } catch (e: Exception) {
+            println(e.message)
+        }
     }
 
     private fun showKetoDietMeals() = handleAction {
@@ -199,11 +221,35 @@ class App(
     }
 
     private fun showMealsByCaloriesAndProtein() = handleAction {
-        // Implement the logic for Meals by Calories and Protein
+        println("--- Find Meals by Calories & Protein ---")
+        print("Enter desired calories (e.g., 500): ")
+        val caloriesInput = readln().toDoubleOrNull()
+        print("Enter desired protein in grams (e.g., 30): ")
+        val proteinInput = readln().toDoubleOrNull()
+
+        if (caloriesInput != null && proteinInput != null) {
+            val getMealsByCaloriesAndProteinUseCase = GetMealsContainsCaloriesProteinUseCase(mealsRepository)
+            val meals =
+                getMealsByCaloriesAndProteinUseCase.getMealsContainCaloriesAndProtein(caloriesInput, proteinInput)
+            println("Meals with more than $caloriesInput calories and $proteinInput protein:")
+            meals.forEach { meal ->
+                val calories = meal.nutrition.calories.toString()
+                val protein = meal.nutrition.protein.toString()
+                println("- ${meal.name} (Calories: $calories, Protein: ${protein}g)")
+            }
+        } else {
+            println("Invalid input. Please enter valid numbers.")
+        }
     }
 
     private fun showMealByCountry() = handleAction {
-        // Implement the logic for Meal By Country
+        print("Enter Country and discover their meals : ")
+        val countryName: String = readlnOrNull().toString()
+        val exploreMealsByCountryUseCase = ExploreMealsByCountryUseCase(mealsRepository)
+
+        exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName).forEach {
+            println(it)
+        }
     }
 
     private fun showIngredientGame() = handleAction {
@@ -211,44 +257,63 @@ class App(
     }
 
     private fun showPotatoMeals() = handleAction {
-        // Implement the logic for Potato Meals
+        val potatoMealsUseCase = GetLimitRandomMealsIncludePotatoesUseCase(mealsRepository)
+        println("=== Potato Meals ===")
+        val potatoMeals = potatoMealsUseCase.getLimitRandomMealsIncludePotatoes()
+        if (potatoMeals.isEmpty()) {
+            println("No potato meals found.")
+        } else {
+            potatoMeals.forEachIndexed { index, meal ->
+                println("${index + 1}. ${meal.name} - ${meal.description}")
+            }
+        }
+        println("-------------------------------------------------------")
     }
 
     private fun showForThinMeal(mealsRepository: MealsRepository) = handleAction {
-        val calories = 700.0
-        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository).getCaloriesMoreThan(calories)
-        suggestForThinMealsUseCase.onSuccess { mealsVal ->
-            var meals = mealsVal
-            while (meals.isNotEmpty()) {
-                val randomIndex = (Math.random() * meals.size).toInt()
-                val randomMeal = meals[randomIndex]
-                println("Here is a meal for you:")
-                println(randomMeal.name)
-                println(randomMeal.description)
-                println("Did you like the meal? (y/n)")
-                val answer = readln()
-                if (answer.lowercase() == "y") {
-                    println("Here is the meal you selected:\n$randomMeal")
-                    return
-                } else {
-                    println("Lets try another meal")
-                    meals = meals.filter { it != randomMeal }
+        println("=== Meal with high calories for Thin People ===")
+        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository)
+
+        while (true) {
+            println("Here is a meal for you:")
+            val meal = suggestForThinMealsUseCase.getNextMeal()
+
+            println("\nMeal        : ${meal.name} ")
+            println("Description : ${meal.description}\n")
+            println("Did you like this meal? (y/n)")
+            when (readln().trim().lowercase()) {
+                "y" -> {
+                    println("Great! Enjoy your meal.")
+                    println(meal)
+                    break
+                }
+
+                "n" -> {
+                    println("Let's try another one.")
+                }
+
+                else -> {
+                    println("Invalid input. Please enter 'y' or 'n'.")
                 }
             }
-            println("Sorry, we don't have any more meals for you.")
-        }.onFailure { error ->
-            println("Sorry. ${error.message}")
         }
     }
 
     private fun showSeafoodMeals() = handleAction {
-        // Implement the logic for Seafood Meals
+        val getRankedSeafoodByProteinUseCase = GetRankedSeafoodByProteinUseCase(
+            mealsRepository
+        )
+        println("--- Seafood Meals Sorted by Protein (Highest First) ---")
+        val rankedSeafoodMeals = getRankedSeafoodByProteinUseCase.getSeafoodMealsSortedByProtein()
+        rankedSeafoodMeals.forEach { meal ->
+            println(meal)
+        }
+        println("-------------------------------------------------------")
     }
 
     private fun showItalianMealForGroups() = handleAction {
-        // Implement the logic for Italian Meal for Groups
-        val suggestItalianMealsForLargeGroupsUseCase = SuggestItalianMealsForLargeGroupsUseCase(mealsRepository)
-        suggestItalianMealsForLargeGroupsUseCase.suggestItalianMealsForLargeGroups().forEach {
+        val getItalianMealsForLargeGroupsUseCase = GetItalianMealsForLargeGroupsUseCase(mealsRepository)
+        getItalianMealsForLargeGroupsUseCase.getItalianMealsForLargeGroups().forEach {
             println(it)
         }
     }

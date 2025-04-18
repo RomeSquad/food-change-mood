@@ -1,12 +1,12 @@
-package logic.use_case
+package domain.use_case
 
-import logic.MealsRepository
+import data.meal.MealsRepository
 import model.Meal
 
-class IdentifyIraqiMealsUseCase (
+class GetIraqiMealsUseCase (
     private val mealsRepository: MealsRepository
 ) {
-    fun identifyIraqiMeals(): List<Meal> {
+    fun getIraqiMeals(): List<Meal> {
         return mealsRepository.getAllMeals()
             .filter { meal ->
                 checkIraqiTag(meal) || checkIraqDescription(meal)
@@ -14,10 +14,15 @@ class IdentifyIraqiMealsUseCase (
     }
 
     private fun checkIraqiTag(meal: Meal): Boolean {
-        return meal.tags.toString().contains("iraqi", true)
+        return meal.tags.toString().contains(IRAQI, true)
     }
 
     private fun checkIraqDescription(meal: Meal): Boolean {
-        return meal.description?.contains("Iraq", true) ?: false
+        return meal.description?.contains(IRAQ, true) ?: false
+    }
+
+    companion object {
+        private const val IRAQI = "iraqi"
+        private const val IRAQ = "Iraq"
     }
 }
