@@ -1,4 +1,4 @@
-package domain.utils
+package domain.search
 
 import model.Meal
 
