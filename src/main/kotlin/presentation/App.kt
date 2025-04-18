@@ -7,8 +7,10 @@ import logic.MealsRepository
 import logic.use_case.*
 import logic.utils.SearchAlgorithmFactory
 import java.io.File
+import logic.use_case.HealthyMealsFilter
 
 class App(
+
     private val mealsRepository: CsvMealsRepository,
 ) {
     fun start() {
@@ -42,7 +44,7 @@ class App(
 
     private fun executeAction(selectedAction: MenuItemUi, mealsRepository: MealsRepository) {
         when (selectedAction) {
-            MenuItemUi.HEALTHY_FAST_FOOD -> showHealthyFastFood()
+            MenuItemUi.HEALTHY_FAST_FOOD -> showHealthyFastFood(mealsRepository)
             MenuItemUi.MEAL_BY_NAME -> showMealByName()
             MenuItemUi.IRAQI_MEALS -> showIraqiMeals()
             MenuItemUi.EASY_FOOD_SUGGESTION_GAME -> showEasyFoodSuggestionGame()
@@ -61,10 +63,19 @@ class App(
         }
     }
 
-    private fun showHealthyFastFood() = handleAction {
-        // Implement the logic for Healthy Fast Food
-    }
+    private fun showHealthyFastFood(mealsRepository: MealsRepository) = handleAction {
+        val allMeals = mealsRepository.getAllMeals()
+        val healthyMeals = HealthyMealsFilter().getHealthyFastMeals(allMeals)
 
+        println("=== Healthy Fast Meals take  15 minutes ===")
+        if (healthyMeals.isEmpty()) {
+            println("No healthy fast meals found.")
+        } else {
+            healthyMeals.forEachIndexed { index, meal ->
+                println("${index + 1}. ${meal.name} - ${meal.minutes} min")
+            }
+        }
+    }
 
     private fun showMealByName() = handleAction {
         val file = File("food.csv")
