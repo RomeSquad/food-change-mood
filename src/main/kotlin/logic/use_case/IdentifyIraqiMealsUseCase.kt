@@ -14,10 +14,15 @@ class IdentifyIraqiMealsUseCase (
     }
 
     private fun checkIraqiTag(meal: Meal): Boolean {
-        return meal.tags.toString().contains("iraqi", true)
+        return meal.tags.toString().contains(IRAQI, true)
     }
 
     private fun checkIraqDescription(meal: Meal): Boolean {
-        return meal.description?.contains("Iraq", true) ?: false
+        return meal.description?.contains(IRAQ, true) ?: false
+    }
+
+    companion object {
+        const val IRAQI = "iraqi"
+        const val IRAQ = "Iraq"
     }
 }
