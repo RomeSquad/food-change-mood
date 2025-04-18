@@ -97,9 +97,8 @@ class App(
     }
 
     private fun showIraqiMeals() = handleAction {
-        // Implement the logic for Iraqi Meals
-        val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
-        identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
+        val getIraqiMealsUseCase = GetIraqiMealsUseCase(mealsRepository)
+        getIraqiMealsUseCase.getIraqiMeals().forEach {
             println(it)
         }
     }
@@ -312,9 +311,8 @@ class App(
     }
 
     private fun showItalianMealForGroups() = handleAction {
-        // Implement the logic for Italian Meal for Groups
-        val suggestItalianMealsForLargeGroupsUseCase = SuggestItalianMealsForLargeGroupsUseCase(mealsRepository)
-        suggestItalianMealsForLargeGroupsUseCase.suggestItalianMealsForLargeGroups().forEach {
+        val getItalianMealsForLargeGroupsUseCase = GetItalianMealsForLargeGroupsUseCase(mealsRepository)
+        getItalianMealsForLargeGroupsUseCase.getItalianMealsForLargeGroups().forEach {
             println(it)
         }
     }
