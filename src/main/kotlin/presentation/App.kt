@@ -7,6 +7,7 @@ import data.utils.CsvParserImpl
 import domain.use_case.*
 import domain.utils.SearchAlgorithmFactory
 import logic.use_case.GetKetoDietMealsUseCase
+import logic.use_case.IngredientGameUseCase
 import model.Meal
 import java.io.File
 
@@ -180,7 +181,7 @@ class App(
         while (true) {
             try {
 
-                println( message + ketoMealSuggestion.getNextKetoMeal())
+                println(message + ketoMealSuggestion.getNextKetoMeal())
             } catch (e: Exception) {
                 println(e.message)
             }
@@ -251,21 +252,40 @@ class App(
         try {
             if (exploreMeals.isEmpty()) {
                 print("No meals found for '$countryName'.")
-            }else {
+            } else {
                 println("Please Enter Your Country:$countryName")
                 exploreMeals.forEachIndexed { index, meal ->
                     println("${index + 1} ${meal.name}")
                 }
             }
-        }catch (
+        } catch (
             e: Exception
-        ){
+        ) {
             println("Error: ${e.message}")
         }
     }
 
     private fun showIngredientGame() = handleAction {
-        // Implement the logic for Ingredient Game
+
+
+        val ingredientGameUseCase = IngredientGameUseCase(mealsRepository)
+
+        while (ingredientGameUseCase.correctCount != 15) {
+            val question = ingredientGameUseCase.getNextQuestion()
+            println(question.toString())
+            print("Enter Answer : ")
+            val answer = readln()
+            if (ingredientGameUseCase.submitAnswer(answer, question!!.correctAnswer)) {
+                ingredientGameUseCase.correctCount++
+                println("Current Score: ${ingredientGameUseCase.getScore()} points")
+            } else {
+                println("${ingredientGameUseCase.getScore()} :( try again")
+                println("Current Score: ${ingredientGameUseCase.getScore()} points")
+                break
+            }
+
+
+        }
     }
 
     private fun showPotatoMeals() = handleAction {
