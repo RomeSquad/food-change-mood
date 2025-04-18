@@ -3,10 +3,10 @@ package domain.use_case
 import data.meal.MealsRepository
 import model.Meal
 
-class IdentifyIraqiMealsUseCase (
+class GetIraqiMealsUseCase (
     private val mealsRepository: MealsRepository
 ) {
-    fun identifyIraqiMeals(): List<Meal> {
+    fun getIraqiMeals(): List<Meal> {
         return mealsRepository.getAllMeals()
             .filter { meal ->
                 checkIraqiTag(meal) || checkIraqDescription(meal)
@@ -22,7 +22,7 @@ class IdentifyIraqiMealsUseCase (
     }
 
     companion object {
-        const val IRAQI = "iraqi"
-        const val IRAQ = "Iraq"
+        private const val IRAQI = "iraqi"
+        private const val IRAQ = "Iraq"
     }
 }
