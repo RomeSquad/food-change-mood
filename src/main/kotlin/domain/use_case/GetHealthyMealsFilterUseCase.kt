@@ -1,19 +1,22 @@
 package domain.use_case
 
+import data.meal.MealsRepository
 import model.Meal
 
-class HealthyMealsFilterUseCase {
-    fun getHealthyFastMeals(meals: List<Meal>): List<Meal> {
-        val totalFats = meals.map { it.nutrition.totalFat }
-        val saturatedFats = meals.map { it.nutrition.saturatedFat }
-        val carbohydrates = meals.map { it.nutrition.carbohydrates }
+class GetHealthyMealsFilterUseCase (
+    private val mealsRepository: MealsRepository
+) {
+    fun getHealthyFastMeals(): List<Meal> {
+        val totalFats = mealsRepository.getAllMeals().map { it.nutrition.totalFat }
+        val saturatedFats = mealsRepository.getAllMeals().map { it.nutrition.saturatedFat }
+        val carbohydrates = mealsRepository.getAllMeals().map { it.nutrition.carbohydrates }
 
         val fatThreshold = quartile(totalFats)
         val saturatedThreshold = quartile(saturatedFats)
         val carbsThreshold = quartile(carbohydrates)
 
 
-        return meals.filter {
+        return mealsRepository.getAllMeals().filter {
             it.minutes <= 15 &&
                     it.nutrition.totalFat <= fatThreshold &&
                     it.nutrition.saturatedFat <= saturatedThreshold &&

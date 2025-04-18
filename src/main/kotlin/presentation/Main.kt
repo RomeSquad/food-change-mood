@@ -1,16 +1,14 @@
-import data.meal.CsvMealsRepository
-import data.utils.CsvFileReader
-import data.utils.CsvParserImpl
-import presentation.App
-import java.io.File
+package presentation
+
+import di.appModule
+import di.useCaseModule
+import org.koin.core.context.startKoin
+import org.koin.java.KoinJavaComponent.getKoin
 
 fun main() {
-    val file = File("food.csv")
-    val fileReader = CsvFileReader(file)
-
-    val csvParser = CsvParserImpl()
-    val mealsRepository = CsvMealsRepository(fileReader, csvParser)
-
-    val startApp = App(mealsRepository)
-    startApp.start()
+    startKoin {
+        modules(appModule, useCaseModule)
+    }
+    val app: App = getKoin().get()
+    app.start()
 }
