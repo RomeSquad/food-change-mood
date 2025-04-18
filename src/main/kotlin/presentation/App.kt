@@ -210,7 +210,15 @@ class App(
     }
 
     private fun showSeafoodMeals() = handleAction {
-        // Implement the logic for Seafood Meals
+        val getRankedSeafoodByProteinUseCase = GetRankedSeafoodByProteinUseCase(
+            mealsRepository
+        )
+        println("--- Seafood Meals Sorted by Protein (Highest First) ---")
+        val rankedSeafoodMeals = getRankedSeafoodByProteinUseCase.getSeafoodMealsSortedByProtein()
+        rankedSeafoodMeals.forEach { meal ->
+            println(meal)
+        }
+        println("-------------------------------------------------------")
     }
 
     private fun showItalianMealForGroups() = handleAction {
