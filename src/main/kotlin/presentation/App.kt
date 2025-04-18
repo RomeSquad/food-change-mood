@@ -243,12 +243,26 @@ class App(
     }
 
     private fun showMealByCountry() = handleAction {
-        print("Enter Country and discover their meals : ")
-        val countryName: String = readlnOrNull().toString()
-        val exploreMealsByCountryUseCase = ExploreMealsByCountryUseCase(mealsRepository)
 
-        exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName).forEach {
-            println(it)
+        print("Enter Country and discover their meals : ")
+
+        var countryName: String = readlnOrNull().toString().trim()
+        val exploreMealsByCountryUseCase = GetMealsByCountryUseCase(mealsRepository)
+        val exploreMeals = exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName)
+
+        try {
+            if (exploreMeals.isEmpty()) {
+                print("No meals found for '$countryName'.")
+            }else {
+                println("Please Enter Your Country:$countryName")
+                exploreMeals.forEachIndexed { index, meal ->
+                    println("${index + 1} ${meal.name}")
+                }
+            }
+        }catch (
+            e: Exception
+        ){
+            println("Error: ${e.message}")
         }
     }
 
