@@ -11,7 +11,7 @@ import logic.use_case.GetKetoDietMealsUseCase
 
 class App (
     private val healthyMealsFilterUseCase: HealthyMealsFilterUseCase,
-//    private val searchByNameUseCase: SearchByNameUseCase,
+    private val getByNameUseCase: GetByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
     private val getRandomMealsUseCase: GetRandomMealsUseCase,
     private val guessGameUseCase: GuessGameUseCase,
@@ -95,13 +95,6 @@ class App (
     }
 
     private fun showMealByName() = handleAction {
-        val linearSearchAlgorithm = LinearSearchAlgorithm()
-        val kmpSearchAlgorithm =  KMPSearchAlgorithm()
-        val searchAlgorithmFactory = SearchAlgorithmFactory(
-            linearSearchAlgorithm = linearSearchAlgorithm,
-            kmpSearchAlgorithm = kmpSearchAlgorithm
-        )
-        val getByNameUseCase = GetByNameUseCase(mealsRepository, searchAlgorithmFactory)
         println("Enter the name of the meal:")
         val query = readln()
         getByNameUseCase.getByName(query).onSuccess { meals ->
