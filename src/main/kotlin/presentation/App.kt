@@ -147,18 +147,18 @@ class App(
     private fun showEggFreeSweets() = handleAction {
         println("I will Show you random Sweet with no eggs ")
         val getSweetsWithNoEggsUseCase = GetSweetsWithNoEggsUseCase(mealsRepository)
-        try{
-            var result : Meal
+        try {
+            var result: Meal
             do {
                 result = getSweetsWithNoEggsUseCase.getRandomSweetWithNoEggs()
                 println("meal name : ${result.name}")
                 println("description : ${result.description}")
                 print("Do you like that ? (y , n ) : ")
                 val likeMeal = readln().trim()
-            }while (likeMeal == "n")
+            } while (likeMeal == "n")
             println(result)
-        }catch (e:Exception){
-            println( e.message )
+        } catch (e: Exception) {
+            println(e.message)
         }
     }
 
@@ -256,28 +256,31 @@ class App(
     }
 
     private fun showForThinMeal(mealsRepository: MealsRepository) = handleAction {
-        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository).getCaloriesMoreThan()
-        suggestForThinMealsUseCase.onSuccess { mealsVal ->
-            var meals = mealsVal
-            while (meals.isNotEmpty()) {
-                val randomIndex = (Math.random() * meals.size).toInt()
-                val randomMeal = meals[randomIndex]
-                println("Here is a meal for you:")
-                println(randomMeal.name)
-                println(randomMeal.description)
-                println("Did you like the meal? (y/n)")
-                val answer = readln()
-                if (answer.lowercase() == "y") {
-                    println("Here is the meal you selected:\n$randomMeal")
-                    return
-                } else {
-                    println("Lets try another meal")
-                    meals = meals.filter { it != randomMeal }
+        println("=== Meal with high calories for Thin People ===")
+        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository)
+
+        while (true) {
+            println("Here is a meal for you:")
+            val meal = suggestForThinMealsUseCase.getNextMeal()
+
+            println("\nMeal        : ${meal.name} ")
+            println("Description : ${meal.description}\n")
+            println("Did you like this meal? (y/n)")
+            when (readln().trim().lowercase()) {
+                "y" -> {
+                    println("Great! Enjoy your meal.")
+                    println(meal)
+                    break
+                }
+
+                "n" -> {
+                    println("Let's try another one.")
+                }
+
+                else -> {
+                    println("Invalid input. Please enter 'y' or 'n'.")
                 }
             }
-            println("Sorry, we don't have any more meals for you.")
-        }.onFailure { error ->
-            println("Sorry. ${error.message}")
         }
     }
 
