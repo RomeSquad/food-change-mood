@@ -1,7 +1,7 @@
 package domain.use_case
 
 import data.meal.MealsRepository
-import domain.utils.ConstNumberItem.TEN_ITEM
+import data.utils.ConstNumberMealsItem.TEN_MEALS_ITEM
 import domain.utils.getRandomEasyMeals
 import model.Meal
 
@@ -9,7 +9,7 @@ class GetRandomMealsUseCase(
     private val mealsRepository: MealsRepository
 ) {
     fun getTenRandomEasyMeals(): List<Meal> {
-        return mealsRepository.getAllMeals().getRandomEasyMeals(TEN_ITEM)
+        return mealsRepository.getAllMeals().getRandomEasyMeals(TEN_MEALS_ITEM)
 
     }
 
