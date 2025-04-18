@@ -1,7 +1,7 @@
 package logic.use_case
 import model.Meal
 
-class KetoDietHelper(private val meals: List<Meal>) {
+class GetKetoDietMealsUseCase(private val meals: List<Meal>) {
     private val ketoMeals: List<Meal>
     private val usedKetoMeal: MutableList<Int>
 
