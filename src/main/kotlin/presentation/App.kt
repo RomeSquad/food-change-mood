@@ -212,7 +212,25 @@ class App(
     }
 
     private fun showMealsByCaloriesAndProtein() = handleAction {
-        // Implement the logic for Meals by Calories and Protein
+        println("--- Find Meals by Calories & Protein ---")
+        print("Enter desired calories (e.g., 500): ")
+        val caloriesInput = readln().toDoubleOrNull()
+        print("Enter desired protein in grams (e.g., 30): ")
+        val proteinInput = readln().toDoubleOrNull()
+
+        if (caloriesInput != null && proteinInput != null) {
+            val getMealsByCaloriesAndProteinUseCase = GetMealsContainsCaloriesProteinUseCase(mealsRepository)
+            val meals =
+                getMealsByCaloriesAndProteinUseCase.getMealsContainCaloriesAndProtein(caloriesInput, proteinInput)
+            println("Meals with more than $caloriesInput calories and $proteinInput protein:")
+            meals.forEach { meal ->
+                val calories = meal.nutrition.calories.toString()
+                val protein = meal.nutrition.protein.toString()
+                println("- ${meal.name} (Calories: $calories, Protein: ${protein}g)")
+            }
+        } else {
+            println("Invalid input. Please enter valid numbers.")
+        }
     }
 
     private fun showMealByCountry() = handleAction {
