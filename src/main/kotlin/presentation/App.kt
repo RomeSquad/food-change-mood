@@ -256,8 +256,7 @@ class App(
     }
 
     private fun showForThinMeal(mealsRepository: MealsRepository) = handleAction {
-        val calories = 700.0
-        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository).getCaloriesMoreThan(calories)
+        val suggestForThinMealsUseCase = GetCaloriesMoreThanUseCase(mealsRepository).getCaloriesMoreThan()
         suggestForThinMealsUseCase.onSuccess { mealsVal ->
             var meals = mealsVal
             while (meals.isNotEmpty()) {
