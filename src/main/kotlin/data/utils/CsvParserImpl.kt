@@ -64,45 +64,9 @@ class CsvParserImpl: CsvParser {
         return result
     }
 
-
-
+    
     override fun parseStringList(list: String): List<String> {
-        val trimmed = list.trim()
-
-        if (trimmed.isEmpty() || trimmed == "[]") return emptyList()
-
-        if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) {
-            return listOf(trimmed)
-        }
-
-        val content = trimmed.substring(1, trimmed.length - 1)
-        if (content.isEmpty()) return emptyList()
-
-        val result = mutableListOf<String>()
-        val itemBuilder = StringBuilder()
-        var withinField = false
-
-        for (c in content) {
-            when {
-                (c == '\'' || c == '"') -> {
-                    withinField = !withinField
-                    itemBuilder.append(c)
-                }
-                c == ',' && !withinField -> {
-                    result.add(itemBuilder.toString().trim())
-                    itemBuilder.clear()
-                }
-                else -> {
-                    itemBuilder.append(c)
-                }
-            }
-        }
-
-        if (itemBuilder.isNotEmpty()) {
-            result.add(itemBuilder.toString().trim())
-        }
-
-        return result.filter { it.isNotEmpty() }
+        return list.trim().drop(2).dropLast(2).split(',').map { it.trim().drop(1).dropLast(1) }
     }
 
     override fun parseDoubleList(list: String): List<Double> {
