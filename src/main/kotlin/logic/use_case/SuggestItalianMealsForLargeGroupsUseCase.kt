@@ -14,14 +14,19 @@ class SuggestItalianMealsForLargeGroupsUseCase (
     }
 
     private fun checkForLargeGroupsInTag(meal: Meal): Boolean {
-        return meal.tags.toString().contains("for-large-groups")
+        return meal.tags.toString().contains(LARGE_GROUPS)
     }
 
     private fun checkItalianMealsInTag(meal: Meal): Boolean {
-        return meal.tags.toString().contains("itali")
+        return meal.tags.toString().contains(ITALI)
     }
 
     private fun checkItalianMealsInDescription(meal: Meal): Boolean {
-        return meal.description?.contains("itali") ?: false
+        return meal.description?.contains(ITALI) ?: false
+    }
+
+    companion object {
+        const val LARGE_GROUPS = "for-large-groups"
+        const val ITALI = "itali"
     }
 }
