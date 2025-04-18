@@ -234,7 +234,13 @@ class App(
     }
 
     private fun showMealByCountry() = handleAction {
-        // Implement the logic for Meal By Country
+        print("Enter Country and discover their meals : ")
+        val countryName :String  = readlnOrNull().toString()
+        val exploreMealsByCountryUseCase  =ExploreMealsByCountryUseCase(mealsRepository)
+
+        exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName).forEach{
+            println(it)
+        }
     }
 
     private fun showIngredientGame() = handleAction {
