@@ -6,11 +6,11 @@ import logic.use_case.GetKetoDietMealsUseCase
 
 class App (
     private val healthyMealsFilterUseCase: HealthyMealsFilterUseCase,
-    private val searchByNameUseCase: SearchByNameUseCase,
+//    private val searchByNameUseCase: SearchByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
     private val getRandomMealsUseCase: GetRandomMealsUseCase,
     private val guessGameUseCase: GuessGameUseCase,
-    private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getSweetsWithNoEggsUseCase: GetSweetsWithoutEggsUseCase,
     private val getKetoDietMealsUseCase: GetKetoDietMealsUseCase,
     private val getByDateUseCase: GetByDateUseCase,
     private val getMealsContainsCaloriesProteinUseCase: GetMealsContainsCaloriesProteinUseCase,
@@ -27,7 +27,7 @@ class App (
 
             if (selectedAction == MenuItemUi.EXIT) break
 
-            executeAction(selectedAction, mealsRepository)
+            executeAction(selectedAction)
             print("Do you want to perform another action? (y/n): ")
             val continueChoice = readln().lowercase()
             if (continueChoice != "y") {
