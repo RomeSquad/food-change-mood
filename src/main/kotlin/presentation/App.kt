@@ -154,21 +154,44 @@ class App(
     }
 
     private fun showEggFreeSweets() = handleAction {
-        println("I will Show you random Sweet with no eggs ")
-        val getSweetsWithNoEggsUseCase = GetSweetsWithNoEggsUseCase(mealsRepository)
-        try {
-            var result: Meal
-            do {
-                result = getSweetsWithNoEggsUseCase.getRandomSweetWithNoEggs()
-                println("meal name : ${result.name}")
-                println("description : ${result.description}")
-                print("Do you like that ? (y , n ) : ")
-                val likeMeal = readln().trim()
-            } while (likeMeal == "n")
-            println(result)
-        } catch (e: Exception) {
-            println(e.message)
-        }
+
+        println("I will Show you random Sweet without eggs please Wait ..... ")
+        val sweetsWithoutEggs = GetSweetsWithoutEggsUseCase(mealsRepository)
+
+        val endLoopText = "exit"
+        var isUserLikeSweet = "n"
+
+        do {
+            val randomSweet = sweetsWithoutEggs.getRandomSweet()
+
+            randomSweet.fold(
+                onSuccess = { sweet ->
+                    println("__________________________________________________________\n" +
+                            "You get this random sweet : \n" +
+                            "Meal name   :  ${sweet.name} \n" +
+                            "description :  ${sweet.description} \n" )
+
+                    do{
+                        print(
+                                    "Do you like this sweet ? ( y , n )  \n"+
+                                    "Your Choose : "
+                        )
+                        isUserLikeSweet = readln().trim()
+                    }while (isUserLikeSweet != "y" && isUserLikeSweet != "n")
+
+
+                    if (isUserLikeSweet == "y") {
+                        println("your Final sweet is : /n $sweet")
+                    }
+                },
+                onFailure = { exception ->
+                    println(exception.message)
+                    isUserLikeSweet = endLoopText
+                }
+            )
+
+        } while (isUserLikeSweet == "n")
+
     }
 
     private fun showKetoDietMeals() = handleAction {
