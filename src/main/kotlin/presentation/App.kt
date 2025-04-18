@@ -1,9 +1,9 @@
 package presentation
 
 import data.meal.CsvMealsRepository
-import data.meal.MealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParserImpl
+import data.meal.MealsRepository
 import domain.use_case.*
 import domain.utils.SearchAlgorithmFactory
 import model.Meal
@@ -59,7 +59,7 @@ class App(
             MenuItemUi.FOR_THIN_MEAL -> showForThinMeal(mealsRepository)
             MenuItemUi.SEAFOOD_MEALS -> showSeafoodMeals()
             MenuItemUi.ITALIAN_MEAL_FOR_GROUPS -> showItalianMealForGroups()
-            MenuItemUi.EXIT -> Unit
+            MenuItemUi.EXIT -> Unit // Exit will break the loop
         }
     }
 
@@ -97,8 +97,8 @@ class App(
     }
 
     private fun showIraqiMeals() = handleAction {
-        val identifyIraqiMealsUseCase = IdentifyIraqiMealsUseCase(mealsRepository)
-        identifyIraqiMealsUseCase.identifyIraqiMeals().forEach {
+        val getIraqiMealsUseCase = GetIraqiMealsUseCase(mealsRepository)
+        getIraqiMealsUseCase.getIraqiMeals().forEach {
             println(it)
         }
     }
@@ -173,13 +173,13 @@ class App(
     private fun showKetoDietMeals() = handleAction {
 
         println("Welcome to your keto Diet Helper ")
-        var ketoMealSuggestion = KetoDietHelperUseCase(mealsRepository)
+        val ketoMealSuggestion = GetKetoDietMealsUseCase(mealsRepository)
         val message = "we suggest to you : \n"
 
         while (true) {
             try {
 
-                println(message + ketoMealSuggestion.getNextKetoMeal())
+                println( message + ketoMealSuggestion.getNextKetoMeal())
             } catch (e: Exception) {
                 println(e.message)
             }
@@ -189,8 +189,6 @@ class App(
                 "n" -> break
             }
         }
-
-
     }
 
     private fun showMealByDate(mealsRepository: MealsRepository) = handleAction {
@@ -242,12 +240,26 @@ class App(
     }
 
     private fun showMealByCountry() = handleAction {
-        print("Enter Country and discover their meals : ")
-        val countryName: String = readlnOrNull().toString()
-        val exploreMealsByCountryUseCase = ExploreMealsByCountryUseCase(mealsRepository)
 
-        exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName).forEach {
-            println(it)
+        print("Enter Country and discover their meals : ")
+
+        var countryName: String = readlnOrNull().toString().trim()
+        val exploreMealsByCountryUseCase = GetMealsByCountryUseCase(mealsRepository)
+        val exploreMeals = exploreMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName)
+
+        try {
+            if (exploreMeals.isEmpty()) {
+                print("No meals found for '$countryName'.")
+            }else {
+                println("Please Enter Your Country:$countryName")
+                exploreMeals.forEachIndexed { index, meal ->
+                    println("${index + 1} ${meal.name}")
+                }
+            }
+        }catch (
+            e: Exception
+        ){
+            println("Error: ${e.message}")
         }
     }
 
@@ -311,8 +323,8 @@ class App(
     }
 
     private fun showItalianMealForGroups() = handleAction {
-        val suggestItalianMealsForLargeGroupsUseCase = SuggestItalianMealsForLargeGroupsUseCase(mealsRepository)
-        suggestItalianMealsForLargeGroupsUseCase.suggestItalianMealsForLargeGroups().forEach {
+        val getItalianMealsForLargeGroupsUseCase = GetItalianMealsForLargeGroupsUseCase(mealsRepository)
+        getItalianMealsForLargeGroupsUseCase.getItalianMealsForLargeGroups().forEach {
             println(it)
         }
     }

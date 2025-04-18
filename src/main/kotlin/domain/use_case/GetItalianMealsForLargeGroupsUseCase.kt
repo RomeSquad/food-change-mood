@@ -3,10 +3,10 @@ package domain.use_case
 import data.meal.MealsRepository
 import model.Meal
 
-class SuggestItalianMealsForLargeGroupsUseCase (
+class GetItalianMealsForLargeGroupsUseCase (
     private val mealsRepository: MealsRepository
 ) {
-    fun suggestItalianMealsForLargeGroups(): List<Meal> {
+    fun getItalianMealsForLargeGroups(): List<Meal> {
         return mealsRepository.getAllMeals()
             .filter { meal ->
                 checkForLargeGroupsInTag(meal) && (checkItalianMealsInTag(meal) || checkItalianMealsInDescription(meal))
@@ -26,7 +26,7 @@ class SuggestItalianMealsForLargeGroupsUseCase (
     }
 
     companion object {
-        const val LARGE_GROUPS = "for-large-groups"
-        const val ITALI = "itali"
+        private const val LARGE_GROUPS = "for-large-groups"
+        private const val ITALI = "itali"
     }
 }
