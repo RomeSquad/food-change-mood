@@ -2,15 +2,13 @@ package domain.use_case
 
 import data.meal.MealsRepository
 import domain.search.SearchAlgorithm
-import domain.search.SearchAlgorithmFactory
 import model.Meal
 
 class GetByNameUseCase(
     private val repository: MealsRepository,
-    private val searchAlgorithmFactory: SearchAlgorithmFactory
+    private val searchAlgorithm: SearchAlgorithm
 ) {
-     fun getByName(query: String,searchType: SearchAlgorithmFactory.SearchType = SearchAlgorithmFactory.SearchType.KMPSearchAlgorithm): Result<List<Meal>>  {
-         val searchAlgorithm = searchAlgorithmFactory.createSearchAlgorithm(searchType)
+     fun getByName(query: String): Result<List<Meal>>  {
          return searchAlgorithm.search(repository.getAllMeals(),query)
      }
 }
