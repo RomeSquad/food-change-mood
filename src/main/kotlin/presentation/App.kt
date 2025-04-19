@@ -221,7 +221,7 @@ class App (
     }
 
     private fun showMealByDate() = handleAction {
-        print("Enter the date (dd-mm-yyyy): ")
+        print("Enter the date (yyyy-mm-dd): ")
         val date = readln()
         val resultMeals = getByDateUseCase.getByDate(date)
         resultMeals.onSuccess { meals ->

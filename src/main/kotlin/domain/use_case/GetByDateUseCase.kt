@@ -12,7 +12,7 @@ class GetByDateUseCase(
         if (date.isEmpty())
             return Result.failure(Exception("Date cannot be empty"))
 
-        if (!date.trim().matches(Regex("(0?[1-9]|[1-2][0-9]|3[01])-(0?[1-9]|1[0-2])-[1-2]\\d{3}")))
+        if (!date.trim().matches(Regex("\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])")))
             return Result.failure(Exception("Invalid date format: $date. Expected format: ${Meal.DATE_FORMAT}"))
 
         val dateParsed = SimpleDateFormat(Meal.DATE_FORMAT).parse(date)
