@@ -62,8 +62,8 @@ class CsvParserImpl : CsvParser {
 
     override fun parseStringList(list: String): List<String> {
         val listTrim = list.trim()
-            .removePrefix("[")
-            .removeSuffix("]")
+            .removePrefix("\"[")
+            .removeSuffix("]\"")
 
         if (listTrim.isEmpty()) return emptyList()
 
