@@ -6,8 +6,7 @@ import data.utils.CsvFileReader
 import data.utils.CsvParser
 import data.utils.CsvParserImpl
 import domain.search.KMPSearchAlgorithm
-import domain.search.LinearSearchAlgorithm
-import domain.search.SearchAlgorithmFactory
+import domain.search.SearchAlgorithm
 import org.koin.dsl.module
 import presentation.App
 import java.io.File
@@ -36,7 +35,6 @@ val appModule = module {
         get()
         )
     }
-    single { LinearSearchAlgorithm() }
     single { KMPSearchAlgorithm() }
-    single{SearchAlgorithmFactory(get(),get())}
+    single<SearchAlgorithm> {KMPSearchAlgorithm()}
 }
