@@ -12,6 +12,18 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation("io.insert-koin:koin-core:4.0.2")
+
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+
+
+    // Google Truth
+    testImplementation("com.google.truth:truth:1.4.2")
+
+    // parameterized test
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+
+    // mock K
+    testImplementation("io.mockk:mockk:1.14.0")
 }
 
 tasks.test {
