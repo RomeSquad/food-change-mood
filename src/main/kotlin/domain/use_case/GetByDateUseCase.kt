@@ -8,20 +8,20 @@ class GetByDateUseCase(
     private val mealsRepository: MealsRepository,
 ) {
 
-    fun getByDate(date: String): Result<List<Meal>> {
+    fun getByDate(date: String): List<Meal> {
         if (date.isEmpty())
-            return Result.failure(Exception("Date cannot be empty"))
+            throw Exception("Date cannot be empty")
 
         if (!date.trim().matches(Regex("\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])")))
-            return Result.failure(Exception("Invalid date format: $date. Expected format: ${Meal.DATE_FORMAT}"))
+            throw Exception("Invalid date format: $date. Expected format: ${Meal.DATE_FORMAT}")
 
         val dateParsed = SimpleDateFormat(Meal.DATE_FORMAT).parse(date)
         val meals = mealsRepository.getAllMeals()
 
         val filtered = meals.filter { it.submitted == dateParsed }
-        return if (filtered.isEmpty())
-            Result.failure(Exception("No meals found for date: $date"))
+        if (filtered.isEmpty())
+            throw Exception("No meals found for date: $date")
         else
-            Result.success(filtered)
+            return filtered
     }
 }
