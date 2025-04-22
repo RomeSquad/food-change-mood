@@ -20,7 +20,20 @@ class GetHealthyMealsFilterUseCaseTest {
         mealsRepository = mockk()
         getHealthyMealsFilterUseCase = GetHealthyMealsFilterUseCase(mealsRepository)
     }
-
+    @Test
+    fun `should return only healthy meals under 15 minutes `() {
+        val meals = listOf(
+            createMeal(name = "Salad", minutes = 10, totalFat = 4.0, saturatedFat = 2.0, carbohydrates = 10.0),
+            createMeal(name = "Burger", minutes = 20, totalFat = 30.0, saturatedFat = 15.0, carbohydrates = 40.0)
+        )
+        //Given
+        every { mealsRepository.getAllMeals() } returns meals
+        //when
+        val result = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        //then
+        assertThat(result.map { it.name }).contains("Salad")
+        assertThat(result.map { it.name }).doesNotContain("Burger")
+    }
     // Helper Method
     private fun createMeal(
         id: Int = 0,
