@@ -1,11 +1,7 @@
 package presentation
 
-import data.meal.CsvMealsRepository
-import data.meal.MealsRepository
 import domain.use_case.*
 import logic.use_case.GetKetoDietMealsUseCase
-import model.Meal
-import domain.use_case.GetIngredientGameUseCase
 
 
 class App (
@@ -20,7 +16,7 @@ class App (
     private val getByDateUseCase: GetByDateUseCase,
     private val getMealsContainsCaloriesProteinUseCase: GetMealsContainsCaloriesProteinUseCase,
     private val getMealsByCountryUseCase: GetMealsByCountryUseCase,
-    private val getLimitRandomMealsIncludePotatoesUseCase: GetLimitRandomMealsIncludePotatoesUseCase,
+    private val getMealsContainsPotatoUseCase: GetMealsContainsPotatoUseCase,
     private val getMealsContainsHighCaloriesUseCase: GetMealsContainsHighCaloriesUseCase,
     private val getRankedSeafoodByProteinUseCase: GetRankedSeafoodByProteinUseCase,
     private val getItalianMealsForLargeGroupsUseCase: GetItalianMealsForLargeGroupsUseCase
@@ -313,14 +309,10 @@ class App (
 
     private fun showPotatoMeals() = handleAction {
         println("=== Potato Meals ===")
-        val potatoMeals = getLimitRandomMealsIncludePotatoesUseCase.getLimitRandomMealsIncludePotatoes()
-        if (potatoMeals.isEmpty()) {
-            println("No potato meals found.")
-        } else {
-            potatoMeals.forEachIndexed { index, meal ->
-                println("${index + 1}. ${meal.name} - ${meal.description}")
+        val potatoMeals = getMealsContainsPotatoUseCase.getMealsContainsPotato()
+        potatoMeals.forEach {
+            println(it)
             }
-        }
         println("-------------------------------------------------------")
     }
 

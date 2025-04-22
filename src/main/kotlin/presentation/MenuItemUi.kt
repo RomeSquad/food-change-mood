@@ -12,7 +12,7 @@ enum class MenuItemUi(val description: String) {
     CALCULATED_CALORIES_PROTEIN_MEAL("Get Calorie And Protein-Tracked Meals"),
     MEAL_BY_COUNTRY("Explore Meals by Country"),
     INGREDIENT_GAME_MEAL("Guess the Ingredient Game"),
-    POTATO_MEALS("Find Potato-Based Dishes"),
+    POTATO_MEALS("Get names of 10 meals that contains potatoes in ingredients for this meal"),
     FOR_THIN_MEAL("High-Calories Meals for Weight Gain"),
     SEAFOOD_MEALS("Explore Seafood Dishes"),
     ITALIAN_MEAL_FOR_GROUPS("Italian Group Meals"),
