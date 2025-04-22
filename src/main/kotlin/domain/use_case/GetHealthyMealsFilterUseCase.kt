@@ -6,6 +6,7 @@ class GetHealthyMealsFilterUseCase (
     private val mealsRepository: MealsRepository
 ) {
     fun getHealthyFastMeals(): List<Meal> {
+
         val meals= mealsRepository.getAllMeals()
 
         val totalFats = meals.map { it.nutrition.totalFat }
