@@ -224,26 +224,20 @@ class App (
         print("Enter the date (yyyy-mm-dd): ")
         val date = readln()
         val resultMeals = getByDateUseCase.getByDate(date)
-        resultMeals.onSuccess { meals ->
+            resultMeals.forEach {
             println("Meals for date $date: \n")
             println(" ---------------------------------- ")
             println("|      ID       |         Name        ")
             println(" ---------------------------------- ")
-            meals.forEach {
-                println("|      ${it.id}      |     ${it.name}   ")
-            }
-
+            println("|      ${it.id}      |     ${it.name}   ")
+        }
             println("Enter the meal ID to get more details: ")
             val mealId = readln()
             if (mealId != "q") {  // Exit if user enters 'q'
-                val mealResult = GetByIdUseCase().getById(mealId, meals)
+                val mealResult = GetByIdUseCase().getById(mealId, resultMeals)
                 mealResult.onSuccess { println("Meal details:\n$it") }
                     .onFailure { error -> println("Sorry. ${error.message}") }
             }
-
-        }.onFailure { error ->
-            println("Sorry. ${error.message}")
-        }
         println("------------------------------------------------------------")
     }
 
