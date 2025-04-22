@@ -1,6 +1,7 @@
 package domain.use_case
 
 import data.meal.MealsRepository
+import model.Meal
 import model.seafood_meals.SeafoodMeal
 
 class GetSeafoodMealsUseCase(
@@ -8,7 +9,7 @@ class GetSeafoodMealsUseCase(
 ) {
     fun getSeafoodMeals(): List<SeafoodMeal> =
         mealsRepository.getAllMeals()
-            .filter { it.tags.any { tag -> tag.contains(TAG_NAME, ignoreCase = true) } == true }
+            .filter(::onlyContainSeafoodMeal)
             .takeIf { it.isNotEmpty() }
             ?.sortedByDescending { it.nutrition.protein }
             ?.map {
@@ -18,6 +19,9 @@ class GetSeafoodMealsUseCase(
                 )
             }
             ?: throw NoSuchElementException("No seafood meals based on protein found")
+
+    private fun onlyContainSeafoodMeal(meal: Meal): Boolean =
+        meal.tags.any { it.contains(TAG_NAME, ignoreCase = true) }
 
     companion object {
         const val TAG_NAME = "seafood"
