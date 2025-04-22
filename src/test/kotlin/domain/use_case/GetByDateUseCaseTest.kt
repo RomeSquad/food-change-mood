@@ -54,11 +54,22 @@ class GetByDateUseCaseTest {
         "1999-0-02",
         "999-7-02",
         "2029-7-02",
-        "",
     )
     fun `getByDate should throw Exception for invalid date format`(date: String) {
         // Given
         every { mealsRepository.getAllMeals() } returns getMealList()
+
+        // When && Then
+        assertThrows<Exception> {
+            getByDateUseCase.getByDate(date)
+        }
+    }
+
+    @Test
+    fun `getByDate should throw Exception for empty date`() {
+        // Given
+        every { mealsRepository.getAllMeals() } returns getMealList()
+        val date = ""
 
         // When && Then
         assertThrows<Exception> {
