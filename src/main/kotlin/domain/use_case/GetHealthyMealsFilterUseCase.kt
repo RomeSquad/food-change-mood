@@ -6,19 +6,19 @@ class GetHealthyMealsFilterUseCase (
     private val mealsRepository: MealsRepository
 ) {
     fun getHealthyFastMeals(): List<Meal> {
+        val meals = mealsRepository.getAllMeals()
 
-        val meals= mealsRepository.getAllMeals()
+        if (meals.isEmpty()) return emptyList()
 
         val totalFats = meals.map { it.nutrition.totalFat }
         val saturatedFats = meals.map { it.nutrition.saturatedFat }
-        val carbohydrates =meals.map { it.nutrition.carbohydrates }
+        val carbohydrates = meals.map { it.nutrition.carbohydrates }
 
         val fatThreshold = quartile(totalFats)
         val saturatedThreshold = quartile(saturatedFats)
         val carbsThreshold = quartile(carbohydrates)
 
-
-        return mealsRepository.getAllMeals().filter {
+        return meals.filter {
             it.minutes <= 15 &&
                     it.nutrition.totalFat <= fatThreshold &&
                     it.nutrition.saturatedFat <= saturatedThreshold &&
