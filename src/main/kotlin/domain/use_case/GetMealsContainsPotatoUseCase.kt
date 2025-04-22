@@ -1,7 +1,7 @@
 package domain.use_case
 
 import data.meal.MealsRepository
-import domain.utils.getRandomEasyMeals
+import domain.utils.getRandomMeals
 import model.Meal
 
 class GetMealsContainsPotatoUseCase(
@@ -14,7 +14,7 @@ class GetMealsContainsPotatoUseCase(
             )
             .takeIf { it.isNotEmpty() }
             ?.shuffled()
-            ?.getRandomEasyMeals(limit)
+            ?.getRandomMeals(limit)
             ?.map { it.name }
             ?: throw NoSuchElementException("No meals found that contain potato")
 

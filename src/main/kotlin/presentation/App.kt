@@ -113,14 +113,14 @@ class App (
     }
 
     private fun showEasyFoodSuggestionGame() = handleAction {
-        println("\n${MenuItemUi.EASY_FOOD_SUGGESTION_GAME}, TEN RANDOM MEALS : ")
-        getRandomMealsUseCase.getTenRandomEasyMeals().forEach { println("\nMeal Name is : ${it.name}\n") }
+        println("\n${MenuItemUi.EASY_FOOD_SUGGESTION_GAME}, TEN RANDOM MEALS BY DEFAULT : ")
+        getRandomMealsUseCase.getNRandomEasyMeals().forEach { println("\nMeal Name is : ${it.name}\n") }
 
         print("\nEnter number of meals you want : ")
         val count = readln().trim().toIntOrNull()
 
         if (count != null)
-            getRandomMealsUseCase.getNRandomEasyMeals(count).forEach { println("\nMeal Name is : ${it.name}\n") }
+            getRandomMealsUseCase.getNRandomEasyMeals(count).forEach { println("\nMeal Name : ${it.name}\n") }
         println("------------------------------------------------------------")
     }
 
