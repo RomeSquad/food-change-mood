@@ -125,23 +125,24 @@ class App (
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
-        guessGameUseCase.getRandomGuessableMeal()
+        guessGameUseCase.getRandomMealWithPreparationTime()
             .takeIf { it != null }
             ?.let { meal ->
                 val correctTime = meal.minutes
-                println("Guess Game: ${meal.name}")
+                println("---------- Guess Game ----------")
+                println("Name of the meal: ${meal.name}")
                 println("You have 3 attempts to guess the preparation time (in minutes):")
 
                 repeat(3) { attempt ->
                     print("Attempt ${attempt + 1}: ")
-                    val guess = readLine()?.toIntOrNull()
+                    val guess = readlnOrNull()?.toIntOrNull()
 
                     if (guess == null) {
                         println("Please enter a valid number.")
                         return@repeat
                     }
 
-                    when (guessGameUseCase.evaluateGuess(guess, correctTime)) {
+                    when (guessGameUseCase.checkUserGuess(guess, correctTime)) {
                         GuessGameUseCase.GuessResult.CORRECT -> {
                             println("Correct answer! Preparation time is $correctTime  minutes")
                             return

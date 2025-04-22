@@ -5,22 +5,24 @@ import model.Meal
 class GuessGameUseCase(
     private val mealsRepository: MealsRepository
 ) {
-    fun getRandomGuessableMeal(): Meal? {
-        val meals = mealsRepository.getAllMeals()
+    fun getRandomMealWithPreparationTime(): Meal? {
+        return mealsRepository.getAllMeals()
             .filter { it.minutes > 0 }
-
-        return meals.takeIf { it.isNotEmpty() }?.random()
+            .takeIf { it.isNotEmpty() }
+            ?.random()
     }
 
-    fun evaluateGuess(userGuess: Int, correctTime: Int): GuessResult {
+    fun checkUserGuess(guess: Int, correctTime: Int): GuessResult {
         return when {
-            userGuess == correctTime -> GuessResult.CORRECT
-            userGuess < correctTime -> GuessResult.TOO_LOW
+            guess == correctTime -> GuessResult.CORRECT
+            guess < correctTime -> GuessResult.TOO_LOW
             else -> GuessResult.TOO_HIGH
         }
     }
 
     enum class GuessResult {
-        CORRECT, TOO_LOW, TOO_HIGH
+        CORRECT,
+        TOO_LOW,
+        TOO_HIGH
     }
 }
