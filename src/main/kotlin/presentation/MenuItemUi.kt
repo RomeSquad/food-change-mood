@@ -14,7 +14,7 @@ enum class MenuItemUi(val description: String) {
     INGREDIENT_GAME_MEAL("Guess the Ingredient Game"),
     POTATO_MEALS("Find Potato-Based Dishes"),
     FOR_THIN_MEAL("High-Calories Meals for Weight Gain"),
-    SEAFOOD_MEALS("Explore Seafood Dishes"),
+    SEAFOOD_MEALS("Get a list of all Seafood Dishes"),
     ITALIAN_MEAL_FOR_GROUPS("Italian Group Meals"),
     EXIT("Exit");
 }

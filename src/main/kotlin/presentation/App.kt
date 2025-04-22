@@ -1,11 +1,7 @@
 package presentation
 
-import data.meal.CsvMealsRepository
-import data.meal.MealsRepository
 import domain.use_case.*
 import logic.use_case.GetKetoDietMealsUseCase
-import model.Meal
-import domain.use_case.GetIngredientGameUseCase
 
 
 class App (
@@ -22,7 +18,7 @@ class App (
     private val getMealsByCountryUseCase: GetMealsByCountryUseCase,
     private val getLimitRandomMealsIncludePotatoesUseCase: GetLimitRandomMealsIncludePotatoesUseCase,
     private val getMealsContainsHighCaloriesUseCase: GetMealsContainsHighCaloriesUseCase,
-    private val getRankedSeafoodByProteinUseCase: GetRankedSeafoodByProteinUseCase,
+    private val getRankedSeafoodByProteinUseCase: GetSeafoodMealsUseCase,
     private val getItalianMealsForLargeGroupsUseCase: GetItalianMealsForLargeGroupsUseCase
 ) {
     fun start() {
@@ -355,9 +351,9 @@ class App (
 
     private fun showSeafoodMeals() = handleAction {
         println("--- Seafood Meals Sorted by Protein (Highest First) ---")
-        val rankedSeafoodMeals = getRankedSeafoodByProteinUseCase.getSeafoodMealsSortedByProtein()
-        rankedSeafoodMeals.forEach { meal ->
-            println(meal)
+        val rankedSeafoodMeals = getRankedSeafoodByProteinUseCase.getSeafoodMeals()
+        rankedSeafoodMeals.forEachIndexed { index, seafoodMeal ->
+            println("${index + 1}. ${seafoodMeal.name} - Protein: ${seafoodMeal.protein}g")
         }
         println("-------------------------------------------------------")
     }
