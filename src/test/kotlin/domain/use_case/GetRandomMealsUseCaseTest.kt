@@ -67,6 +67,7 @@ class GetRandomMealsUseCaseTest {
         ),
         id = 137739
     )
+
     private val easyMealsFakeData = listOf(
         createFakeMealDataForRandomEasyMeals(mealName = "Chicken Curry", minutes = 2, nSteps = 3, nIngredients = 4),
         createFakeMealDataForRandomEasyMeals(mealName = "Beef Stir Fry", minutes = 3, nSteps = 2, nIngredients = 5),
@@ -163,6 +164,7 @@ class GetRandomMealsUseCaseTest {
         ),
 
         )
+
     private val expectedMealNames = listOf(
         "Chicken Curry", "Beef Stir Fry", "Vegetable Soup", "Pasta Salad",
         "Grilled Salmon", "Chicken Wrap", "Veggie Burger", "Scrambled Eggs",
@@ -182,7 +184,7 @@ class GetRandomMealsUseCaseTest {
         every { mealsRepository.getAllMeals() } returns easyMealsFakeData
 
         // When
-        val result = getRandomMealsUseCase.getTenRandomEasyMeals()
+        val result = getRandomMealsUseCase.getNRandomEasyMeals()
 
         // Then
         assertThat(result.map { it.name }).containsAnyIn(expectedMealNames)
@@ -196,7 +198,7 @@ class GetRandomMealsUseCaseTest {
         every { mealsRepository.getAllMeals() } returns complexMealsFakeData
 
         // When
-        val result = getRandomMealsUseCase.getTenRandomEasyMeals()
+        val result = getRandomMealsUseCase.getNRandomEasyMeals()
 
         // Then
         assertThat(result)
