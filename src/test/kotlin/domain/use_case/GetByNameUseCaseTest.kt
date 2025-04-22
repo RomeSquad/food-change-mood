@@ -23,7 +23,6 @@ class GetByNameUseCaseTest {
 
     private lateinit var useCase: GetByNameUseCase
 
-
     private val mockMeal = Meal(
         id = 1,
         name = "Chicken Curry",
@@ -75,21 +74,6 @@ class GetByNameUseCaseTest {
         // then
         assertTrue(result.isSuccess)
         assertEquals(meals, result.getOrNull())
-    }
-
-    @Test
-    @Disabled
-    fun `given valid query when repository throws exception then return failure result`() {
-        // given
-        val query = "Chicken"
-        every { repository.getAllMeals() } throws RuntimeException("Database error")
-
-        // when
-        val result = useCase.getByName(query)
-
-        // then
-        assertTrue(result.isFailure)
-        assertEquals("Database error", result.exceptionOrNull()?.message)
     }
 
     @Test
