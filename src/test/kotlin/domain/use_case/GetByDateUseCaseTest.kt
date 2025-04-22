@@ -66,7 +66,18 @@ class GetByDateUseCaseTest {
         }
     }
 
-    
+    @Test
+    fun `getByDate should return empty list for no meals on the date`() {
+        // Given
+        every { mealsRepository.getAllMeals() } returns getMealList()
+        val date = "2020-11-01"
+
+        // When
+        val result = getByDateUseCase.getByDate(date)
+
+        // Then
+        assertThat(result.isEmpty()).isTrue()
+    }
 
 
     fun getMealList(): List<Meal> {
