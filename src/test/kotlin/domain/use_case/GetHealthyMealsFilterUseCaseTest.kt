@@ -122,6 +122,7 @@ class GetHealthyMealsFilterUseCaseTest {
         assertThat(result.map { it.name }).doesNotContain("Above Limit")
     }
 
+
     // Helper Method
     private fun createMeal(
         id: Int = 0,
