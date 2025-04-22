@@ -68,7 +68,7 @@ class CsvParserImpl : CsvParser {
         if (listTrim.isEmpty()) return emptyList()
 
         return listTrim.split(',')
-            .map { it.trim().removeSurrounding("\"") }
+            .map { it.trim().removeSurrounding("\'","\'").removeSurrounding("\"") }
             .filter { it.isNotEmpty() }    }
 
     override fun parseDoubleList(list: String): List<Double> {
