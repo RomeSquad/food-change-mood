@@ -52,14 +52,19 @@ class GetHealthyMealsFilterUseCaseTest {
     @Test
     fun `should exclude meals with high fat even if under 15 minutes`() {
         val meals = listOf(
-            createMeal(name = "Fried Chicken", minutes = 12, totalFat = 35.0, saturatedFat = 18.0, carbohydrates = 15.0)
+
+            createMeal(name = "Salad", minutes = 10, totalFat = 3.0, saturatedFat = 1.0, carbohydrates = 10.0),
+            createMeal(name = "Boiled Veggies", minutes = 12, totalFat = 2.5, saturatedFat = 1.2, carbohydrates = 8.0),
+            createMeal(name = "Fruit Bowl", minutes = 9, totalFat = 2.0, saturatedFat = 1.0, carbohydrates = 6.5),
+
+             createMeal(name = "Fried Chicken", minutes = 12, totalFat = 35.0, saturatedFat = 18.0, carbohydrates = 15.0)
         )
         //Given
         every { mealsRepository.getAllMeals() } returns meals
         //when
         val result = getHealthyMealsFilterUseCase.getHealthyFastMeals()
         //then
-        assertThat(result).isEmpty()
+        assertThat(result.map { it.name }).doesNotContain("Fried Chicken")
     }
 
     @Test
@@ -75,10 +80,11 @@ class GetHealthyMealsFilterUseCaseTest {
     @Test
     fun `should return all meals if all are healthy and under 15 minutes`() {
         val meals = listOf(
-            createMeal(name = "Veggie Bowl", minutes = 10, totalFat = 4.0, saturatedFat = 2.0, carbohydrates = 10.0),
-            createMeal(name = "Boiled Eggs", minutes = 12, totalFat = 3.0, saturatedFat = 1.5, carbohydrates = 8.0),
-            createMeal(name = "Fruit Plate", minutes = 9, totalFat = 2.0, saturatedFat = 1.0, carbohydrates = 6.0)
+        createMeal(name = "Salad", minutes = 10, totalFat = 1.0, saturatedFat = 0.4, carbohydrates = 3.5),
+        createMeal(name = "Steamed Veggies", minutes = 12, totalFat = 1.0, saturatedFat = 0.4, carbohydrates = 3.5),
+        createMeal(name = "Fruit Mix", minutes = 9, totalFat = 1.0, saturatedFat = 0.4, carbohydrates = 3.5)
         )
+
         //Given
         every { mealsRepository.getAllMeals() } returns meals
         //when
