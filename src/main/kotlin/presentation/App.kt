@@ -20,7 +20,7 @@ class App (
     private val getMealsByCountryUseCase: GetMealsByCountryUseCase,
     private val getMealsContainsPotatoUseCase: GetMealsContainsPotatoUseCase,
     private val getMealsContainsHighCaloriesUseCase: GetMealsContainsHighCaloriesUseCase,
-    private val getRankedSeafoodByProteinUseCase: GetRankedSeafoodByProteinUseCase,
+    private val getRankedSeafoodByProteinUseCase: GetSeafoodMealsUseCase,
     private val getItalianMealsForLargeGroupsUseCase: GetItalianMealsForLargeGroupsUseCase
 ) {
     fun start() {
@@ -370,9 +370,9 @@ class App (
 
     private fun showSeafoodMeals() = handleAction {
         println("--- Seafood Meals Sorted by Protein (Highest First) ---")
-        val rankedSeafoodMeals = getRankedSeafoodByProteinUseCase.getSeafoodMealsSortedByProtein()
-        rankedSeafoodMeals.forEach { meal ->
-            println(meal)
+        val rankedSeafoodMeals = getRankedSeafoodByProteinUseCase.getSeafoodMeals()
+        rankedSeafoodMeals.forEachIndexed { index, seafoodMeal ->
+            println("${index + 1}. ${seafoodMeal.name} - Protein: ${seafoodMeal.protein}g")
         }
         println("-------------------------------------------------------")
     }
