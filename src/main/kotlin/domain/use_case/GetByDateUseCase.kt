@@ -9,11 +9,7 @@ class GetByDateUseCase(
 ) {
 
     fun getByDate(date: String): List<Meal> {
-        if (date.isEmpty())
-            throw Exception("Date cannot be empty")
-
-        if (!date.trim().matches(Regex("\\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\\d|3[01])")))
-            throw Exception("Invalid date format: $date. Expected format: ${Meal.DATE_FORMAT}")
+        validateDate(date)
 
         val dateParsed = SimpleDateFormat(Meal.DATE_FORMAT).parse(date)
         val meals = mealsRepository.getAllMeals()
@@ -23,5 +19,14 @@ class GetByDateUseCase(
             throw Exception("No meals found for date: $date")
         else
             return filtered
+    }
+
+    fun validateDate(date: String) {
+        if (date.isEmpty())
+            throw Exception("Date cannot be empty")
+
+        if (!date.trim().matches(Meal.DATE_REGEX))
+            throw Exception("Invalid date format: $date. Expected format: ${Meal.DATE_FORMAT}")
+
     }
 }
