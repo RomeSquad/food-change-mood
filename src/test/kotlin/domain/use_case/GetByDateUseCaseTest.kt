@@ -42,6 +42,30 @@ class GetByDateUseCaseTest {
         assertThat(result).isEqualTo(listOf(getMealList()[1]))
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        "1999-7-",
+        "1999-7-32",
+        "1999-7-0",
+        "1999-0-02",
+        "1999-13-02",
+        "1999--2",
+        "1999-111-01",
+        "1999-0-02",
+        "999-7-02",
+        "2029-7-02",
+        "",
+    )
+    fun `getByDate should throw Exception for invalid date format`(date: String) {
+        // Given
+        every { mealsRepository.getAllMeals() } returns getMealList()
+
+        // When && Then
+        assertThrows<Exception> {
+            getByDateUseCase.getByDate(date)
+        }
+    }
+
     
 
 
