@@ -14,7 +14,7 @@ val useCaseModule = module {
     single { GetSweetsWithoutEggsUseCase(get()) }                       /* 6 */
     single { GetKetoDietMealsUseCase(get()) }                           /* 7 */
     single { GetByDateUseCase(get()) }                                  /* 8 */
-    single { GetMealsContainsCaloriesProteinUseCase(get()) }            /* 9 */
+    single { GymHelperUseCase(get()) }            /* 9 */
     single { GetMealsByCountryUseCase(get()) }                          /* 10 */
     single { GetIngredientGameUseCase(get()) }                             /* 11 */
     single { GetMealsContainsPotatoUseCase(get()) }         /* 12 */

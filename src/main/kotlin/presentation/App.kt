@@ -2,6 +2,8 @@ package presentation
 
 import domain.use_case.*
 import logic.use_case.GetKetoDietMealsUseCase
+import model.gym_helper.CaloriesAndProteinTolerance
+import model.gym_helper.GymHelperInput
 
 
 class App (
@@ -14,7 +16,7 @@ class App (
     private val getSweetsWithNoEggsUseCase: GetSweetsWithoutEggsUseCase,
     private val getKetoDietMealsUseCase: GetKetoDietMealsUseCase,
     private val getByDateUseCase: GetByDateUseCase,
-    private val getMealsContainsCaloriesProteinUseCase: GetMealsContainsCaloriesProteinUseCase,
+    private val gymHelperUseCase: GymHelperUseCase,
     private val getMealsByCountryUseCase: GetMealsByCountryUseCase,
     private val getMealsContainsPotatoUseCase: GetMealsContainsPotatoUseCase,
     private val getMealsContainsHighCaloriesUseCase: GetMealsContainsHighCaloriesUseCase,
@@ -66,7 +68,7 @@ class App (
             MenuItemUi.EGG_FREE_SWEETS -> showEggFreeSweets()
             MenuItemUi.KETO_DIET_MEAL -> showKetoDietMeals()
             MenuItemUi.MEAL_BY_DATE -> showMealByDate()
-            MenuItemUi.CALCULATED_CALORIES_PROTEIN_MEAL -> showMealsByCaloriesAndProtein()
+            MenuItemUi.MEALS_BASED_ON_CALORIES_AND_PROTEINS -> showMealsByCaloriesAndProtein()
             MenuItemUi.MEAL_BY_COUNTRY -> showMealByCountry()
             MenuItemUi.INGREDIENT_GAME_MEAL -> showIngredientGame()
             MenuItemUi.POTATO_MEALS -> showPotatoMeals()
@@ -240,21 +242,41 @@ class App (
     private fun showMealsByCaloriesAndProtein() = handleAction {
         println("--- Find Meals by Calories & Protein ---")
         print("Enter desired calories (e.g., 500): ")
-        val caloriesInput = readln().toDoubleOrNull()
-        print("Enter desired protein in grams (e.g., 30): ")
-        val proteinInput = readln().toDoubleOrNull()
-
-        if (caloriesInput != null && proteinInput != null) {
-            val meals =
-                getMealsContainsCaloriesProteinUseCase.getMealsContainCaloriesAndProtein(caloriesInput, proteinInput)
-            println("Meals with more than $caloriesInput calories and $proteinInput protein:")
-            meals.forEach { meal ->
-                val calories = meal.nutrition.calories.toString()
-                val protein = meal.nutrition.protein.toString()
-                println("- ${meal.name} (Calories: $calories, Protein: ${protein}g)")
-            }
+        val calories = readln().toDoubleOrNull()
+        print("Enter desired protein (e.g., 30): ")
+        val protein = readln().toDoubleOrNull()
+        print("Enter calories tolerance (default is 30): ")
+        val caloriesTolerance = readln().toIntOrNull() ?: 30
+        print("Enter protein tolerance (default is 10): ")
+        val proteinTolerance = readln().toIntOrNull() ?: 10
+        if (
+            calories == null || protein == null || caloriesTolerance < 0 || proteinTolerance < 0
+        ) {
+            println("Invalid input. Please enter numeric values.")
+            return
+        }
+        val meals = gymHelperUseCase.getMealsByCaloriesAndProtein(
+            input = GymHelperInput(
+                calories = calories,
+                protein = protein,
+                caloriesAndProteinTolerance = CaloriesAndProteinTolerance(
+                    caloriesTolerance, proteinTolerance
+                )
+            )
+        )
+        if (meals.isEmpty()) {
+            println("No meals found matching the criteria.")
         } else {
-            println("Invalid input. Please enter valid numbers.")
+            println("Meals matching the criteria:")
+            meals.forEachIndexed { index, meal ->
+                println("------------------------------------------------------------")
+                print("Meal ${index + 1}:")
+                println("\n- ${meal.name}")
+                println("Description: ${meal.description}")
+                println("Calories: ${meal.nutrition.calories}")
+                println("Protein: ${meal.nutrition.protein}")
+                println("Preparation Time: ${meal.minutes} minutes")
+            }
         }
         println("------------------------------------------------------------")
     }
