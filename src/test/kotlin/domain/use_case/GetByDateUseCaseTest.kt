@@ -6,13 +6,13 @@ import io.mockk.every
 import io.mockk.mockk
 import model.Meal
 import model.Nutrition
-import org.junit.Test
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import java.lang.Exception
 import java.text.SimpleDateFormat
+import kotlin.test.Test
 
 class GetByDateUseCaseTest {
 
@@ -78,16 +78,15 @@ class GetByDateUseCaseTest {
     }
 
     @Test
-    fun `getByDate should return empty list for no meals on the date`() {
+    fun `getByDate should throw Exception when no meals on the input date`() {
         // Given
         every { mealsRepository.getAllMeals() } returns getMealList()
         val date = "2020-11-01"
 
-        // When
-        val result = getByDateUseCase.getByDate(date)
-
-        // Then
-        assertThat(result.isEmpty()).isTrue()
+        // When && Then
+        assertThrows<Exception> {
+            getByDateUseCase.getByDate(date)
+        }
     }
 
 
