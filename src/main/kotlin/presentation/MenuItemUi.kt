@@ -9,7 +9,7 @@ enum class MenuItemUi(val description: String) {
     EGG_FREE_SWEETS("Find Egg-Free Sweets"),
     KETO_DIET_MEAL("Discover Keto Meals"),
     MEAL_BY_DATE("Find Meals by Date"),
-    CALCULATED_CALORIES_PROTEIN_MEAL("Get Calorie And Protein-Tracked Meals"),
+    MEALS_BASED_ON_CALORIES_AND_PROTEINS("Use gym helper to search for meals based on  calories and proteins"),
     MEAL_BY_COUNTRY("Explore Meals by Country"),
     INGREDIENT_GAME_MEAL("Guess the Ingredient Game"),
     POTATO_MEALS("Find Potato-Based Dishes"),
