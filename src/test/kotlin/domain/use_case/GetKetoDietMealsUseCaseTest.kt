@@ -8,6 +8,7 @@ import model.Meal
 import model.Nutrition
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 import java.util.*
 import kotlin.test.Test
 
@@ -22,8 +23,14 @@ class GetKetoDietMealsUseCaseTest{
         createKetoMeals(15679,Nutrition(480.4,45.0,19.0,61.0,26.0,57.0,9.0)),
         createKetoMeals(1560009,Nutrition(167.4,20.0,19.0,61.0,19.0,57.0,0.0))
     )
+    val invalidKetomeal =listOf(
 
-    
+        createKetoMeals(999, Nutrition(400.0, 5.0, 2.0, 50.0, 30.0, 40.0, 20.0)),        createKetoMeals(17768,Nutrition(301.4,0.0,13.0,61.0,57.0,57.0,0.0)),
+        createKetoMeals(15679,Nutrition(480.4,45.0,19.0,61.0,26.0,57.0,10.0)),
+        createKetoMeals(1560009,Nutrition(167.4,7.0,19.0,61.0,4.0,57.0,30.0))
+    )
+
+
     @BeforeEach
     fun setup(){
         mealsRepository = mockk(relaxed = true)
@@ -56,7 +63,19 @@ class GetKetoDietMealsUseCaseTest{
         // then
         assertNotEquals(firstKetoMeal.id, secondKetoMeals.id)
 
+
 }
+    @Test
+    fun `should return false when the keto meal is invalid`() {
+        //given
+        every { mealsRepository.getAllMeals() } returns invalidKetomeal
+
+        //when && then
+        assertThrows<Exception> {
+            getKetoDietMealsUseCase.getNextKetoMeal()
+        }
+
+    }
 
 
     fun createKetoMeals(ID: Int, nutrition: Nutrition) = Meal(
