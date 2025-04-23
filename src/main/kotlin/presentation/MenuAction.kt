@@ -1,7 +1,7 @@
 package presentation
 
-import domain.use_case.GetByNameUseCase
-import domain.use_case.GetHealthyMealsFilterUseCase
+import domain.use_case.search.SearchMealsByNameUseCase
+import domain.use_case.fetch.GetQuickHealthyMealsUseCase
 import presentation.input_output.InputReader
 import presentation.input_output.UiExecutor
 
@@ -11,12 +11,12 @@ interface MenuAction {
 }
 
 class HealthyFastFoodAction(
-    private val getHealthyMealsFilterUseCase: GetHealthyMealsFilterUseCase
+    private val getQuickHealthyMealsUseCase: GetQuickHealthyMealsUseCase
 ) : MenuAction {
     override val description: String = "Healthy Fast Meals (15 minutes)"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
-        val healthyMeals = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val healthyMeals = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         ui.displayResult("=== Healthy Fast Meals take 15 minutes ===")
         if (healthyMeals.isEmpty()) {
             ui.displayResult("No healthy fast meals found.")
@@ -29,14 +29,14 @@ class HealthyFastFoodAction(
     }
 }
 class MealByNameAction(
-    private val getByNameUseCase: GetByNameUseCase
+    private val getByNameUseCase: SearchMealsByNameUseCase
 ) : MenuAction {
     override val description: String = "Search Meal by Name"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
         ui.displayPrompt("Enter the name of the meal: ")
         val query = inputReader.readString()
-        getByNameUseCase.getByName(query).onSuccess { meals ->
+        getByNameUseCase.searchMealsByName(query).onSuccess { meals ->
             meals.forEach { meal ->
                 ui.displayResult("\nMeal found:")
                 ui.displayResult(meal.toString())

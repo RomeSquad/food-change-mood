@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import data.meal.MealsRepository
+import domain.use_case.fetch.GetQuickHealthyMealsUseCase
 import model.Meal
 import model.Nutrition
 import org.junit.jupiter.api.BeforeEach
@@ -13,12 +14,12 @@ import java.util.Date
 class GetHealthyMealsFilterUseCaseTest {
 
     private lateinit var mealsRepository: MealsRepository
-    private lateinit var getHealthyMealsFilterUseCase: GetHealthyMealsFilterUseCase
+    private lateinit var getQuickHealthyMealsUseCase: GetQuickHealthyMealsUseCase
 
     @BeforeEach
     fun setup() {
         mealsRepository = mockk()
-        getHealthyMealsFilterUseCase = GetHealthyMealsFilterUseCase(mealsRepository)
+        getQuickHealthyMealsUseCase = GetQuickHealthyMealsUseCase(mealsRepository)
     }
 
     @Test
@@ -30,7 +31,7 @@ class GetHealthyMealsFilterUseCaseTest {
         //Given
         every { mealsRepository.getAllMeals() } returns meals
         //when
-        val result = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val result = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         //then
         assertThat(result.map { it.name }).contains("Salad")
         assertThat(result.map { it.name }).doesNotContain("Burger")
@@ -44,7 +45,7 @@ class GetHealthyMealsFilterUseCaseTest {
         //Given
         every { mealsRepository.getAllMeals() } returns meals
         //when
-        val result = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val result = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         //then
         assertThat(result).isEmpty()
     }
@@ -62,7 +63,7 @@ class GetHealthyMealsFilterUseCaseTest {
         //Given
         every { mealsRepository.getAllMeals() } returns meals
         //when
-        val result = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val result = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         //then
         assertThat(result.map { it.name }).doesNotContain("Fried Chicken")
     }
@@ -72,7 +73,7 @@ class GetHealthyMealsFilterUseCaseTest {
         //Given
         every { mealsRepository.getAllMeals() } returns emptyList()
         //when
-        val result = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val result = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         //then
         assertThat(result).isEmpty()
     }
@@ -88,7 +89,7 @@ class GetHealthyMealsFilterUseCaseTest {
         //Given
         every { mealsRepository.getAllMeals() } returns meals
         //when
-        val result = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val result = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         //then
         assertThat(result).hasSize(3)
     }
@@ -102,7 +103,7 @@ class GetHealthyMealsFilterUseCaseTest {
         //Given
         every { mealsRepository.getAllMeals() } returns meals
         //when
-        val result = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val result = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         //then
         assertThat(result).isEmpty()
     }
@@ -116,7 +117,7 @@ class GetHealthyMealsFilterUseCaseTest {
         //Given
         every { mealsRepository.getAllMeals() } returns meals
         //when
-        val result = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val result = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         //then
         assertThat(result.map { it.name }).contains("Exact Healthy")
         assertThat(result.map { it.name }).doesNotContain("Above Limit")

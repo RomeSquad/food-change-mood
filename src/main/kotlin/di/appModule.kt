@@ -5,8 +5,8 @@ import data.meal.MealsRepository
 import data.utils.CsvFileReader
 import data.utils.CsvParser
 import data.utils.CsvParserImpl
-import domain.search.KMPSearchAlgorithm
-import domain.search.SearchAlgorithm
+import domain.use_case.search.utils.KMPSearchAlgorithm
+import domain.use_case.search.utils.SearchAlgorithm
 import org.koin.dsl.module
 import presentation.App
 import java.io.File

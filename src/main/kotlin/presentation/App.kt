@@ -1,7 +1,13 @@
 package presentation
 
-import domain.use_case.*
-import logic.use_case.GetKetoDietMealsUseCase
+import domain.use_case.fetch.GetIraqiMealsUseCase
+import domain.use_case.fetch.GetMealsContainsPotatoUseCase
+import domain.use_case.fetch.GetQuickHealthyMealsUseCase
+import domain.use_case.fetch.GetSeafoodMealsUseCase
+import domain.use_case.game.GuessPreparationTimeGameUseCase
+import domain.use_case.game.IngredientGameUseCase
+import domain.use_case.search.*
+import domain.use_case.suggest.*
 import model.gym_helper.CaloriesAndProteinTolerance
 import model.gym_helper.GymHelperInput
 import presentation.input_output.InputReader
@@ -34,21 +40,21 @@ class App(
     }
 }
 class AppOld (
-    private val getHealthyMealsFilterUseCase: GetHealthyMealsFilterUseCase,
-    private val getByNameUseCase: GetByNameUseCase,
+    private val getQuickHealthyMealsUseCase: GetQuickHealthyMealsUseCase,
+    private val getByNameUseCase: SearchMealsByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
-    private val getRandomMealsUseCase: GetRandomMealsUseCase,
-    private val getsGetIngredientGameUseCase : GetIngredientGameUseCase,
-    private val guessGameUseCase: GuessGameUseCase,
-    private val getSweetsWithNoEggsUseCase: GetSweetsWithoutEggsUseCase,
-    private val getKetoDietMealsUseCase: GetKetoDietMealsUseCase,
-    private val getByDateUseCase: GetByDateUseCase,
-    private val gymHelperUseCase: GymHelperUseCase,
-    private val getMealsByCountryUseCase: GetMealsByCountryUseCase,
+    private val suggestEasyFoodUseCase: SuggestEasyFoodUseCase,
+    private val getsIngredientGameUseCase: IngredientGameUseCase,
+    private val guessPreparationTimeGameUseCase: GuessPreparationTimeGameUseCase,
+    private val getSweetsWithNoEggsUseCase: SuggestEggFreeSweetUseCase,
+    private val suggestKetoMealUseCase: SuggestKetoMealUseCase,
+    private val searchMealsByDateUseCase: SearchMealsByDateUseCase,
+    private val searchGymFriendlyMealsUseCase: SearchGymFriendlyMealsUseCase,
+    private val getMealsByCountryUseCase: SearchFoodByCultureUseCase,
     private val getMealsContainsPotatoUseCase: GetMealsContainsPotatoUseCase,
-    private val getMealsContainsHighCaloriesUseCase: GetMealsContainsHighCaloriesUseCase,
+    private val suggestHighCalorieMealsUseCase: SuggestHighCalorieMealsUseCase,
     private val getRankedSeafoodByProteinUseCase: GetSeafoodMealsUseCase,
-    private val getItalianMealsForLargeGroupsUseCase: GetItalianMealsForLargeGroupsUseCase
+    private val suggestItalianFoodForGroupUseCase: SuggestItalianFoodForGroupUseCase
 ) {
     fun start() {
         while (true) {
@@ -107,7 +113,7 @@ class AppOld (
     }
 
     private fun showHealthyFastFood() = handleAction {
-        val healthyMeals = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val healthyMeals = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         println("=== Healthy Fast Meals take  15 minutes ===")
         if (healthyMeals.isEmpty()) {
             println("No healthy fast meals found.")
@@ -122,7 +128,7 @@ class AppOld (
     private fun showMealByName() = handleAction {
         println("Enter the name of the meal:")
         val query = readln()
-        getByNameUseCase.getByName(query).onSuccess { meals ->
+        getByNameUseCase.searchMealsByName(query).onSuccess { meals ->
             meals.forEach { meal ->
                 println("\n Meal found:")
                 println(meal)
@@ -141,18 +147,18 @@ class AppOld (
 
     private fun showEasyFoodSuggestionGame() = handleAction {
         println("\n${MenuItemUi.EASY_FOOD_SUGGESTION_GAME}, TEN RANDOM MEALS BY DEFAULT : ")
-        getRandomMealsUseCase.getNRandomEasyMeals().forEach { println("\nMeal Name is : ${it.name}\n") }
+        suggestEasyFoodUseCase.getEasyFoodSuggestion().forEach { println("\nMeal Name is : ${it.name}\n") }
 
         print("\nEnter number of meals you want : ")
         val count = readln().trim().toIntOrNull()
 
         if (count != null)
-            getRandomMealsUseCase.getNRandomEasyMeals(count).forEach { println("\nMeal Name : ${it.name}\n") }
+            suggestEasyFoodUseCase.getEasyFoodSuggestion(count).forEach { println("\nMeal Name : ${it.name}\n") }
         println("------------------------------------------------------------")
     }
 
     private fun showPreparationTimeGuessingGame() = handleAction {
-        guessGameUseCase.getRandomMealWithPreparationTime()
+        guessPreparationTimeGameUseCase.getRandomMealWithPreparationTime()
             .takeIf { it != null }
             ?.let { meal ->
                 val correctTime = meal.minutes
@@ -169,14 +175,14 @@ class AppOld (
                         return@repeat
                     }
 
-                    when (guessGameUseCase.checkUserGuess(guess, correctTime)) {
-                        GuessGameUseCase.GuessResult.CORRECT -> {
+                    when (guessPreparationTimeGameUseCase.checkUserGuess(guess, correctTime)) {
+                        GuessPreparationTimeGameUseCase.GuessResult.CORRECT -> {
                             println("Correct answer! Preparation time is $correctTime  minutes")
                             return
                         }
 
-                        GuessGameUseCase.GuessResult.TOO_LOW -> println("Less than the correct time.")
-                        GuessGameUseCase.GuessResult.TOO_HIGH -> println("More than the correct time.")
+                        GuessPreparationTimeGameUseCase.GuessResult.TOO_LOW -> println("Less than the correct time.")
+                        GuessPreparationTimeGameUseCase.GuessResult.TOO_HIGH -> println("More than the correct time.")
                     }
                 }
 
@@ -193,7 +199,7 @@ class AppOld (
         var isUserLikeSweet = "n"
 
         do {
-            val randomSweet = getSweetsWithNoEggsUseCase.getRandomSweet()
+            val randomSweet = getSweetsWithNoEggsUseCase.suggestRandomSweet()
 
             randomSweet.fold(
                 onSuccess = { sweet ->
@@ -233,7 +239,7 @@ class AppOld (
         while (true) {
             try {
 
-                println( message + getKetoDietMealsUseCase.getNextKetoMeal())
+                println(message + suggestKetoMealUseCase.getNextKetoMeal())
             } catch (e: Exception) {
                 println(e.message)
             }
@@ -249,7 +255,7 @@ class AppOld (
     private fun showMealByDate() = handleAction {
         print("Enter the date (yyyy-mm-dd): ")
         val date = readln()
-        val resultMeals = getByDateUseCase.getByDate(date)
+        val resultMeals = searchMealsByDateUseCase.searchMealsByDate(date)
             resultMeals.forEach {
             println("Meals for date $date: \n")
             println(" ---------------------------------- ")
@@ -260,7 +266,7 @@ class AppOld (
             println("Enter the meal ID to get more details: ")
             val mealId = readln()
             if (mealId != "q") {  // Exit if user enters 'q'
-                val mealResult = GetByIdUseCase().getById(mealId, resultMeals)
+                val mealResult = SearchMealsByIdUseCase().getById(mealId, resultMeals)
                 mealResult.let{ println("Meal details:\n$it") }
             }
         println("------------------------------------------------------------")
@@ -282,7 +288,7 @@ class AppOld (
             println("Invalid input. Please enter numeric values.")
             return
         }
-        val meals = gymHelperUseCase.getMealsByCaloriesAndProtein(
+        val meals = searchGymFriendlyMealsUseCase.getMealsByCaloriesAndProtein(
             input = GymHelperInput(
                 calories = calories,
                 protein = protein,
@@ -312,7 +318,7 @@ class AppOld (
         print("Enter Country and discover their meals : ")
 
         var countryName: String = readlnOrNull().toString().trim()
-        val exploreMeals = getMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName)
+        val exploreMeals = getMealsByCountryUseCase.exploreMealsRelatedToCountry(countryName)
 
         try {
             if (exploreMeals.isEmpty()) {
@@ -334,20 +340,23 @@ class AppOld (
     private fun showIngredientGame() = handleAction {
 
 
-
-        while (getsGetIngredientGameUseCase.correctCount != 15) {
-            val question = getsGetIngredientGameUseCase.getNextQuestion()
+        while (getsIngredientGameUseCase
+                .getNextQuestion() != null
+        ) {
+            val question = getsIngredientGameUseCase.getNextQuestion()
             println("Guess the ingredient from the ingredients")
             println("Question mealName=${question!!.mealName} \noptions(${question.options})")
 
             print("Enter Answer : ")
             val answer = readln()
-            if (getsGetIngredientGameUseCase.submitAnswer(answer, question!!.correctAnswer)) {
-                getsGetIngredientGameUseCase.correctCount++
-                println("Current Score: ${getsGetIngredientGameUseCase.getScore()} points")
+            if (getsIngredientGameUseCase.submitAnswer(answer, question!!.correctAnswer)) {
+                getsIngredientGameUseCase
+                    .getNextQuestion()
+                    ?.let { println("Correct! Next question: ${it.mealName}") }
+                println("Current Score: ${getsIngredientGameUseCase.getScore()} points")
             } else {
                 println(" :( try again")
-                println("Current Score: ${getsGetIngredientGameUseCase.getScore()} points")
+                println("Current Score: ${getsIngredientGameUseCase.getScore()} points")
                 break
             }
 
@@ -370,7 +379,7 @@ class AppOld (
 
         while (true) {
             println("Here is a meal for you:")
-            val meal = getMealsContainsHighCaloriesUseCase.getNextMeal()
+            val meal = suggestHighCalorieMealsUseCase.getNextMeal()
 
             println("\nMeal        : ${meal.name} ")
             println("Description : ${meal.description}\n")
@@ -404,7 +413,7 @@ class AppOld (
     }
 
     private fun showItalianMealForGroups() = handleAction {
-        getItalianMealsForLargeGroupsUseCase.getItalianMealsForLargeGroups().forEachIndexed { index, meal ->
+        suggestItalianFoodForGroupUseCase.suggestItalianMealsForLargeGroup().forEachIndexed { index, meal ->
             println("${index + 1}. ${meal.name}")
         }
         println("------------------------------------------------------------")

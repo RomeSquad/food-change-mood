@@ -1,7 +1,7 @@
 package di
 
-import domain.use_case.GetByNameUseCase
-import domain.use_case.GetHealthyMealsFilterUseCase
+import domain.use_case.search.SearchMealsByNameUseCase
+import domain.use_case.fetch.GetQuickHealthyMealsUseCase
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import presentation.*
@@ -16,8 +16,8 @@ val uiModule = module {
     single { ConsoleInputReader() } bind InputReader::class
     single { Menu(
         listOf(
-            HealthyFastFoodAction(GetHealthyMealsFilterUseCase(get())),
-            MealByNameAction(GetByNameUseCase(get(),get()))
+            HealthyFastFoodAction(GetQuickHealthyMealsUseCase(get())),
+            MealByNameAction(SearchMealsByNameUseCase(get(),get()))
         )
     ) }
 }

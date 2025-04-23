@@ -1,15 +1,18 @@
-package domain.use_case
+package domain.use_case.game
+
 import data.meal.MealsRepository
 import model.Meal
 
-class GuessGameUseCase(
+class GuessPreparationTimeGameUseCase(
     private val mealsRepository: MealsRepository
 ) {
     fun getRandomMealWithPreparationTime(): Meal? {
         return mealsRepository.getAllMeals()
             .filter { it.minutes > 0 }
-            .takeIf { it.isNotEmpty() }
-            ?.random()
+            .randomOrNull()
+            ?: throw NoSuchElementException(
+                "Cannot start GuessPreparationTimeGame – no meals found with preparation time"
+            )
     }
 
     fun checkUserGuess(guess: Int, correctTime: Int): GuessResult {

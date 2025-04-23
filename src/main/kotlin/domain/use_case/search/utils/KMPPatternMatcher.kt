@@ -1,4 +1,4 @@
-package domain.search
+package domain.use_case.search.utils
 
 class KMPPatternMatcher : PatternMatcher {
     override fun match(text: String, pattern: String): Boolean {
