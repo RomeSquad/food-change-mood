@@ -66,7 +66,7 @@ class GetKetoDietMealsUseCaseTest{
 
 }
     @Test
-    fun `should return false when the keto meal is invalid`() {
+    fun `should throw exception when  keto meals runs out`() {
         //given
         every { mealsRepository.getAllMeals() } returns invalidKetomeal
 
