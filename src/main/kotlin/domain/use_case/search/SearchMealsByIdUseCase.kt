@@ -1,7 +1,7 @@
 package domain.use_case.search
 
-import data.utils.NoMealsFoundException
-import model.Meal
+import domain.NoMealsFoundException
+import data.model.Meal
 
 class SearchMealsByIdUseCase {
 

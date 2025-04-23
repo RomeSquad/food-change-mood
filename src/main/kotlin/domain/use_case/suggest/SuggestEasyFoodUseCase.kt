@@ -1,7 +1,7 @@
 package domain.use_case.suggest
 
 import data.meal.MealsRepository
-import model.Meal
+import data.model.Meal
 
 class SuggestEasyFoodUseCase(
     private val mealsRepository: MealsRepository

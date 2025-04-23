@@ -27,6 +27,7 @@ val appModule = module {
             get(),
         )
     }
+
     single { KMPPatternMatcher() } bind PatternMatcher::class
     single<SearchAlgorithm> { KMPSearchAlgorithm(get()) }
 }

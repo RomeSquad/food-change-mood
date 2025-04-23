@@ -5,8 +5,8 @@ import data.meal.MealsRepository
 import domain.use_case.suggest.SuggestEasyFoodUseCase
 import io.mockk.every
 import io.mockk.mockk
-import model.Meal
-import model.Nutrition
+import data.model.Meal
+import data.model.Nutrition
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

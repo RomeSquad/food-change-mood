@@ -5,8 +5,8 @@ import domain.use_case.game.IngredientGameUseCase.Constant.MAX_CORRECT_ANSWERS
 import domain.use_case.game.IngredientGameUseCase.Constant.MAX_WRONG_OPTIONS
 import domain.use_case.game.IngredientGameUseCase.Constant.MIN_WRONG_OPTIONS
 import domain.use_case.game.IngredientGameUseCase.Constant.POINTS_PER_CORRECT_ANSWER
-import model.Meal
-import model.ingredient_game.Question
+import data.model.Meal
+import data.model.ingredient_game.Question
 
 class IngredientGameUseCase(
     private val mealsRepository: MealsRepository

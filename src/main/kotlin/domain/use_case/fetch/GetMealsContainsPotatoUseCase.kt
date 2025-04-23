@@ -1,7 +1,7 @@
 package domain.use_case.fetch
 
 import data.meal.MealsRepository
-import model.Meal
+import data.model.Meal
 
 class GetMealsContainsPotatoUseCase(
     private val mealsRepository: MealsRepository,

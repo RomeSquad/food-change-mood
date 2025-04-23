@@ -1,6 +1,6 @@
 package domain.use_case.search.utils
 
-import model.Meal
+import data.model.Meal
 
 class DateValidator {
     fun validate(date: String) {

@@ -1,8 +1,7 @@
-package presentation.input_output
+package presentation.io
 
 class ConsoleInputReader : InputReader {
     override fun readString(): String = readlnOrNull()?:throw IllegalArgumentException("Input cannot be null")
-
 
     override fun readIntOrNull(): Int? = readlnOrNull()?.toIntOrNull()
 
