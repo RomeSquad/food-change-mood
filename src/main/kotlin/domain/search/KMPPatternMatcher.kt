@@ -2,47 +2,44 @@ package domain.search
 
 class KMPPatternMatcher : PatternMatcher {
     override fun match(text: String, pattern: String): Boolean {
-        if(pattern.isBlank()) return true
-        if(text.isBlank()) return false
+        if (pattern.isBlank()) return true
+        if (text.isBlank()) return false
 
-        val resultArray = computeLPSArray(pattern)
-        var textIndex = 0
-        var patternIndex = 0
-        while (textIndex < text.length) {
-            if(pattern[patternIndex].equals(text[textIndex], ignoreCase = true)) {
-                textIndex++
-                patternIndex++
+        val lps = computeLPSArray(pattern)
+
+        return generateSequence(Pair(0, 0)) { (textIndex, patternIndex) ->
+            when {
+                textIndex >= text.length -> null
+                pattern[patternIndex].equals(text[textIndex], ignoreCase = true) ->
+                    Pair(textIndex + 1, patternIndex + 1)
+                patternIndex != 0 ->
+                    Pair(textIndex, lps[patternIndex - 1])
+                else ->
+                    Pair(textIndex + 1, 0)
             }
-            if(patternIndex ==pattern.length) {
-                return true
-            }else if(textIndex<text.length && !pattern[patternIndex].equals(text[textIndex], ignoreCase = true)) {
-                if(patternIndex!=0){
-                    patternIndex = resultArray[patternIndex-1]
-                }else{
-                    textIndex++
-                }
-            }
-        }
-        return false
+        }.any { (_, patternIndex) -> patternIndex == pattern.length }
     }
     private fun computeLPSArray(pattern: String): IntArray {
-        val resultArray = IntArray(pattern.length)
-        var prefixLength = 0
-        var index = 1
-        while (index < pattern.length) {
-            if (pattern[index].equals(pattern[prefixLength], ignoreCase = true)) {
-                prefixLength++
-                resultArray[index] = prefixLength
-                index++
-            }else{
-                if(prefixLength !=0){
-                    prefixLength = resultArray[prefixLength-1]
-                }else{
-                    resultArray[index] = 0
-                    index++
+        if (pattern.isEmpty()) return intArrayOf()
+
+        return buildList {
+            add(0)
+            pattern.drop(1).foldIndexed(0) { i, prefixLength, currentChar ->
+                var updatedPrefix = prefixLength
+                while (
+                    updatedPrefix > 0 &&
+                    !currentChar.equals(pattern[updatedPrefix], ignoreCase = true)
+                ) {
+                    updatedPrefix = this[updatedPrefix - 1]
                 }
+
+                if (currentChar.equals(pattern[updatedPrefix], ignoreCase = true)) {
+                    updatedPrefix++
+                }
+
+                add(updatedPrefix)
+                updatedPrefix
             }
-        }
-        return resultArray
+        }.toIntArray()
     }
 }
