@@ -1,6 +1,7 @@
 package domain.use_case.suggest
 
 import data.meal.MealsRepository
+import data.utils.NoMealsFoundException
 import model.Meal
 
 class SuggestKetoMealUseCase(private val mealsRepository: MealsRepository) {
@@ -12,7 +13,7 @@ class SuggestKetoMealUseCase(private val mealsRepository: MealsRepository) {
                     it.nutrition.protein >= TEN_ITEM
         }.takeIf { it.isNotEmpty() }
             ?.shuffled()
-            ?: throw NoSuchElementException("No keto‑friendly meals found")
+            ?: throw NoMealsFoundException("No keto‑friendly meals found")
     }
 
     fun getNextKetoMeal(): Meal {

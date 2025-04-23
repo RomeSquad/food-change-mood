@@ -1,6 +1,7 @@
 package domain.use_case.suggest
 
 import data.meal.MealsRepository
+import data.utils.NoMealsFoundException
 import model.Meal
 
 class SuggestItalianFoodForGroupUseCase(
@@ -11,7 +12,7 @@ class SuggestItalianFoodForGroupUseCase(
             .getAllMeals()
             .filter(::onlyItalianFoodForLargeGroup)
             .takeIf { it.isNotEmpty() }
-            ?: throw NoSuchElementException(
+            ?: throw NoMealsFoundException(
                 "No Italian meals found suitable for a large group"
             )
 

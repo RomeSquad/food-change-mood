@@ -6,7 +6,7 @@ import domain.use_case.fetch.GetQuickHealthyMealsUseCase
 import domain.use_case.fetch.GetSeafoodMealsUseCase
 import domain.use_case.game.GuessPreparationTimeGameUseCase
 import domain.use_case.game.IngredientGameUseCase
-import domain.use_case.search.SearchFoodByCultureUseCase
+import domain.use_case.search.SearchFoodByCountryUseCase
 import domain.use_case.search.SearchGymFriendlyMealsUseCase
 import domain.use_case.search.SearchMealsByDateUseCase
 import domain.use_case.search.SearchMealsByNameUseCase
@@ -23,7 +23,7 @@ val useCaseModule = module {
     single { SuggestKetoMealUseCase(get()) }
     single { SearchMealsByDateUseCase(get()) }
     single { SearchGymFriendlyMealsUseCase(get()) }
-    single { SearchFoodByCultureUseCase(get()) }
+    single { SearchFoodByCountryUseCase(get()) }
     single { IngredientGameUseCase(get()) }
     single { GetMealsContainsPotatoUseCase(get()) }
     single { SuggestHighCalorieMealsUseCase(get()) }

@@ -3,8 +3,7 @@ package domain.use_case.search
 import data.meal.MealsRepository
 import model.Meal
 
-class SearchFoodByCultureUseCase(
-
+class SearchFoodByCountryUseCase(
     private val mealsRepository: MealsRepository
 ) {
 
@@ -25,5 +24,6 @@ class SearchFoodByCultureUseCase(
                 || meal.description?.contains(country, ignoreCase = true) ?: false
                 || meal.name.contains(country, ignoreCase = true)
                 || meal.steps.any { it.contains(country) }
+                || meal.ingredients.any { it.contains(country) }
     }
 }

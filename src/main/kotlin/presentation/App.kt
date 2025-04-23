@@ -50,7 +50,7 @@ class AppOld (
     private val suggestKetoMealUseCase: SuggestKetoMealUseCase,
     private val searchMealsByDateUseCase: SearchMealsByDateUseCase,
     private val searchGymFriendlyMealsUseCase: SearchGymFriendlyMealsUseCase,
-    private val getMealsByCountryUseCase: SearchFoodByCultureUseCase,
+    private val getMealsByCountryUseCase: SearchFoodByCountryUseCase,
     private val getMealsContainsPotatoUseCase: GetMealsContainsPotatoUseCase,
     private val suggestHighCalorieMealsUseCase: SuggestHighCalorieMealsUseCase,
     private val getRankedSeafoodByProteinUseCase: GetSeafoodMealsUseCase,
