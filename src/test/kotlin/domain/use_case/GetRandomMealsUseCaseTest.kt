@@ -2,10 +2,11 @@ package domain.use_case
 
 import com.google.common.truth.Truth.assertThat
 import data.meal.MealsRepository
+import domain.use_case.suggest.SuggestEasyFoodUseCase
 import io.mockk.every
 import io.mockk.mockk
-import model.Meal
-import model.Nutrition
+import data.model.Meal
+import data.model.Nutrition
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -16,7 +17,7 @@ import java.util.*
 class GetRandomMealsUseCaseTest {
 
     private lateinit var mealsRepository: MealsRepository
-    private lateinit var getRandomMealsUseCase: GetRandomMealsUseCase
+    private lateinit var suggestEasyFoodUseCase: SuggestEasyFoodUseCase
 
     private fun createFakeMealDataForRandomEasyMeals (
         mealName : String,
@@ -26,8 +27,8 @@ class GetRandomMealsUseCaseTest {
     )=  Meal(
         name = mealName,
         minutes = minutes,
-        nSteps = nSteps,
-        nIngredients = nIngredients,
+        stepsCount = nSteps,
+        ingredientsCount = nIngredients,
         contributorId = 47892,
         submitted = Date("9/16/2005"),
         tags = listOf(
@@ -174,7 +175,7 @@ class GetRandomMealsUseCaseTest {
     @BeforeEach
     fun setup() {
         mealsRepository = mockk(relaxed = true)
-        getRandomMealsUseCase = GetRandomMealsUseCase(mealsRepository)
+        suggestEasyFoodUseCase = SuggestEasyFoodUseCase(mealsRepository)
     }
 
     @Test
@@ -184,7 +185,7 @@ class GetRandomMealsUseCaseTest {
         every { mealsRepository.getAllMeals() } returns easyMealsFakeData
 
         // When
-        val result = getRandomMealsUseCase.getNRandomEasyMeals()
+        val result = suggestEasyFoodUseCase.getEasyFoodSuggestion()
 
         // Then
         assertThat(result.map { it.name }).containsAnyIn(expectedMealNames)
@@ -198,7 +199,7 @@ class GetRandomMealsUseCaseTest {
         every { mealsRepository.getAllMeals() } returns complexMealsFakeData
 
         // When
-        val result = getRandomMealsUseCase.getNRandomEasyMeals()
+        val result = suggestEasyFoodUseCase.getEasyFoodSuggestion()
 
         // Then
         assertThat(result)
@@ -213,7 +214,7 @@ class GetRandomMealsUseCaseTest {
         every { mealsRepository.getAllMeals() } returns easyMealsFakeData
 
         // When
-        val result = getRandomMealsUseCase.getNRandomEasyMeals(numberOfMeals)
+        val result = suggestEasyFoodUseCase.getEasyFoodSuggestion(numberOfMeals)
 
         // Then
         assertThat(result).hasSize(numberOfMeals)

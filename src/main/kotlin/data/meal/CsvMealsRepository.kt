@@ -4,8 +4,8 @@ import data.utils.CsvFileReader
 import data.utils.CsvParser
 import data.utils.MealColumnIndex
 import data.utils.NutritionColumnIndex
-import model.Meal
-import model.Nutrition
+import data.model.Meal
+import data.model.Nutrition
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,7 +17,6 @@ class CsvMealsRepository(
     private val dateFormat = SimpleDateFormat(Meal.DATE_FORMAT)
     private val meals by lazy { loadMeals() }
     override fun getAllMeals() = meals
-
 
     private fun loadMeals(): List<Meal> {
         val csvLines = csvFileReader.readLines()
@@ -58,11 +57,11 @@ class CsvMealsRepository(
             submitted = constructSubmittedDate(row),
             tags = constructTags(row),
             nutrition = createNutritionFromValues(row),
-            nSteps = constructNSteps(row),
+            stepsCount = constructNSteps(row),
             steps = constructSteps(row),
             description = constructDescription(row),
             ingredients = constructIngredients(row),
-            nIngredients = constructNIngredients(row),
+            ingredientsCount = constructNIngredients(row),
         )
     }
 

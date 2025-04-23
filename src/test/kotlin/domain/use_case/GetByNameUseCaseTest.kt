@@ -1,15 +1,14 @@
 package domain.use_case
 
 import data.meal.MealsRepository
-import domain.search.SearchAlgorithm
+import domain.use_case.search.utils.SearchAlgorithm
+import domain.use_case.search.SearchMealsByNameUseCase
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertTrue
-import model.Meal
-import model.Nutrition
-import org.junit.Ignore
+import data.model.Meal
+import data.model.Nutrition
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
@@ -21,7 +20,7 @@ class GetByNameUseCaseTest {
 
     private lateinit var searchAlgorithm: SearchAlgorithm
 
-    private lateinit var useCase: GetByNameUseCase
+    private lateinit var useCase: SearchMealsByNameUseCase
 
     private val mockMeal = Meal(
         id = 1,
@@ -31,18 +30,18 @@ class GetByNameUseCaseTest {
         submitted = Date(),
         tags = listOf("spicy", "asian"),
         nutrition = Nutrition(500.0, 20.0, 10.0, 800.0, 30.0, 8.0, 50.0),
-        nSteps = 5,
+        stepsCount = 5,
         steps = listOf("Step 1", "Step 2"),
         description = "Delicious curry",
         ingredients = listOf("chicken", "curry powder"),
-        nIngredients = 2
+        ingredientsCount = 2
     )
 
     @BeforeEach
     fun setup() {
         repository = mockk()
         searchAlgorithm = mockk()
-        useCase = GetByNameUseCase(repository, searchAlgorithm)
+        useCase = SearchMealsByNameUseCase(repository, searchAlgorithm)
     }
 
     @Test
@@ -53,7 +52,7 @@ class GetByNameUseCaseTest {
         every { searchAlgorithm.search(any(), query) } returns Result.failure(Exception("Query must not be empty"))
 
         // when
-        val result = useCase.getByName(query)
+        val result = useCase.searchMealsByName(query)
 
         // then
         assertTrue(result.isFailure)
@@ -69,7 +68,7 @@ class GetByNameUseCaseTest {
         every { searchAlgorithm.search(meals, query) } returns Result.success(meals)
 
         // when
-        val result = useCase.getByName(query)
+        val result = useCase.searchMealsByName(query)
 
         // then
         assertTrue(result.isSuccess)
@@ -85,7 +84,7 @@ class GetByNameUseCaseTest {
         every { searchAlgorithm.search(any(), query) } returns Result.success(meals)
 
         // when
-        val result = useCase.getByName(query)
+        val result = useCase.searchMealsByName(query)
 
         // then
         assertTrue(result.isSuccess)

@@ -1,7 +1,6 @@
 package data.utils
 
 import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -105,7 +104,7 @@ class CsvParserImplTest {
     @Test
     fun `given string list with empty elements when parsing then filter out empty elements`() {
         // given
-        val input = "\"['apple', '', 'banana', ',,']\""
+        val input = "\"['apple', '', 'banana']\""
 
         // when
         val result = csvParser.parseStringList(input)

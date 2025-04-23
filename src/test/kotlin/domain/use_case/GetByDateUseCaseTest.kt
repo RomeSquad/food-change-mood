@@ -2,10 +2,11 @@ package domain.use_case
 
 import com.google.common.truth.Truth.assertThat
 import data.meal.MealsRepository
+import domain.use_case.search.SearchMealsByDateUseCase
 import io.mockk.every
 import io.mockk.mockk
-import model.Meal
-import model.Nutrition
+import data.model.Meal
+import data.model.Nutrition
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
@@ -17,14 +18,14 @@ import kotlin.test.Test
 class GetByDateUseCaseTest {
 
     private lateinit var mealsRepository: MealsRepository
-    private lateinit var getByDateUseCase: GetByDateUseCase
+    private lateinit var searchMealsByDateUseCase: SearchMealsByDateUseCase
 
 
     @BeforeEach
     fun setUp() {
         // Initialize the MealsRepository mock or stub here
         mealsRepository = mockk()
-        getByDateUseCase = GetByDateUseCase(mealsRepository)
+        searchMealsByDateUseCase = SearchMealsByDateUseCase(mealsRepository)
 
     }
 
@@ -36,7 +37,7 @@ class GetByDateUseCaseTest {
         val date = "1999-7-02"
 
         // When
-        val result = getByDateUseCase.getByDate(date)
+        val result = searchMealsByDateUseCase.searchMealsByDate(date)
 
         // Then
         assertThat(result).isEqualTo(listOf(getMealList()[1]))
@@ -61,7 +62,7 @@ class GetByDateUseCaseTest {
 
         // When && Then
         assertThrows<Exception> {
-            getByDateUseCase.getByDate(date)
+            searchMealsByDateUseCase.searchMealsByDate(date)
         }
     }
 
@@ -73,7 +74,7 @@ class GetByDateUseCaseTest {
 
         // When && Then
         assertThrows<Exception> {
-            getByDateUseCase.getByDate(date)
+            searchMealsByDateUseCase.searchMealsByDate(date)
         }
     }
 
@@ -85,7 +86,7 @@ class GetByDateUseCaseTest {
 
         // When && Then
         assertThrows<Exception> {
-            getByDateUseCase.getByDate(date)
+            searchMealsByDateUseCase.searchMealsByDate(date)
         }
     }
 

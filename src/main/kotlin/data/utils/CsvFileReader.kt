@@ -1,5 +1,6 @@
 package data.utils
 
+import domain.InvalidFileExtensionException
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -12,7 +13,7 @@ class CsvFileReader(
 
     fun validateFile(file: File) {
         if (!file.name.endsWith(".csv")) {
-            throw Exception("File does not end with csv file")
+            throw InvalidFileExtensionException("File does not end with csv file")
         }
         if (!file.exists()) {
             throw FileNotFoundException("File does not exist")
