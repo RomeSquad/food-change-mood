@@ -1,7 +1,7 @@
 package domain.use_case.game
 
 import data.meal.MealsRepository
-import model.Meal
+import data.model.Meal
 
 class GuessPreparationTimeGameUseCase(
     private val mealsRepository: MealsRepository

@@ -14,10 +14,25 @@ import domain.use_case.suggest.*
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import presentation.*
-import presentation.input_output.ConsoleInputReader
-import presentation.input_output.ConsoleUi
-import presentation.input_output.InputReader
-import presentation.input_output.UiExecutor
+import presentation.action.fetch.HealthyFastFoodAction
+import presentation.action.fetch.IraqiMealsAction
+import presentation.action.fetch.PotatoMealsAction
+import presentation.action.fetch.SeafoodMealsAction
+import presentation.action.game.IngredientGameAction
+import presentation.action.game.PreparationTimeGuessingAction
+import presentation.action.search.MealByCountryAction
+import presentation.action.search.MealByDateAction
+import presentation.action.search.MealByNameAction
+import presentation.action.search.MealsByCaloriesAndProteinAction
+import presentation.action.suggest.EasyFoodSuggestionAction
+import presentation.action.suggest.EggFreeSweetsAction
+import presentation.action.suggest.HighCaloriesAction
+import presentation.action.suggest.ItalianMealForGroupsAction
+import presentation.action.suggest.KetoDietAction
+import presentation.io.ConsoleInputReader
+import presentation.io.ConsoleUi
+import presentation.io.InputReader
+import presentation.io.UiExecutor
 
 val uiModule = module {
     single { HealthyFastFoodAction(get()) }

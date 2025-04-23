@@ -1,8 +1,8 @@
 package domain.use_case.fetch
 
 import data.meal.MealsRepository
-import model.Meal
-import model.seafood_meals.SeafoodMeal
+import data.model.Meal
+import data.model.seafood_meals.SeafoodMeal
 
 class GetSeafoodMealsUseCase(
     private val mealsRepository: MealsRepository

@@ -2,7 +2,7 @@ package domain.use_case.search
 
 import data.meal.MealsRepository
 import domain.use_case.search.utils.SearchAlgorithm
-import model.Meal
+import data.model.Meal
 
 class SearchMealsByNameUseCase(
     private val repository: MealsRepository,

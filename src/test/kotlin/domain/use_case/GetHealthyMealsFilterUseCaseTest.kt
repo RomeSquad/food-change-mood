@@ -5,8 +5,8 @@ import io.mockk.every
 import io.mockk.mockk
 import data.meal.MealsRepository
 import domain.use_case.fetch.GetQuickHealthyMealsUseCase
-import model.Meal
-import model.Nutrition
+import data.model.Meal
+import data.model.Nutrition
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.Date

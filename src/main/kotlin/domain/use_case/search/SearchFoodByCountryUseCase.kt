@@ -1,7 +1,7 @@
 package domain.use_case.search
 
 import data.meal.MealsRepository
-import model.Meal
+import data.model.Meal
 
 class SearchFoodByCountryUseCase(
     private val mealsRepository: MealsRepository

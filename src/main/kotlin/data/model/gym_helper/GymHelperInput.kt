@@ -1,4 +1,4 @@
-package model.gym_helper
+package data.model.gym_helper
 
 data class GymHelperInput(
     val calories: Double,

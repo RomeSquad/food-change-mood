@@ -1,4 +1,4 @@
-package presentation.input_output
+package presentation.io
 
 import presentation.MenuAction
 
@@ -10,13 +10,9 @@ class ConsoleUi : UiExecutor {
         displayPrompt("Choose the action from (1)..(${options.size}) or anything else to exit: ")
     }
 
-    override fun displayResult(message: String) {
-        println(message)
-    }
+    override fun displayResult(message: String) = println(message)
 
-    override fun displayError(message: String) {
-        println("Error: $message")
-    }
+    override fun displayError(message: String) = println("Error: $message")
 
     override fun displayPrompt(prompt: String) {
         val yellow = "\u001B[33m"

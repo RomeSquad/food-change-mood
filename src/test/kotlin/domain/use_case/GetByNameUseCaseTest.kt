@@ -6,8 +6,8 @@ import domain.use_case.search.SearchMealsByNameUseCase
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertTrue
-import model.Meal
-import model.Nutrition
+import data.model.Meal
+import data.model.Nutrition
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*

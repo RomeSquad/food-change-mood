@@ -1,7 +1,7 @@
 package data.meal
 
-import model.Meal
+import data.model.Meal
 
 interface MealsRepository {
-    fun getAllMeals():List<Meal>
+    fun getAllMeals(): List<Meal>
 }
