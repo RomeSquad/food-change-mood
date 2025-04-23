@@ -1,7 +1,13 @@
 package presentation
 
-import domain.use_case.*
-import logic.use_case.GetKetoDietMealsUseCase
+import domain.use_case.fetch.GetIraqiMealsUseCase
+import domain.use_case.fetch.GetMealsContainsPotatoUseCase
+import domain.use_case.fetch.GetQuickHealthyMealsUseCase
+import domain.use_case.fetch.GetSeafoodMealsUseCase
+import domain.use_case.game.GuessPreparationTimeGameUseCase
+import domain.use_case.game.IngredientGameUseCase
+import domain.use_case.search.*
+import domain.use_case.suggest.*
 import model.gym_helper.CaloriesAndProteinTolerance
 import model.gym_helper.GymHelperInput
 import presentation.input_output.InputReader
@@ -13,12 +19,12 @@ interface MenuAction {
 }
 
 class HealthyFastFoodAction(
-    private val getHealthyMealsFilterUseCase: GetHealthyMealsFilterUseCase
+    private val getQuickHealthyMealsUseCase: GetQuickHealthyMealsUseCase
 ) : MenuAction {
     override val description: String = "Healthy Fast Meals (15 minutes)"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
-        val healthyMeals = getHealthyMealsFilterUseCase.getHealthyFastMeals()
+        val healthyMeals = getQuickHealthyMealsUseCase.getQuickHealthyMeals()
         ui.displayResult("=== Healthy Fast Meals take 15 minutes ===")
         if (healthyMeals.isEmpty()) {
             ui.displayResult("No healthy fast meals found.")
@@ -31,14 +37,14 @@ class HealthyFastFoodAction(
     }
 }
 class MealByNameAction(
-    private val getByNameUseCase: GetByNameUseCase
+    private val getByNameUseCase: SearchMealsByNameUseCase
 ) : MenuAction {
     override val description: String = "Search Meal by Name"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
         ui.displayPrompt("Enter the name of the meal: ")
         val query = inputReader.readString()
-        getByNameUseCase.getByName(query).onSuccess { meals ->
+        getByNameUseCase.searchMealsByName(query).onSuccess { meals ->
             meals.forEach { meal ->
                 ui.displayResult("\nMeal found:")
                 ui.displayResult(meal.toString())
@@ -50,13 +56,13 @@ class MealByNameAction(
     }
 }
 class EasyFoodSuggestionAction(
-    private val getRandomMealsUseCase: GetRandomMealsUseCase
+    private val getRandomMealsUseCase: SuggestEasyFoodUseCase
 ) : MenuAction {
     override val description: String = "Easy Food Suggestion Game"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
         ui.displayResult("\nEasy Food Suggestion Game, TEN RANDOM MEALS BY DEFAULT:")
-        getRandomMealsUseCase.getNRandomEasyMeals().forEach { meal ->
+        getRandomMealsUseCase.getEasyFoodSuggestion().forEach { meal ->
             ui.displayResult("\nMeal Name is: ${meal.name}\n")
         }
 
@@ -64,7 +70,7 @@ class EasyFoodSuggestionAction(
         val count = inputReader.readIntOrNull()
 
         if (count != null) {
-            getRandomMealsUseCase.getNRandomEasyMeals(count).forEach { meal ->
+            getRandomMealsUseCase.getEasyFoodSuggestion(count).forEach { meal ->
                 ui.displayResult("\nMeal Name: ${meal.name}\n")
             }
         }
@@ -72,7 +78,7 @@ class EasyFoodSuggestionAction(
     }
 }
 class PreparationTimeGuessingAction(
-    private val guessGameUseCase: GuessGameUseCase
+    private val guessGameUseCase: GuessPreparationTimeGameUseCase
 ) : MenuAction {
     override val description: String = "Preparation Time Guessing Game"
 
@@ -94,12 +100,13 @@ class PreparationTimeGuessingAction(
                     }
 
                     when (guessGameUseCase.checkUserGuess(guess, correctTime)) {
-                        GuessGameUseCase.GuessResult.CORRECT -> {
+                        GuessPreparationTimeGameUseCase.GuessResult.CORRECT -> {
                             ui.displayResult("Correct answer! Preparation time is $correctTime minutes")
                             return@let
                         }
-                        GuessGameUseCase.GuessResult.TOO_LOW -> ui.displayResult("Less than the correct time.")
-                        GuessGameUseCase.GuessResult.TOO_HIGH -> ui.displayResult("More than the correct time.")
+
+                        GuessPreparationTimeGameUseCase.GuessResult.TOO_LOW -> ui.displayResult("Less than the correct time.")
+                        GuessPreparationTimeGameUseCase.GuessResult.TOO_HIGH -> ui.displayResult("More than the correct time.")
                     }
                 }
 
@@ -109,7 +116,7 @@ class PreparationTimeGuessingAction(
     }
 }
 class EggFreeSweetsAction(
-    private val getSweetsWithNoEggsUseCase: GetSweetsWithoutEggsUseCase
+    private val getSweetsWithNoEggsUseCase: SuggestEggFreeSweetUseCase
 ) : MenuAction {
     override val description: String = "Egg-Free Sweets"
 
@@ -120,7 +127,7 @@ class EggFreeSweetsAction(
         var isUserLikeSweet = "n"
 
         do {
-            val randomSweet = getSweetsWithNoEggsUseCase.getRandomSweet()
+            val randomSweet = getSweetsWithNoEggsUseCase.suggestRandomSweet()
 
             randomSweet.fold(
                 onSuccess = { sweet ->
@@ -149,14 +156,14 @@ class EggFreeSweetsAction(
     }
 }
 class MealByDateAction(
-    private val getByDateUseCase: GetByDateUseCase
+    private val getByDateUseCase: SearchMealsByDateUseCase
 ) : MenuAction {
     override val description: String = "Meals by Date"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
         ui.displayPrompt("Enter the date (yyyy-mm-dd): ")
         val date = inputReader.readString()
-        val resultMeals = getByDateUseCase.getByDate(date)
+        val resultMeals = getByDateUseCase.searchMealsByDate(date)
 
         resultMeals.forEach { meal ->
             ui.displayResult("Meals for date $date:\n")
@@ -169,14 +176,14 @@ class MealByDateAction(
         ui.displayPrompt("Enter the meal ID to get more details (or 'q' to skip): ")
         val mealId = inputReader.readString()
         if (mealId != "q") {
-            val mealResult = GetByIdUseCase().getById(mealId, resultMeals)
+            val mealResult = SearchMealsByIdUseCase().getById(mealId, resultMeals)
             mealResult?.let { ui.displayResult("Meal details:\n$it") }
         }
         ui.displayResult("------------------------------------------------------------")
     }
 }
 class MealsByCaloriesAndProteinAction(
-    private val gymHelperUseCase: GymHelperUseCase
+    private val gymHelperUseCase: SearchGymHelperMealsUseCase
 ) : MenuAction {
     override val description: String = "Meals Based on Calories and Proteins"
 
@@ -224,14 +231,14 @@ class MealsByCaloriesAndProteinAction(
     }
 }
 class MealByCountryAction(
-    private val getMealsByCountryUseCase: GetMealsByCountryUseCase
+    private val getMealsByCountryUseCase: SearchFoodByCountryUseCase
 ) : MenuAction {
     override val description: String = "Meals by Country"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
         ui.displayPrompt("Enter a country to discover their meals: ")
         val countryName = inputReader.readString().trim()
-        val exploreMeals = getMealsByCountryUseCase.getLimitRandomMealsRelatedToCountry(countryName)
+        val exploreMeals = getMealsByCountryUseCase.exploreMealsRelatedToCountry(countryName)
 
         try {
             if (exploreMeals.isEmpty()) {
@@ -249,12 +256,14 @@ class MealByCountryAction(
     }
 }
 class IngredientGameAction(
-    private val getIngredientGameUseCase: GetIngredientGameUseCase
+    private val getIngredientGameUseCase: IngredientGameUseCase
 ) : MenuAction {
     override val description: String = "Ingredient Guessing Game"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
-        while (getIngredientGameUseCase.correctCount != 15) {
+        while (getIngredientGameUseCase
+                .getNextQuestion() != null
+        ) {
             val question = getIngredientGameUseCase.getNextQuestion()
             if (question == null) {
                 ui.displayResult("No more questions available for the game.")
@@ -267,7 +276,7 @@ class IngredientGameAction(
             val answer = inputReader.readString()
 
             if (getIngredientGameUseCase.submitAnswer(answer, question.correctAnswer)) {
-                getIngredientGameUseCase.correctCount++
+                getIngredientGameUseCase.getScore()
                 ui.displayResult("Current Score: ${getIngredientGameUseCase.getScore()} points")
             } else {
                 ui.displayResult(":( Try again")
@@ -292,7 +301,7 @@ class PotatoMealsAction(
     }
 }
 class HighCaloriesAction(
-    private val getMealsContainsHighCaloriesUseCase: GetMealsContainsHighCaloriesUseCase
+    private val getMealsContainsHighCaloriesUseCase: SuggestHighCalorieMealsUseCase
 ) : MenuAction {
     override val description: String = "High-Calorie Meals for Thin People"
 
@@ -334,19 +343,19 @@ class SeafoodMealsAction(
     }
 }
 class ItalianMealForGroupsAction(
-    private val getItalianMealsForLargeGroupsUseCase: GetItalianMealsForLargeGroupsUseCase
+    private val getItalianMealsForLargeGroupsUseCase: SuggestItalianFoodForGroupUseCase
 ) : MenuAction {
     override val description: String = "Italian Meals for Large Groups"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
-        getItalianMealsForLargeGroupsUseCase.getItalianMealsForLargeGroups().forEachIndexed { index, meal ->
+        getItalianMealsForLargeGroupsUseCase.suggestItalianMealsForLargeGroup().forEachIndexed { index, meal ->
             ui.displayResult("${index + 1}. ${meal.name}")
         }
         ui.displayResult("------------------------------------------------------------")
     }
 }
 class KetoDietAction(
-    private val getKetoDietMealsUseCase: GetKetoDietMealsUseCase
+    private val getKetoDietMealsUseCase: SuggestKetoMealUseCase
 ) : MenuAction {
     override val description: String = "Keto Diet Meal Suggestions"
 

@@ -1,21 +1,23 @@
-package logic.use_case
-
+package domain.use_case.suggest
 
 import data.meal.MealsRepository
+import data.utils.NoMealsFoundException
 import model.Meal
 
-class GetKetoDietMealsUseCase(private val mealsRepository: MealsRepository) {
+class SuggestKetoMealUseCase(private val mealsRepository: MealsRepository) {
 
-    fun getKetoMeals(): List<Meal> {
+    fun suggestKetoMeal(): List<Meal> {
         return mealsRepository.getAllMeals().filter {
             it.nutrition.carbohydrates < TEN_ITEM &&
                     it.nutrition.totalFat >= FIFTEN_ITEM &&
                     it.nutrition.protein >= TEN_ITEM
-        }.shuffled()
+        }.takeIf { it.isNotEmpty() }
+            ?.shuffled()
+            ?: throw NoMealsFoundException("No keto‑friendly meals found")
     }
 
     fun getNextKetoMeal(): Meal {
-        val ketoMeals = getKetoMeals()
+        val ketoMeals = suggestKetoMeal()
         val usedKetoMeal = mutableListOf<Int>()
 
         for (meal in ketoMeals) {
@@ -30,8 +32,5 @@ class GetKetoDietMealsUseCase(private val mealsRepository: MealsRepository) {
     companion object {
         private const val TEN_ITEM = 10
         private const val FIFTEN_ITEM = 15
-
     }
 }
-
-

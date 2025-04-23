@@ -1,9 +1,9 @@
-package domain.use_case
+package domain.use_case.search
 
 import data.utils.NoMealsFoundException
 import model.Meal
 
-class GetByIdUseCase {
+class SearchMealsByIdUseCase {
 
     fun getById(id: String, meals: List<Meal>): Meal {
         val trimmedId = id.trim()

@@ -1,11 +1,11 @@
-package domain.use_case
+package domain.use_case.search
 
 import data.meal.MealsRepository
 import model.Meal
 import model.gym_helper.GymHelperInput
 import kotlin.math.absoluteValue
 
-class GymHelperUseCase(
+class SearchGymHelperMealsUseCase(
     private val mealsRepository: MealsRepository,
 ) {
     fun getMealsByCaloriesAndProtein(
