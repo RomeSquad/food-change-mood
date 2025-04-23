@@ -1,6 +1,5 @@
 package model
 
-import java.text.SimpleDateFormat
 import java.util.Date
 
 data class Meal(
@@ -11,11 +10,11 @@ data class Meal(
     val submitted: Date,
     val tags: List<String>,
     val nutrition: Nutrition,
-    val nSteps: Int,
+    val stepsCount: Int,
     val steps: List<String>,
     val description: String?,
     val ingredients: List<String>,
-    val nIngredients: Int,
+    val ingredientsCount: Int,
 ) {
 
     override fun toString(): String {
@@ -25,8 +24,8 @@ data class Meal(
         builder.appendLine(String.format("%-20s: %s", "Meal", name))
         builder.appendLine(String.format("%-20s: %s", "Description", description ?: "No description"))
         builder.appendLine(String.format("%-20s: %s", "Preparation Time", "$minutes minutes"))
-        builder.appendLine(String.format("%-20s: %s", "Ingredients", "$nIngredients items"))
-        builder.appendLine(String.format("%-20s: %s", "Steps", "$nSteps steps"))
+        builder.appendLine(String.format("%-20s: %s", "Ingredients", "$ingredientsCount items"))
+        builder.appendLine(String.format("%-20s: %s", "Steps", "$stepsCount steps"))
         builder.appendLine(String.format("%-20s: %s", "Tags", tags.joinToString(", ")))
         builder.appendLine("-".repeat(50))
 

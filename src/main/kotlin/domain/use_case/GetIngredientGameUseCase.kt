@@ -12,7 +12,7 @@ class GetIngredientGameUseCase(
     private val usedMeals = mutableSetOf<Meal>()
 
     fun getNextQuestion(): Question? {
-        val meals = mealsRepository.getAllMeals().filter { it.ingredients.size >= 1 }
+        val meals = mealsRepository.getAllMeals().filter { it.ingredients.isNotEmpty() }
         val unusedMeals = meals.filterNot { it in usedMeals }
         if (unusedMeals.isEmpty() || correctCount >= 15) return null
 

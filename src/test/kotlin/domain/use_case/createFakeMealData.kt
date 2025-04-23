@@ -4,16 +4,16 @@ import model.Meal
 import model.Nutrition
 import java.util.*
 
-fun createFakeMealDataForRandomEasyMeals (
-    mealName : String,
-    minutes : Int,
-    nSteps : Int,
-    nIngredients :Int
-)=  Meal(
+fun createFakeMealDataForRandomEasyMeals(
+    mealName: String,
+    minutes: Int,
+    nSteps: Int,
+    nIngredients: Int
+) = Meal(
     name = mealName,
     minutes = minutes,
-    nSteps = nSteps,
-    nIngredients = nIngredients,
+    stepsCount = nSteps,
+    ingredientsCount = nIngredients,
     contributorId = 47892,
     submitted = Date("9/16/2005"),
     tags = listOf(

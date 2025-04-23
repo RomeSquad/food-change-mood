@@ -1,6 +1,7 @@
 package domain.use_case
 
 import data.meal.MealsRepository
+import data.utils.NoMealsFoundException
 import model.Meal
 import java.text.SimpleDateFormat
 
@@ -14,19 +15,16 @@ class GetByDateUseCase(
         val dateParsed = SimpleDateFormat(Meal.DATE_FORMAT).parse(date)
         val meals = mealsRepository.getAllMeals()
 
-        val filtered = meals.filter { it.submitted == dateParsed }
-        if (filtered.isEmpty())
-            throw Exception("No meals found for date: $date")
-        else
-            return filtered
+        return meals.filter { it.submitted == dateParsed }
+            .takeIf { it.isNotEmpty() } ?: throw NoMealsFoundException("No meals found for date: $date")
     }
 
-    fun validateDate(date: String) {
+    private fun validateDate(date: String) {
         if (date.isEmpty())
-            throw Exception("Date cannot be empty")
+            throw IllegalArgumentException("Date cannot be empty")
 
         if (!date.trim().matches(Meal.DATE_REGEX))
-            throw Exception("Invalid date format: $date. Expected format: ${Meal.DATE_FORMAT}")
+            throw IllegalArgumentException("Invalid date format: $date. Expected format: ${Meal.DATE_FORMAT}")
 
     }
 }

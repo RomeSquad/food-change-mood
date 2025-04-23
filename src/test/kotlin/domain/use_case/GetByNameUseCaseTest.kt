@@ -7,9 +7,7 @@ import io.mockk.mockk
 import junit.framework.TestCase.assertTrue
 import model.Meal
 import model.Nutrition
-import org.junit.Ignore
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertEquals
@@ -31,11 +29,11 @@ class GetByNameUseCaseTest {
         submitted = Date(),
         tags = listOf("spicy", "asian"),
         nutrition = Nutrition(500.0, 20.0, 10.0, 800.0, 30.0, 8.0, 50.0),
-        nSteps = 5,
+        stepsCount = 5,
         steps = listOf("Step 1", "Step 2"),
         description = "Delicious curry",
         ingredients = listOf("chicken", "curry powder"),
-        nIngredients = 2
+        ingredientsCount = 2
     )
 
     @BeforeEach
