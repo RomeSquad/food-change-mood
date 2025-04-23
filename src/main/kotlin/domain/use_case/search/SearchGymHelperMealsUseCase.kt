@@ -5,7 +5,7 @@ import model.Meal
 import model.gym_helper.GymHelperInput
 import kotlin.math.absoluteValue
 
-class SearchGymFriendlyMealsUseCase(
+class SearchGymHelperMealsUseCase(
     private val mealsRepository: MealsRepository,
 ) {
     fun getMealsByCaloriesAndProtein(
