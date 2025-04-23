@@ -1,6 +1,7 @@
 package domain.use_case
 
 import data.meal.MealsRepository
+import data.utils.NoMealsFoundException
 import model.Meal
 
 class GetIraqiMealsUseCase (
