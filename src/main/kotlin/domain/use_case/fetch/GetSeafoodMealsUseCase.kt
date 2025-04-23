@@ -1,4 +1,4 @@
-package domain.use_case
+package domain.use_case.fetch
 
 import data.meal.MealsRepository
 import model.Meal

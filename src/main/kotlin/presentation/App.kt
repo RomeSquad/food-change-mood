@@ -1,9 +1,5 @@
 package presentation
 
-import domain.use_case.*
-import logic.use_case.GetKetoDietMealsUseCase
-import model.gym_helper.CaloriesAndProteinTolerance
-import model.gym_helper.GymHelperInput
 import presentation.input_output.InputReader
 import presentation.input_output.UiExecutor
 
