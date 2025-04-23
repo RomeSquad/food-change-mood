@@ -1,9 +1,9 @@
 package domain.use_case
 
 import data.meal.MealsRepository
+import domain.use_case.suggest.SuggestKetoMealUseCase
 import io.mockk.every
 import io.mockk.mockk
-import logic.use_case.GetKetoDietMealsUseCase
 import model.Meal
 import model.Nutrition
 import org.junit.jupiter.api.Assertions.*
@@ -14,25 +14,26 @@ import kotlin.test.Test
 class GetKetoDietMealsUseCaseTest{
 
     private lateinit var  mealsRepository: MealsRepository
-    private lateinit var getKetoDietMealsUseCase : GetKetoDietMealsUseCase
+    private lateinit var getKetoDietMealsUseCase : SuggestKetoMealUseCase
+    val someKetoMeals =listOf(
 
+        createKetoMeals(10983,Nutrition(276.0, 17.0, 1.0, 13.0, 69.0, 16.0, 1.0)),
+        createKetoMeals(17768,Nutrition(301.4,29.0,13.0,61.0,57.0,57.0,0.0)),
+        createKetoMeals(15679,Nutrition(480.4,45.0,19.0,61.0,26.0,57.0,9.0)),
+        createKetoMeals(1560009,Nutrition(167.4,20.0,19.0,61.0,19.0,57.0,0.0))
+    )
+
+    
     @BeforeEach
     fun setup(){
         mealsRepository = mockk(relaxed = true)
-        getKetoDietMealsUseCase = GetKetoDietMealsUseCase(mealsRepository)
+        getKetoDietMealsUseCase = SuggestKetoMealUseCase(mealsRepository)
     }
 
     @Test
     fun `should return a keto meal when it runs for the first time`(){
         //given
-        every { mealsRepository.getAllMeals() } returns listOf(
-
-            createKetoMeals(10983,Nutrition(276.0, 17.0, 1.0, 13.0, 69.0, 16.0, 1.0)),
-            createKetoMeals(17768,Nutrition(301.4,29.0,13.0,61.0,57.0,57.0,0.0)),
-            createKetoMeals(15679,Nutrition(480.4,45.0,19.0,61.0,26.0,57.0,9.0)),
-            createKetoMeals(1560009,Nutrition(167.4,20.0,19.0,61.0,19.0,57.0,0.0))
-        )
-
+        every { mealsRepository.getAllMeals() } returns someKetoMeals
 
         // when
         val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
@@ -46,13 +47,7 @@ class GetKetoDietMealsUseCaseTest{
     @Test
     fun `should return a different keto meal when it runs in a different time`() {
         //given
-        every { mealsRepository.getAllMeals() } returns listOf(
-
-            createKetoMeals(10983,Nutrition(276.0, 17.0, 1.0, 13.0, 69.0, 16.0, 1.0)),
-            createKetoMeals(17768,Nutrition(301.4,29.0,13.0,61.0,57.0,57.0,0.0)),
-            createKetoMeals(15679,Nutrition(480.4,45.0,19.0,61.0,26.0,57.0,9.0)),
-            createKetoMeals(1560009,Nutrition(167.4,20.0,19.0,61.0,19.0,57.0,0.0))
-        )
+        every { mealsRepository.getAllMeals() } returns someKetoMeals
 
         // when
         val firstKetoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
@@ -76,7 +71,7 @@ class GetKetoDietMealsUseCaseTest{
             "main-dish", "poultry", "european",
             "italian", "chicken", "meat"
         ),
-        nSteps = 17,
+        stepsCount = 17,
         steps = listOf(
             "heat a large",
             " deep skillet over medium high heat",
@@ -105,7 +100,7 @@ class GetKetoDietMealsUseCaseTest{
             "dry white wine",
             "beef broth"
         ),
-        nIngredients = 8, id = ID, nutrition = nutrition
+        ingredientsCount = 8, id = ID, nutrition = nutrition
     )
 
 }
