@@ -58,11 +58,11 @@ class CsvMealsRepository(
             submitted = constructSubmittedDate(row),
             tags = constructTags(row),
             nutrition = createNutritionFromValues(row),
-            nSteps = constructNSteps(row),
+            stepsCount = constructNSteps(row),
             steps = constructSteps(row),
             description = constructDescription(row),
             ingredients = constructIngredients(row),
-            nIngredients = constructNIngredients(row),
+            ingredientsCount = constructNIngredients(row),
         )
     }
 

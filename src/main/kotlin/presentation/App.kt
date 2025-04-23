@@ -4,9 +4,36 @@ import domain.use_case.*
 import logic.use_case.GetKetoDietMealsUseCase
 import model.gym_helper.CaloriesAndProteinTolerance
 import model.gym_helper.GymHelperInput
+import presentation.input_output.InputReader
+import presentation.input_output.UiExecutor
 
+class App(
+    private val uiExecutor: UiExecutor,
+    private val inputReader: InputReader,
+    private val menu: Menu
+) {
+    fun start() {
+        while (true) {
+            uiExecutor.displayMenu(menu.getActions())
+            val selectedAction = menu.getAction(inputReader.readIntOrNull()) ?: break
 
-class App (
+            try {
+                selectedAction.execute(uiExecutor, inputReader)
+            } catch (e: IllegalArgumentException) {
+                uiExecutor.displayError(e.message ?: "Invalid input provided")
+            } catch (e: Exception) {
+                uiExecutor.displayError(e.message ?: "An unexpected error occurred")
+            }
+
+            uiExecutor.displayPrompt("Do you want to perform another action? (y/n): ")
+            if (inputReader.readString().lowercase() != "y") {
+                uiExecutor.displayResult("Goodbye")
+                break
+            }
+        }
+    }
+}
+class AppOld (
     private val getHealthyMealsFilterUseCase: GetHealthyMealsFilterUseCase,
     private val getByNameUseCase: GetByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
@@ -234,8 +261,7 @@ class App (
             val mealId = readln()
             if (mealId != "q") {  // Exit if user enters 'q'
                 val mealResult = GetByIdUseCase().getById(mealId, resultMeals)
-                mealResult.onSuccess { println("Meal details:\n$it") }
-                    .onFailure { error -> println("Sorry. ${error.message}") }
+                mealResult.let{ println("Meal details:\n$it") }
             }
         println("------------------------------------------------------------")
     }

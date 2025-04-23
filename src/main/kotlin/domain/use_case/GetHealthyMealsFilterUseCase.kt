@@ -2,7 +2,8 @@ package domain.use_case
 
 import data.meal.MealsRepository
 import model.Meal
-class GetHealthyMealsFilterUseCase (
+
+class GetHealthyMealsFilterUseCase(
     private val mealsRepository: MealsRepository
 ) {
     fun getHealthyFastMeals(): List<Meal> {

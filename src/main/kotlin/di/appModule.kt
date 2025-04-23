@@ -17,24 +17,12 @@ val appModule = module {
     single<CsvParser> { CsvParserImpl() }
 
     single<MealsRepository> { CsvMealsRepository(get(), get()) }
-    single { App (
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get()
+    single {
+        App(
+            get(),
+            get(),
+            get(),
         )
     }
-    single { KMPSearchAlgorithm() }
-    single<SearchAlgorithm> {KMPSearchAlgorithm()}
+    single<SearchAlgorithm> { KMPSearchAlgorithm() }
 }
