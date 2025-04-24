@@ -1,5 +1,6 @@
 package presentation.action.suggest
 
+import data.model.Meal
 import domain.use_case.suggest.SuggestEggFreeSweetUseCase
 import presentation.MenuAction
 import presentation.io.InputReader
@@ -21,17 +22,9 @@ class EggFreeSweetsAction(
 
             randomSweet.fold(
                 onSuccess = { sweet ->
-                    ui.displayResult(
-                        "__________________________________________________________\n" +
-                                "You get this random sweet:\n" +
-                                "Meal name: ${sweet.name}\n" +
-                                "Description: ${sweet.description}\n"
-                    )
+                    displaySweetDetails(ui, sweet)
 
-                    do {
-                        ui.displayPrompt("Do you like this sweet? (y/n)\nYour choice: ")
-                        isUserLikeSweet = inputReader.readString().trim()
-                    } while (isUserLikeSweet != "y" && isUserLikeSweet != "n")
+                    isUserLikeSweet = promptUserForLike(inputReader, ui)
 
                     if (isUserLikeSweet == "y") {
                         ui.displayResult("Your final sweet is:\n$sweet")
@@ -44,4 +37,23 @@ class EggFreeSweetsAction(
             )
         } while (isUserLikeSweet == "n")
     }
+
+    private fun displaySweetDetails(ui: UiExecutor, sweet: Meal) {
+        ui.displayResult(
+            "__________________________________________________________\n" +
+                    "You get this random sweet:\n" +
+                    "Meal name: ${sweet.name}\n" +
+                    "Description: ${sweet.description}\n"
+        )
+    }
+
+    private fun promptUserForLike(inputReader: InputReader, ui: UiExecutor): String {
+        var userChoice: String
+        do {
+            ui.displayPrompt("Do you like this sweet? (y/n)\nYour choice: ")
+            userChoice = inputReader.readString().trim()
+        } while (userChoice != "y" && userChoice != "n")
+        return userChoice
+    }
+
 }

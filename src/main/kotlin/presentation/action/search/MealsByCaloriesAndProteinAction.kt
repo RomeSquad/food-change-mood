@@ -1,9 +1,11 @@
 package presentation.action.search
 
-import domain.use_case.search.SearchGymHelperMealsUseCase
+import data.model.Meal
 import data.model.gym_helper.CaloriesAndProteinTolerance
 import data.model.gym_helper.GymHelperInput
+import domain.use_case.search.SearchGymHelperMealsUseCase
 import presentation.MenuAction
+import presentation.displaySeparator
 import presentation.io.InputReader
 import presentation.io.UiExecutor
 
@@ -13,54 +15,92 @@ class MealsByCaloriesAndProteinAction(
     override val description: String = "Meals Based on Calories and Proteins"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
-        ui.displayResult("--- Find Meals by Calories & Protein ---")
+        try {
+            ui.displayResult("--- Find Meals by Calories & Protein ---")
 
-        ui.displayPrompt("Enter desired calories (e.g., 500): ")
-        val calories = inputReader.readDoubleOrNull()
+            val searchCriteria = promptForSearchCriteria(ui, inputReader) ?: return
+            val meals = searchMeals(searchCriteria)
 
-        ui.displayPrompt("Enter desired protein (e.g., 30): ")
-        val protein = inputReader.readDoubleOrNull()
+            displayResults(ui, meals)
+        } finally {
+            displaySeparator(ui)
+        }
+    }
 
-        ui.displayPrompt("Enter calories tolerance (default is 30): ")
-        val caloriesTolerance = inputReader.readIntOrNull() ?: 30
+    private fun promptForSearchCriteria(ui: UiExecutor, inputReader: InputReader): GymHelperInput? {
+        val calories = promptForDouble(ui, inputReader, "Enter desired calories (e.g., 500): ")
+        val protein = promptForDouble(ui, inputReader, "Enter desired protein (e.g., 30): ")
+        val caloriesTolerance = promptForIntWithDefault(
+            ui, inputReader,
+            "Enter calories tolerance (default is 30): ", 30
+        )
+        val proteinTolerance = promptForIntWithDefault(
+            ui, inputReader,
+            "Enter protein tolerance (default is 10): ", 10
+        )
 
-        ui.displayPrompt("Enter protein tolerance (default is 10): ")
-        val proteinTolerance = inputReader.readIntOrNull() ?: 10
+        return if (isValidInput(calories, protein, caloriesTolerance, proteinTolerance)) {
+            GymHelperInput(
+                calories = requireNotNull(calories),
+                protein = requireNotNull(protein),
+                caloriesAndProteinTolerance = CaloriesAndProteinTolerance(
+                    caloriesTolerance,
+                    proteinTolerance
+                )
+            )
+        } else {
+            ui.displayError("Invalid input. Please enter positive numeric values.")
+            null
+        }
+    }
 
-        if (
-            calories == null
-            || protein == null
-            || caloriesTolerance < 0
-            || proteinTolerance < 0
-        ) {
-            ui.displayResult("Invalid input. Please enter numeric values.")
+    private fun promptForDouble(ui: UiExecutor, inputReader: InputReader, prompt: String): Double? {
+        ui.displayPrompt(prompt)
+        return inputReader.readDoubleOrNull()
+    }
+
+    private fun promptForIntWithDefault(ui: UiExecutor, inputReader: InputReader, prompt: String, default: Int): Int {
+        ui.displayPrompt(prompt)
+        return inputReader.readIntOrNull() ?: default
+    }
+
+    private fun isValidInput(
+        calories: Double?,
+        protein: Double?,
+        caloriesTolerance: Int,
+        proteinTolerance: Int
+    ): Boolean {
+        return calories != null &&
+                protein != null &&
+                caloriesTolerance >= 0 &&
+                proteinTolerance >= 0
+    }
+
+    private fun searchMeals(criteria: GymHelperInput): List<Meal> {
+        return gymHelperUseCase.getMealsByCaloriesAndProtein(criteria)
+    }
+
+    private fun displayResults(ui: UiExecutor, meals: List<Meal>) {
+        if (meals.isEmpty()) {
+            ui.displayResult("No meals found matching the criteria.")
             return
         }
 
-        val meals = gymHelperUseCase.getMealsByCaloriesAndProtein(
-            input = GymHelperInput(
-                calories = calories,
-                protein = protein,
-                caloriesAndProteinTolerance = CaloriesAndProteinTolerance(
-                    caloriesTolerance, proteinTolerance
-                )
-            )
-        )
-
-        if (meals.isEmpty()) {
-            ui.displayResult("No meals found matching the criteria.")
-        } else {
-            ui.displayResult("Meals matching the criteria:")
-            meals.forEachIndexed { index, meal ->
-                ui.displayResult("------------------------------------------------------------")
-                ui.displayResult("Meal ${index + 1}:")
-                ui.displayResult("\n- ${meal.name}")
-                ui.displayResult("Description: ${meal.description}")
-                ui.displayResult("Calories: ${meal.nutrition.calories}")
-                ui.displayResult("Protein: ${meal.nutrition.protein}")
-                ui.displayResult("Preparation Time: ${meal.minutes} minutes")
-            }
+        ui.displayResult("Meals matching the criteria:")
+        meals.forEachIndexed { index, meal ->
+            displayMealDetails(ui, meal, index + 1)
         }
-        ui.displayResult("------------------------------------------------------------")
+    }
+
+    private fun displayMealDetails(ui: UiExecutor, meal: Meal, position: Int) {
+        with(meal) {
+            ui.displayResult("------------------------------------------------------------")
+            ui.displayResult("Meal $position:")
+            ui.displayResult("\n- $name")
+            ui.displayResult("Description: $description")
+            ui.displayResult("Calories: ${nutrition.calories}")
+            ui.displayResult("Protein: ${nutrition.protein}")
+            ui.displayResult("Preparation Time: $minutes minutes")
+        }
     }
 }

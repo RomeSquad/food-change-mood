@@ -1,7 +1,9 @@
 package presentation.action.fetch
 
+import data.model.Meal
 import domain.use_case.fetch.GetIraqiMealsUseCase
 import presentation.MenuAction
+import presentation.displaySeparator
 import presentation.io.InputReader
 import presentation.io.UiExecutor
 
@@ -11,9 +13,30 @@ class IraqiMealsAction(
     override val description: String = "Iraqi Meals"
 
     override fun execute(ui: UiExecutor, inputReader: InputReader) {
-        getIraqiMealsUseCase.getIraqiMeals().forEach { meal ->
-            ui.displayResult(meal.toString())
+        try {
+            displayIraqiMeals(ui)
+        } finally {
+            displaySeparator(ui)
         }
-        ui.displayResult("------------------------------------------------------------")
+    }
+
+    private fun displayIraqiMeals(ui: UiExecutor) {
+        val iraqiMeals = fetchIraqiMeals()
+        if (iraqiMeals.isEmpty()) {
+            ui.displayResult("No Iraqi meals found.")
+            return
+        }
+
+        iraqiMeals.forEach { meal ->
+            displayFormattedMeal(ui, meal)
+        }
+    }
+
+    private fun fetchIraqiMeals(): List<Meal> {
+        return getIraqiMealsUseCase.getIraqiMeals()
+    }
+
+    private fun displayFormattedMeal(ui: UiExecutor, meal: Meal) {
+        ui.displayResult(meal.toString())
     }
 }
