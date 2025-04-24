@@ -8,16 +8,22 @@ class GetIraqiMealsUseCase(
 ) {
     fun getIraqiMeals(): List<Meal> {
         return mealsRepository.getAllMeals()
-            .filter { meal -> isIraqiMeal(meal) }
+            .filter { meal ->
+                 checkIraqiTag(meal) || checkIraqDescription(meal)
+            }
     }
 
-    private fun isIraqiMeal(meal: Meal): Boolean {
-        return meal.tags.toString().contains(IRAQI, true) || meal.description?.contains(IRAQ, true) == true
+    private fun checkIraqiTag (
+        meal: Meal,
+        tag: String = "iraqi"
+    ): Boolean {
+        return meal.tags.toString().contains(tag, true)
     }
 
-    companion object {
-        private const val IRAQI = "iraqi"
-        private const val IRAQ = "Iraq"
+    private fun checkIraqDescription (
+        meal: Meal,
+        description: String = "Iraq"
+    ): Boolean {
+        return meal.description?.contains(description, true) ?: false
     }
-
 }
