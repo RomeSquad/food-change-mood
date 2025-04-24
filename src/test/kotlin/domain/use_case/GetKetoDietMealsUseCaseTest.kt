@@ -1,6 +1,7 @@
 package domain.use_case
 
 import data.meal.MealsRepository
+import data.utils.NoMealsFoundException
 import domain.use_case.suggest.SuggestKetoMealUseCase
 import io.mockk.every
 import io.mockk.mockk
@@ -46,9 +47,9 @@ class GetKetoDietMealsUseCaseTest{
         val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
 
         // then
-        assertTrue(ketoMeal.nutrition.carbohydrates < 10)
-        assertTrue(ketoMeal.nutrition.totalFat >= 15)
-        assertTrue(ketoMeal.nutrition.protein >= 10)
+        assertTrue(ketoMealsCondition(getKetoDietMealsUseCase))
+
+
     }
 
     @Test
@@ -71,9 +72,20 @@ class GetKetoDietMealsUseCaseTest{
         every { mealsRepository.getAllMeals() } returns invalidKetomeal
 
         //when && then
-        assertThrows<Exception> {
+        assertThrows<NoMealsFoundException> {
             getKetoDietMealsUseCase.getNextKetoMeal()
         }
+
+    }
+    fun ketoMealsCondition(getKetoDietMealsUseCase : SuggestKetoMealUseCase):Boolean{
+
+        val  someKetoMeal= getKetoDietMealsUseCase.getNextKetoMeal()
+
+        if (someKetoMeal.nutrition.carbohydrates < 10
+            && someKetoMeal.nutrition.totalFat >= 15
+            && someKetoMeal.nutrition.protein >= 10
+            ){return true}
+        return false
 
     }
 
