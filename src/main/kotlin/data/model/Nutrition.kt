@@ -1,14 +1,15 @@
 package data.model
 
 data class Nutrition(
-    val calories: Double,
-    val totalFat: Double,
-    val sugar: Double,
-    val sodium: Double,
-    val protein: Double,
-    val saturatedFat: Double,
-    val carbohydrates: Double
-) {
+    val protein: Double?,
+    val calories: Double = 0.0,
+    val totalFat: Double = 0.0,
+    val sugar: Double = 0.0,
+    val sodium: Double = 0.0,
+    val saturatedFat: Double = 0.0,
+    val carbohydrates: Double = 0.0
+)
+ {
     override fun toString(): String {
         return String.format(
             "%-10s %-18s %-13s %-13s %-15s %-15s %-15s %-13s",

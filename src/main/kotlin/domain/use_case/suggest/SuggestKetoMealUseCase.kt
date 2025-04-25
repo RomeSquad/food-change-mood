@@ -10,7 +10,7 @@ class SuggestKetoMealUseCase(private val mealsRepository: MealsRepository) {
         return mealsRepository.getAllMeals().filter {
             it.nutrition.carbohydrates < TEN_ITEM &&
                     it.nutrition.totalFat >= FIFTEN_ITEM &&
-                    it.nutrition.protein >= TEN_ITEM
+                    it.nutrition.protein!! >= TEN_ITEM
         }.takeIf { it.isNotEmpty() }
             ?.shuffled()
             ?: throw NoMealsFoundException("No keto‑friendly meals found")
