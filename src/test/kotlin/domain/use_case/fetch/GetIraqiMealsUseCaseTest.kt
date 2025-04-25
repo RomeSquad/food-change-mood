@@ -29,7 +29,7 @@ class GetIraqiMealsUseCaseTest {
     }
 
     @Test
-    fun `should return list of iraqi meals when tagged by italy`() {
+    fun `should return list of iraqi meals when tagged by iraqi`() {
         val iraqiMeals = listOf(
             createMeal(tag = listOf("iraqi",""), description = ""),
             createMeal(tag = listOf("","iraqi",""), description = "")
