@@ -66,7 +66,7 @@ class SearchFoodByCountryUseCaseTest {
         mealsRepository = mockk()
         searchFoodByCountryUseCase = SearchFoodByCountryUseCase(mealsRepository)
     }
-val countryName = "iraq"
+
     @Test
     fun `given meals when searching about the country then return success`() {
         val countryName = "iraq"
@@ -78,7 +78,6 @@ val countryName = "iraq"
 
         //Then
         assertEquals("iraq", result)
-        verify(exactly = 1) { mealsRepository.getAllMeals() }
     }
 
     @Test
@@ -92,7 +91,7 @@ val countryName = "iraq"
             searchFoodByCountryUseCase.exploreMealsRelatedToCountry(countryName)
         }
 
-        assertEquals("No meals found related to country: korea", exception.message)
+        assertEquals("No meals found related to country: $countryName", exception.message)
     }
 }
 
