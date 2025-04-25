@@ -1,8 +1,8 @@
 package domain.use_case.search
 
 import data.meal.MealsRepository
-import model.Meal
-import model.gym_helper.GymHelperInput
+import data.model.Meal
+import data.model.gym_helper.GymHelperInput
 import kotlin.math.absoluteValue
 
 class SearchGymHelperMealsUseCase(

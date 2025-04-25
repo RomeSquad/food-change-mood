@@ -1,4 +1,4 @@
-package model.ingredient_game
+package data.model.ingredient_game
 
 data class Question(
     val mealName: String,

@@ -1,4 +1,4 @@
-package model
+package data.model
 
 data class Nutrition(
     val calories: Double,

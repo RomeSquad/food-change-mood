@@ -1,8 +1,8 @@
 package domain.use_case.suggest
 
 import data.meal.MealsRepository
-import data.utils.NoMealsFoundException
-import model.Meal
+import domain.NoMealsFoundException
+import data.model.Meal
 
 class SuggestKetoMealUseCase(private val mealsRepository: MealsRepository) {
     private val usedKetoMeal = mutableListOf<Int>()

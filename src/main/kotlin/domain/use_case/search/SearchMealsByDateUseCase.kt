@@ -1,9 +1,9 @@
 package domain.use_case.search
 
 import data.meal.MealsRepository
-import data.utils.NoMealsFoundException
+import domain.NoMealsFoundException
 import domain.use_case.search.utils.DateValidator
-import model.Meal
+import data.model.Meal
 import java.text.SimpleDateFormat
 
 class SearchMealsByDateUseCase(

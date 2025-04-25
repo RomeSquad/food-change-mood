@@ -1,5 +1,6 @@
 package data.utils
 
+import domain.InvalidFileExtensionException
 import java.io.File
 import java.io.FileNotFoundException
 

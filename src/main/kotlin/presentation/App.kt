@@ -1,31 +1,38 @@
 package presentation
 
-import presentation.input_output.InputReader
-import presentation.input_output.UiExecutor
+import presentation.io.InputReader
+import presentation.io.UiExecutor
 
-class App(
+class App (
     private val uiExecutor: UiExecutor,
     private val inputReader: InputReader,
     private val menu: Menu
 ) {
     fun start() {
-        while (true) {
-            uiExecutor.displayMenu(menu.getActions())
-            val selectedAction = menu.getAction(inputReader.readIntOrNull()) ?: break
+        do {
+            processUserMenuSelection()
+        } while (shouldContinue())
+        uiExecutor.displayResult("Goodbye")
+    }
 
-            try {
-                selectedAction.execute(uiExecutor, inputReader)
-            } catch (e: IllegalArgumentException) {
-                uiExecutor.displayError(e.message ?: "Invalid input provided")
-            } catch (e: Exception) {
-                uiExecutor.displayError(e.message ?: "An unexpected error occurred")
-            }
-
-            uiExecutor.displayPrompt("Do you want to perform another action? (y/n): ")
-            if (inputReader.readString().lowercase() != "y") {
-                uiExecutor.displayResult("Goodbye")
-                break
-            }
+    private fun processUserMenuSelection() {
+        try {
+            displayMenuAndExecuteAction()
+        } catch (e: IllegalArgumentException) {
+            uiExecutor.displayError(e.message ?: "Invalid input provided")
+        } catch (e: Exception) {
+            uiExecutor.displayError(e.message ?: "An unexpected error occurred")
         }
+    }
+
+    private fun displayMenuAndExecuteAction() {
+        uiExecutor.displayMenu(menu.getActions())
+        val selectedAction = menu.getAction(inputReader.readIntOrNull()) ?: return
+        selectedAction.execute(uiExecutor, inputReader)
+    }
+
+    private fun shouldContinue(): Boolean {
+        uiExecutor.displayPrompt("Do you want to perform another action? (y/n): ")
+        return inputReader.readString().equals("y", ignoreCase = true)
     }
 }
