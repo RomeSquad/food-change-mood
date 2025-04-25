@@ -2,6 +2,9 @@ package domain.use_case
 
 import com.google.common.truth.Truth.assertThat
 import data.meal.MealsRepository
+import domain.use_case.FakeData.complexMealsFakeData
+import domain.use_case.FakeData.easyMealsFakeData
+import domain.use_case.FakeData.expectedMealNames
 import domain.use_case.suggest.SuggestEasyFoodUseCase
 import io.mockk.every
 import io.mockk.mockk
@@ -18,7 +21,58 @@ class GetRandomMealsUseCaseTest {
     private lateinit var suggestEasyFoodUseCase: SuggestEasyFoodUseCase
 
 
-    private val easyMealsFakeData = listOf(
+    @BeforeEach
+    fun setup() {
+        mealsRepository = mockk(relaxed = true)
+        suggestEasyFoodUseCase = SuggestEasyFoodUseCase(mealsRepository)
+    }
+
+    @Test
+    fun `should return ten random meals  when the meals is easy to prepare`() {
+
+        // Given
+        every { mealsRepository.getAllMeals() } returns easyMealsFakeData
+
+        // When
+        val result = suggestEasyFoodUseCase.getEasyFoodSuggestion()
+
+        // Then
+        assertThat(result.map { it.name }).containsAnyIn(expectedMealNames)
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [1, 3, 5])
+    fun `should return correct number of meals when the meals is easy to prepare`(numberOfMeals: Int) {
+
+        // Given
+        every { mealsRepository.getAllMeals() } returns easyMealsFakeData
+
+        // When
+        val result = suggestEasyFoodUseCase.getEasyFoodSuggestion(numberOfMeals)
+
+        // Then
+        assertThat(result).hasSize(numberOfMeals)
+
+
+    }
+
+    @Test
+    fun `should throw NoSuchElementException when no easy meals are found`() {
+        // Given
+        every { mealsRepository.getAllMeals() } returns complexMealsFakeData
+
+        // When // Then
+        assertThrows<NoSuchElementException> {
+            suggestEasyFoodUseCase.getEasyFoodSuggestion()
+        }
+    }
+
+
+}
+
+object FakeData {
+    val easyMealsFakeData = listOf(
         createFakeMealData(
             mealName = "Chicken Curry",
             minutes = 2,
@@ -99,7 +153,7 @@ class GetRandomMealsUseCaseTest {
         )
     )
 
-    private val complexMealsFakeData = listOf(
+    val complexMealsFakeData = listOf(
         createFakeMealData(
             mealName = "Chicken Curry",
             minutes = 50,
@@ -174,60 +228,11 @@ class GetRandomMealsUseCaseTest {
         )
     )
 
-    private val expectedMealNames = listOf(
+    val expectedMealNames = listOf(
         "Chicken Curry", "Beef Stir Fry", "Vegetable Soup", "Pasta Salad",
         "Grilled Salmon", "Chicken Wrap", "Veggie Burger", "Scrambled Eggs",
         "Pork Chop", "Chicken Quesadilla", "Tofu Stir Fry", "Chicken Salad"
     )
-
-
-    @BeforeEach
-    fun setup() {
-        mealsRepository = mockk(relaxed = true)
-        suggestEasyFoodUseCase = SuggestEasyFoodUseCase(mealsRepository)
-    }
-
-    @Test
-    fun `should return ten random meals names when the meals is easy to prepare`() {
-
-        // Given
-        every { mealsRepository.getAllMeals() } returns easyMealsFakeData
-
-        // When
-        val result = suggestEasyFoodUseCase.getEasyFoodSuggestion()
-
-        // Then
-        assertThat(result.map { it.name }).containsAnyIn(expectedMealNames)
-
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = [1, 3, 5])
-    fun `should return correct number of meals when the meals is easy to prepare`(numberOfMeals: Int) {
-
-        // Given
-        every { mealsRepository.getAllMeals() } returns easyMealsFakeData
-
-        // When
-        val result = suggestEasyFoodUseCase.getEasyFoodSuggestion(numberOfMeals)
-
-        // Then
-        assertThat(result).hasSize(numberOfMeals)
-
-
-    }
-
-    @Test
-    fun `should throw NoSuchElementException when no easy meals are found`() {
-        // Given
-        every { mealsRepository.getAllMeals() } returns complexMealsFakeData
-
-        // When // Then
-        assertThrows<NoSuchElementException> {
-            suggestEasyFoodUseCase.getEasyFoodSuggestion()
-        }
-    }
-
-
 }
+
 
