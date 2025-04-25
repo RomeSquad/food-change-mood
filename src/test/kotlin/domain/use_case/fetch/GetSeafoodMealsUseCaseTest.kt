@@ -6,13 +6,17 @@ import data.model.Nutrition
 import domain.NoMealsFoundException
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
+data class SeafoodMeal(
+    val name: String,
+    val protein: Double?
+)
 
 class GetSeafoodMealsUseCaseTest {
 
@@ -56,7 +60,7 @@ class GetSeafoodMealsUseCaseTest {
     }
 
     @Test
-    fun `should return seafood meals sorted by protein in descending order`() {
+    fun `getSeafoodMeals returns correct number of seafood meals`() {
         val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 35.0)
         val fish = createMeal("Fish", 2, listOf("seafood"), 25.0)
         val chicken = createMeal("Chicken", 3, listOf("Meat"), 30.0)
@@ -66,14 +70,62 @@ class GetSeafoodMealsUseCaseTest {
         val result = getSeafoodMealsUseCase.getSeafoodMeals()
 
         assertEquals(2, result.size)
+    }
+
+    @Test
+    fun `getSeafoodMeals sorts seafood meals with highest protein first`() {
+        val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 35.0)
+        val fish = createMeal("Fish", 2, listOf("seafood"), 25.0)
+        val chicken = createMeal("Chicken", 3, listOf("Meat"), 30.0)
+
+        every { mealsRepository.getAllMeals() } returns listOf(shrimp, fish, chicken)
+
+        val result = getSeafoodMealsUseCase.getSeafoodMeals()
+
         assertEquals("Shrimp", result[0].name)
+    }
+
+    @Test
+    fun `getSeafoodMeals assigns correct protein to first seafood meal`() {
+        val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 35.0)
+        val fish = createMeal("Fish", 2, listOf("seafood"), 25.0)
+        val chicken = createMeal("Chicken", 3, listOf("Meat"), 30.0)
+
+        every { mealsRepository.getAllMeals() } returns listOf(shrimp, fish, chicken)
+
+        val result = getSeafoodMealsUseCase.getSeafoodMeals()
+
         assertEquals(35.0, result[0].protein)
+    }
+
+    @Test
+    fun `getSeafoodMeals sorts seafood meals with lower protein second`() {
+        val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 35.0)
+        val fish = createMeal("Fish", 2, listOf("seafood"), 25.0)
+        val chicken = createMeal("Chicken", 3, listOf("Meat"), 30.0)
+
+        every { mealsRepository.getAllMeals() } returns listOf(shrimp, fish, chicken)
+
+        val result = getSeafoodMealsUseCase.getSeafoodMeals()
+
         assertEquals("Fish", result[1].name)
+    }
+
+    @Test
+    fun `getSeafoodMeals assigns correct protein to second seafood meal`() {
+        val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 35.0)
+        val fish = createMeal("Fish", 2, listOf("seafood"), 25.0)
+        val chicken = createMeal("Chicken", 3, listOf("Meat"), 30.0)
+
+        every { mealsRepository.getAllMeals() } returns listOf(shrimp, fish, chicken)
+
+        val result = getSeafoodMealsUseCase.getSeafoodMeals()
+
         assertEquals(25.0, result[1].protein)
     }
 
     @Test
-    fun `should throw NoMealsFoundException when repository returns empty list`() {
+    fun `getSeafoodMeals throws NoMealsFoundException when repository returns empty list`() {
         every { mealsRepository.getAllMeals() } returns emptyList()
 
         assertFailsWith<NoMealsFoundException> {
@@ -82,7 +134,7 @@ class GetSeafoodMealsUseCaseTest {
     }
 
     @Test
-    fun `should throw NoMealsFoundException when no seafood meals are found`() {
+    fun `getSeafoodMeals throws NoMealsFoundException when no seafood meals are found`() {
         val chicken = createMeal("Chicken", 1, listOf("Meat"))
         val beef = createMeal("Beef", 2, listOf("Meat"))
 
@@ -94,7 +146,7 @@ class GetSeafoodMealsUseCaseTest {
     }
 
     @Test
-    fun `should handle case-insensitive seafood tag matching`() {
+    fun `getSeafoodMeals returns correct number of meals with case-insensitive tags`() {
         val shrimp = createMeal("Shrimp", 1, listOf("SEAFOOD"), 30.0)
         val fish = createMeal("Fish", 2, listOf("SeaFood"), 20.0)
 
@@ -103,12 +155,34 @@ class GetSeafoodMealsUseCaseTest {
         val result = getSeafoodMealsUseCase.getSeafoodMeals()
 
         assertEquals(2, result.size)
+    }
+
+    @Test
+    fun `getSeafoodMeals sorts case-insensitive seafood meals by protein descending`() {
+        val shrimp = createMeal("Shrimp", 1, listOf("SEAFOOD"), 30.0)
+        val fish = createMeal("Fish", 2, listOf("SeaFood"), 20.0)
+
+        every { mealsRepository.getAllMeals() } returns listOf(shrimp, fish)
+
+        val result = getSeafoodMealsUseCase.getSeafoodMeals()
+
         assertEquals("Shrimp", result[0].name)
+    }
+
+    @Test
+    fun `getSeafoodMeals includes case-insensitive seafood meals in correct order`() {
+        val shrimp = createMeal("Shrimp", 1, listOf("SEAFOOD"), 30.0)
+        val fish = createMeal("Fish", 2, listOf("SeaFood"), 20.0)
+
+        every { mealsRepository.getAllMeals() } returns listOf(shrimp, fish)
+
+        val result = getSeafoodMealsUseCase.getSeafoodMeals()
+
         assertEquals("Fish", result[1].name)
     }
 
     @Test
-    fun `should return sorted seafood meals when multiple meals have the same protein value`() {
+    fun `getSeafoodMeals returns correct number of meals with same protein`() {
         val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 25.0)
         val fish = createMeal("Fish", 2, listOf("Seafood"), 25.0)
 
@@ -117,20 +191,42 @@ class GetSeafoodMealsUseCaseTest {
         val result = getSeafoodMealsUseCase.getSeafoodMeals()
 
         assertEquals(2, result.size)
-        assertTrue(result.map { it.name }.containsAll(listOf("Shrimp", "Fish")))
-        assertEquals(25.0, result[0].protein)
-        assertEquals(25.0, result[1].protein)
     }
 
     @Test
-    fun `should throw NoMealsFoundException when no seafood meals are found after filtering`() {
-        val chicken = createMeal("Chicken", 1, listOf("Meat"))
-        val beef = createMeal("Beef", 2, listOf("Meat"))
+    fun `getSeafoodMeals includes all meals with same protein`() {
+        val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 25.0)
+        val fish = createMeal("Fish", 2, listOf("Seafood"), 25.0)
 
-        every { mealsRepository.getAllMeals() } returns listOf(chicken, beef)
+        every { mealsRepository.getAllMeals() } returns listOf(shrimp, fish)
 
-        assertFailsWith<NoMealsFoundException> {
-            getSeafoodMealsUseCase.getSeafoodMeals()
-        }
+        val result = getSeafoodMealsUseCase.getSeafoodMeals()
+
+        assertTrue(result.map { it.name }.containsAll(listOf("Shrimp", "Fish")))
     }
+
+    @Test
+    fun `getSeafoodMeals assigns correct protein to first meal with same protein`() {
+        val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 25.0)
+        val fish = createMeal("Fish", 2, listOf("Seafood"), 25.0)
+
+        every { mealsRepository.getAllMeals() } returns listOf(shrimp, fish)
+
+        val result = getSeafoodMealsUseCase.getSeafoodMeals()
+
+        assertEquals(25.0, result[0].protein)
+    }
+
+    @Test
+    fun `getSeafoodMeals assigns correct protein to second meal with same protein`() {
+        val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 25.0)
+        val fish = createMeal("Fish", 2, listOf("Seafood"), 25.0)
+
+        every { mealsRepository.getAllMeals() } returns listOf(shrimp, fish)
+
+        val result = getSeafoodMealsUseCase.getSeafoodMeals()
+
+        assertEquals(25.0, result[1].protein)
+    }
+
 }
