@@ -23,7 +23,7 @@ class SuggestEggFreeSweetUseCaseTest {
 
 
     @Test
-    fun `should return list of egg free sweet when tagged by sweet ingredient not contain egg`() {
+    fun `suggestRandomSweet should return list of egg free sweets when tagged by sweet ingredient and not contain egg`() {
         val sweetsWithoutEgg = listOf(
             createFakeMealData(tags = listOf("sweet"), ingredients = listOf()),
         )
@@ -36,7 +36,7 @@ class SuggestEggFreeSweetUseCaseTest {
     }
 
     @Test
-    fun `should throw when tagged not contain sweet`() {
+    fun `suggestRandomSweet should throw NoSuchElementException when tagged not contain sweet`() {
         val meals = listOf(
             createFakeMealData(tags = listOf("")),
         )
@@ -50,7 +50,7 @@ class SuggestEggFreeSweetUseCaseTest {
     }
 
     @Test
-    fun `should throw when sweet ingredients contain egg`() {
+    fun `suggestRandomSweet should throw NoSuchElementException when sweet ingredients contain egg`() {
         val sweetWithEggs = listOf(
             createFakeMealData(tags = listOf("sweet"), ingredients = listOf("egg")),
         )
@@ -63,7 +63,7 @@ class SuggestEggFreeSweetUseCaseTest {
     }
 
     @Test
-    fun `should throw when no meals`() {
+    fun `suggestRandomSweet should throw NoSuchElementException when no meals`() {
         val meals = emptyList<Meal>()
         every { mealsRepository.getAllMeals() } returns meals
 
