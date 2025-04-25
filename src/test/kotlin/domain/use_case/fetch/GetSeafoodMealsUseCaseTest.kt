@@ -81,7 +81,7 @@ class GetSeafoodMealsUseCaseTest {
     }
 
     @Test
-    fun `getSeafoodMeals assigns correct protein to first seafood meal`() {
+    fun `getSeafoodMeals has highest protein value in first meal`() {
         val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 35.0)
         val fish = createMeal("Fish", 2, listOf("seafood"), 25.0)
         val chicken = createMeal("Chicken", 3, listOf("Meat"), 30.0)
@@ -107,7 +107,7 @@ class GetSeafoodMealsUseCaseTest {
     }
 
     @Test
-    fun `getSeafoodMeals assigns correct protein to second seafood meal`() {
+    fun `getSeafoodMeals has second highest protein value in second meal`() {
         val shrimp = createMeal("Shrimp", 1, listOf("Seafood"), 35.0)
         val fish = createMeal("Fish", 2, listOf("seafood"), 25.0)
         val chicken = createMeal("Chicken", 3, listOf("Meat"), 30.0)
