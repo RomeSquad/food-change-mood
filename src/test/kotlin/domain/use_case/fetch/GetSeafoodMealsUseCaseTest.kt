@@ -13,11 +13,6 @@ import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.test.assertFailsWith
 
-data class SeafoodMeal(
-    val name: String,
-    val protein: Double?
-)
-
 class GetSeafoodMealsUseCaseTest {
 
     private lateinit var mealsRepository: MealsRepository
