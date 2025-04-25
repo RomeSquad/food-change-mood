@@ -37,7 +37,15 @@ class GetSeafoodMealsUseCaseTest {
             contributorId = id,
             submitted = Date(),
             tags = tags,
-            nutrition = Nutrition(protein = protein),
+            nutrition = Nutrition(
+                calories = 500.0,
+                totalFat = 20.0,
+                sugar = 5.0,
+                sodium = 800.0,
+                protein = protein,
+                saturatedFat = 10.0,
+                carbohydrates = 50.0
+            ),
             stepsCount = 3,
             steps = listOf("Step 1", "Step 2", "Step 3"),
             description = "$name meal",
