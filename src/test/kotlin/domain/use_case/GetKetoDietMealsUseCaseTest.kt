@@ -25,13 +25,11 @@ class GetKetoDietMealsUseCaseTest {
         createKetoMeals(1560009, Nutrition(167.4, 20.0, 19.0, 61.0, 19.0, 57.0, 0.0))
     )
     val invalidKetomeal = listOf(
-
-        createKetoMeals(999, Nutrition(400.0, 5.0, 2.0, 50.0, 30.0, 40.0, 20.0)),
-        createKetoMeals(17768, Nutrition(301.4, 0.0, 13.0, 61.0, 57.0, 57.0, 0.0)),
-        createKetoMeals(15679, Nutrition(480.4, 45.0, 19.0, 61.0, 26.0, 57.0, 10.0)),
-        createKetoMeals(1560009, Nutrition(167.4, 7.0, 19.0, 61.0, 4.0, 57.0, 30.0))
+        createKetoMeals(10983, Nutrition(276.0, 1.0, 1.0, 13.0, 69.0, 16.0, 1.0)),
+        createKetoMeals(17768, Nutrition(301.4, 29.0, 13.0, 61.0, 2.0, 57.0, 0.0)),
+        createKetoMeals(15679, Nutrition(480.4, 45.0, 19.0, 61.0, 26.0, 57.0, 90.0)),
+        createKetoMeals(1560009, Nutrition(167.4, 0.0, 19.0, 61.0, 9.0, 57.0, 20.0))
     )
-    val emptyListOfMeals = emptyList<Meal>()
 
     @BeforeEach
     fun setup() {
@@ -111,7 +109,7 @@ class GetKetoDietMealsUseCaseTest {
         //when
         val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
         // then
-        assertTrue(ketoMeal.nutrition.totalFat >= FIFTEN)
+        assertTrue(ketoMeal.nutrition.totalFat >= FIFTEEN)
     }
 
     @Test
@@ -130,7 +128,7 @@ class GetKetoDietMealsUseCaseTest {
         val someKetoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
 
         if (someKetoMeal.nutrition.carbohydrates < TEN
-            && someKetoMeal.nutrition.totalFat >= FIFTEN
+            && someKetoMeal.nutrition.totalFat >= FIFTEEN
             && someKetoMeal.nutrition.protein >= TEN
         ) {
             return true
@@ -187,6 +185,6 @@ class GetKetoDietMealsUseCaseTest {
 
     companion object {
         const val TEN = 10
-        const val FIFTEN = 15
+        const val FIFTEEN = 15
     }
 }
