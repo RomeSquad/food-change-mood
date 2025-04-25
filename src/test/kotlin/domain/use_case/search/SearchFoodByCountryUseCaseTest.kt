@@ -66,29 +66,30 @@ class SearchFoodByCountryUseCaseTest {
         mealsRepository = mockk()
         searchFoodByCountryUseCase = SearchFoodByCountryUseCase(mealsRepository)
     }
-
+val countryName = "iraq"
     @Test
     fun `given meals when searching about the country then return success`() {
-
+        val countryName = "iraq"
         //Given
         every { mealsRepository.getAllMeals() } returns mockMeals
 
         //When
-        val result = searchFoodByCountryUseCase.exploreMealsRelatedToCountry("iraq")
+        val result = searchFoodByCountryUseCase.exploreMealsRelatedToCountry(countryName)[0].name
 
         //Then
-        assertEquals("iraq", result[0].name)
+        assertEquals("iraq", result)
         verify(exactly = 1) { mealsRepository.getAllMeals() }
     }
 
     @Test
-    fun `NoSuchElementException exception when No meals found related to country`() {
+    fun `throws NoSuchElementException when no meals found for given country`() {
+        val countryName = "korea"
         // Given
         every { mealsRepository.getAllMeals() } returns mockMeals
 
         // When & Then
         val exception = org.junit.jupiter.api.assertThrows<NoSuchElementException> {
-            searchFoodByCountryUseCase.exploreMealsRelatedToCountry("korea")
+            searchFoodByCountryUseCase.exploreMealsRelatedToCountry(countryName)
         }
 
         assertEquals("No meals found related to country: korea", exception.message)
