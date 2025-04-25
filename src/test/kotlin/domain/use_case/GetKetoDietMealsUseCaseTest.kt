@@ -13,33 +13,34 @@ import org.junit.jupiter.api.assertThrows
 import java.util.*
 import kotlin.test.Test
 
-class GetKetoDietMealsUseCaseTest{
+class GetKetoDietMealsUseCaseTest {
 
-    private lateinit var  mealsRepository: MealsRepository
-    private lateinit var getKetoDietMealsUseCase : SuggestKetoMealUseCase
-    val someKetoMeals =listOf(
+    private lateinit var mealsRepository: MealsRepository
+    private lateinit var getKetoDietMealsUseCase: SuggestKetoMealUseCase
+    val someKetoMeals = listOf(
 
-        createKetoMeals(10983,Nutrition(276.0, 17.0, 1.0, 13.0, 69.0, 16.0, 1.0)),
-        createKetoMeals(17768,Nutrition(301.4,29.0,13.0,61.0,57.0,57.0,0.0)),
-        createKetoMeals(15679,Nutrition(480.4,45.0,19.0,61.0,26.0,57.0,9.0)),
-        createKetoMeals(1560009,Nutrition(167.4,20.0,19.0,61.0,19.0,57.0,0.0))
+        createKetoMeals(10983, Nutrition(276.0, 17.0, 1.0, 13.0, 69.0, 16.0, 1.0)),
+        createKetoMeals(17768, Nutrition(301.4, 29.0, 13.0, 61.0, 57.0, 57.0, 0.0)),
+        createKetoMeals(15679, Nutrition(480.4, 45.0, 19.0, 61.0, 26.0, 57.0, 9.0)),
+        createKetoMeals(1560009, Nutrition(167.4, 20.0, 19.0, 61.0, 19.0, 57.0, 0.0))
     )
-    val invalidKetomeal =listOf(
+    val invalidKetomeal = listOf(
 
-        createKetoMeals(999, Nutrition(400.0, 5.0, 2.0, 50.0, 30.0, 40.0, 20.0)),        createKetoMeals(17768,Nutrition(301.4,0.0,13.0,61.0,57.0,57.0,0.0)),
-        createKetoMeals(15679,Nutrition(480.4,45.0,19.0,61.0,26.0,57.0,10.0)),
-        createKetoMeals(1560009,Nutrition(167.4,7.0,19.0,61.0,4.0,57.0,30.0))
+        createKetoMeals(999, Nutrition(400.0, 5.0, 2.0, 50.0, 30.0, 40.0, 20.0)),
+        createKetoMeals(17768, Nutrition(301.4, 0.0, 13.0, 61.0, 57.0, 57.0, 0.0)),
+        createKetoMeals(15679, Nutrition(480.4, 45.0, 19.0, 61.0, 26.0, 57.0, 10.0)),
+        createKetoMeals(1560009, Nutrition(167.4, 7.0, 19.0, 61.0, 4.0, 57.0, 30.0))
     )
     val emptyListOfMeals = emptyList<Meal>()
 
     @BeforeEach
-    fun setup(){
+    fun setup() {
         mealsRepository = mockk(relaxed = true)
         getKetoDietMealsUseCase = SuggestKetoMealUseCase(mealsRepository)
     }
 
     @Test
-    fun `should return a keto meal when it runs for the first time`(){
+    fun `should return a keto meal when it runs for the first time`() {
         //given
         every { mealsRepository.getAllMeals() } returns someKetoMeals
 
@@ -60,9 +61,10 @@ class GetKetoDietMealsUseCaseTest{
         // then
         assertNotEquals(firstKetoMeal.id, secondKetoMeals.id)
 
-}
+    }
+
     @Test
-    fun `should throw exception when  keto meals runs out`() {
+    fun `should throw NoMealsFoundException when  keto meals runs out`() {
         //given
         every { mealsRepository.getAllMeals() } returns invalidKetomeal
 
@@ -72,55 +74,67 @@ class GetKetoDietMealsUseCaseTest{
         }
 
     }
-    @Test
-    fun `should throw an exception when `(){
-        //given
-        every { mealsRepository.getAllMeals() }returns emptyListOfMeals
 
-        //when &&then
-        assertThrows<Exception>("There is no more keto meals left "){
+    @Test
+    fun `should throw an Exception when there's no keto meals left `() {
+        //given
+        every { mealsRepository.getAllMeals() } returns someKetoMeals
+
+        //when
+        getKetoDietMealsUseCase.getNextKetoMeal()
+        getKetoDietMealsUseCase.getNextKetoMeal()
+        getKetoDietMealsUseCase.getNextKetoMeal()
+        getKetoDietMealsUseCase.getNextKetoMeal()
+
+        //then
+        assertThrows<Exception>("There is no more keto meals left ") {
             getKetoDietMealsUseCase.getNextKetoMeal()
         }
     }
+
     @Test
-    fun `should return true when the condition of carbohydrates is true`(){
+    fun `should return true when the condition of carbohydrates is true`() {
         //given
-        every { mealsRepository.getAllMeals() }returns someKetoMeals
+        every { mealsRepository.getAllMeals() } returns someKetoMeals
 
         //when
         val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
         // then
-        assertTrue(ketoMeal.nutrition.carbohydrates<TEN)
+        assertTrue(ketoMeal.nutrition.carbohydrates < TEN)
     }
+
     @Test
-    fun `should return true when the condition of totalFat is true `(){
+    fun `should return true when the condition of totalFat is true `() {
         //given
-        every { mealsRepository.getAllMeals() }returns someKetoMeals
+        every { mealsRepository.getAllMeals() } returns someKetoMeals
 
         //when
         val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
         // then
-        assertTrue(ketoMeal.nutrition.totalFat>=FIFTEN)
+        assertTrue(ketoMeal.nutrition.totalFat >= FIFTEN)
     }
+
     @Test
-    fun `should return true when the condition of protein is true`(){
+    fun `should return true when the condition of protein is true`() {
         //given
-        every { mealsRepository.getAllMeals() }returns someKetoMeals
+        every { mealsRepository.getAllMeals() } returns someKetoMeals
 
         //when
         val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
         // then
-        assertTrue(ketoMeal.nutrition.protein>=TEN)
+        assertTrue(ketoMeal.nutrition.protein >= TEN)
     }
 
-    fun ketoMealsCondition(getKetoDietMealsUseCase : SuggestKetoMealUseCase):Boolean{
+    fun ketoMealsCondition(getKetoDietMealsUseCase: SuggestKetoMealUseCase): Boolean {
 
-        val  someKetoMeal= getKetoDietMealsUseCase.getNextKetoMeal()
+        val someKetoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
 
         if (someKetoMeal.nutrition.carbohydrates < TEN
             && someKetoMeal.nutrition.totalFat >= FIFTEN
             && someKetoMeal.nutrition.protein >= TEN
-            ){return true}
+        ) {
+            return true
+        }
         return false
 
 
@@ -170,8 +184,9 @@ class GetKetoDietMealsUseCaseTest{
         ),
         ingredientsCount = 8, id = ID, nutrition = nutrition
     )
+
     companion object {
-        const val  TEN =10
-        const val FIFTEN =15
+        const val TEN = 10
+        const val FIFTEN = 15
     }
 }
