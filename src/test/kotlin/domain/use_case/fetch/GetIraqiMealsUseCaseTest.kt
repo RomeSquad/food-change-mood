@@ -29,7 +29,7 @@ class GetIraqiMealsUseCaseTest {
     }
 
     @Test
-    fun `should return list of italian meals when tagged by italy`() {
+    fun `should return list of iraqi meals when tagged by iraqi`() {
         val iraqiMeals = listOf(
             createMeal(tag = listOf("iraqi",""), description = ""),
             createMeal(tag = listOf("","iraqi",""), description = "")
@@ -42,7 +42,7 @@ class GetIraqiMealsUseCaseTest {
     }
 
     @Test
-    fun `should return list of italian meals when description contain Iraq`() {
+    fun `should return list of iraqi meals when description contain Iraq`() {
         val iraqiMeals = listOf(
             createMeal(tag = listOf("",""), description = "Iraq"),
             createMeal(tag = listOf("",""), description = "Iraq")
@@ -55,7 +55,7 @@ class GetIraqiMealsUseCaseTest {
     }
 
     @Test
-    fun `should return list of italian meals when tagged by iraqi and description contain Iraq`() {
+    fun `should return list of iraqi meals when tagged by iraqi and description contain Iraq`() {
         val iraqiMeals = listOf(
             createMeal(tag = listOf("iraqi","",""), description = "Iraq"),
             createMeal(tag = listOf("","iraqi"), description = "Iraq")
