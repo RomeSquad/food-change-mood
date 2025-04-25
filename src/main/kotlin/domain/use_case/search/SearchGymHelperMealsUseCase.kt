@@ -3,6 +3,7 @@ package domain.use_case.search
 import data.meal.MealsRepository
 import data.model.Meal
 import data.model.gym_helper.GymHelperInput
+import domain.NoMealsFoundException
 import kotlin.math.absoluteValue
 
 class SearchGymHelperMealsUseCase(
@@ -22,7 +23,7 @@ class SearchGymHelperMealsUseCase(
         return if (matchesMeals.isNotEmpty()) {
             matchesMeals
         } else {
-            throw NoSuchElementException(
+            throw NoMealsFoundException(
                 "No meals found matching calories = ${input.calories} ± ${input.caloriesAndProteinTolerance.caloriesTolerance} " +
                         "and protein = ${input.protein} ± ${input.caloriesAndProteinTolerance.proteinTolerance}"
             )
