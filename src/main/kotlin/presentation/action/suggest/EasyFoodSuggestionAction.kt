@@ -52,6 +52,6 @@ class EasyFoodSuggestionAction(
     }
 
     private fun displayMeal(ui: UiExecutor, meal: Meal) {
-        ui.displayResult("\nMeal Name: ${meal.name}\n")
+        ui.displayResult("\nMeal Name: ${meal.name}")
     }
 }
