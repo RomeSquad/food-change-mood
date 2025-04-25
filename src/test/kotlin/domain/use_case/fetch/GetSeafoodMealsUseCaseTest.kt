@@ -3,6 +3,7 @@ package domain.use_case.fetch
 import data.meal.MealsRepository
 import data.model.Meal
 import data.model.Nutrition
+import domain.NoMealsFoundException
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
@@ -72,22 +73,22 @@ class GetSeafoodMealsUseCaseTest {
     }
 
     @Test
-    fun `should throw NoSuchElementException when repository returns empty list`() {
+    fun `should throw NoMealsFoundException when repository returns empty list`() {
         every { mealsRepository.getAllMeals() } returns emptyList()
 
-        assertFailsWith<NoSuchElementException> {
+        assertFailsWith<NoMealsFoundException> {
             getSeafoodMealsUseCase.getSeafoodMeals()
         }
     }
 
     @Test
-    fun `should throw NoSuchElementException when no seafood meals are found`() {
+    fun `should throw NoMealsFoundException when no seafood meals are found`() {
         val chicken = createMeal("Chicken", 1, listOf("Meat"))
         val beef = createMeal("Beef", 2, listOf("Meat"))
 
         every { mealsRepository.getAllMeals() } returns listOf(chicken, beef)
 
-        assertFailsWith<NoSuchElementException> {
+        assertFailsWith<NoMealsFoundException> {
             getSeafoodMealsUseCase.getSeafoodMeals()
         }
     }
@@ -119,5 +120,17 @@ class GetSeafoodMealsUseCaseTest {
         assertTrue(result.map { it.name }.containsAll(listOf("Shrimp", "Fish")))
         assertEquals(25.0, result[0].protein)
         assertEquals(25.0, result[1].protein)
+    }
+
+    @Test
+    fun `should throw NoMealsFoundException when no seafood meals are found after filtering`() {
+        val chicken = createMeal("Chicken", 1, listOf("Meat"))
+        val beef = createMeal("Beef", 2, listOf("Meat"))
+
+        every { mealsRepository.getAllMeals() } returns listOf(chicken, beef)
+
+        assertFailsWith<NoMealsFoundException> {
+            getSeafoodMealsUseCase.getSeafoodMeals()
+        }
     }
 }
