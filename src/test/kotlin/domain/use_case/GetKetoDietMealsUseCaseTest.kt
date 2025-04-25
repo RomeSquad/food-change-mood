@@ -30,7 +30,7 @@ class GetKetoDietMealsUseCaseTest{
         createKetoMeals(15679,Nutrition(480.4,45.0,19.0,61.0,26.0,57.0,10.0)),
         createKetoMeals(1560009,Nutrition(167.4,7.0,19.0,61.0,4.0,57.0,30.0))
     )
-
+    val emptyListOfMeals = emptyList<Meal>()
 
     @BeforeEach
     fun setup(){
@@ -43,12 +43,8 @@ class GetKetoDietMealsUseCaseTest{
         //given
         every { mealsRepository.getAllMeals() } returns someKetoMeals
 
-        // when
-        val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
-
-        // then
+        //when && then
         assertTrue(ketoMealsCondition(getKetoDietMealsUseCase))
-
 
     }
 
@@ -64,7 +60,6 @@ class GetKetoDietMealsUseCaseTest{
         // then
         assertNotEquals(firstKetoMeal.id, secondKetoMeals.id)
 
-
 }
     @Test
     fun `should throw exception when  keto meals runs out`() {
@@ -77,15 +72,57 @@ class GetKetoDietMealsUseCaseTest{
         }
 
     }
+    @Test
+    fun `should throw an exception when `(){
+        //given
+        every { mealsRepository.getAllMeals() }returns emptyListOfMeals
+
+        //when &&then
+        assertThrows<Exception>("There is no more keto meals left "){
+            getKetoDietMealsUseCase.getNextKetoMeal()
+        }
+    }
+    @Test
+    fun `should return true when the condition of carbohydrates is true`(){
+        //given
+        every { mealsRepository.getAllMeals() }returns someKetoMeals
+
+        //when
+        val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
+        // then
+        assertTrue(ketoMeal.nutrition.carbohydrates<TEN)
+    }
+    @Test
+    fun `should return true when the condition of totalFat is true `(){
+        //given
+        every { mealsRepository.getAllMeals() }returns someKetoMeals
+
+        //when
+        val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
+        // then
+        assertTrue(ketoMeal.nutrition.totalFat>=FIFTEN)
+    }
+    @Test
+    fun `should return true when the condition of protein is true`(){
+        //given
+        every { mealsRepository.getAllMeals() }returns someKetoMeals
+
+        //when
+        val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
+        // then
+        assertTrue(ketoMeal.nutrition.protein>=TEN)
+    }
+
     fun ketoMealsCondition(getKetoDietMealsUseCase : SuggestKetoMealUseCase):Boolean{
 
         val  someKetoMeal= getKetoDietMealsUseCase.getNextKetoMeal()
 
-        if (someKetoMeal.nutrition.carbohydrates < 10
-            && someKetoMeal.nutrition.totalFat >= 15
-            && someKetoMeal.nutrition.protein >= 10
+        if (someKetoMeal.nutrition.carbohydrates < TEN
+            && someKetoMeal.nutrition.totalFat >= FIFTEN
+            && someKetoMeal.nutrition.protein >= TEN
             ){return true}
         return false
+
 
     }
 
@@ -133,5 +170,8 @@ class GetKetoDietMealsUseCaseTest{
         ),
         ingredientsCount = 8, id = ID, nutrition = nutrition
     )
-
+    companion object {
+        const val  TEN =10
+        const val FIFTEN =15
+    }
 }
