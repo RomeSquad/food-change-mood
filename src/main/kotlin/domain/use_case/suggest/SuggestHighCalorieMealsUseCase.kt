@@ -8,23 +8,15 @@ class SuggestHighCalorieMealsUseCase(
 ) {
     private val meals = getMealsContainsHighCalories()
 
-    fun getMealsContainsHighCalories(
-        calories: Double = 700.0
+    private fun getMealsContainsHighCalories(
+        minCalories: Double = 700.0
     ): MutableList<Meal> {
-        val allMeals = mealsRepository.getAllMeals()
-        val filteredMeals = filterMealsByMinCalories(allMeals, calories)
+        val filteredMeals = mealsRepository.getAllMeals().filter { it.nutrition.calories > minCalories }
 
         if (filteredMeals.isEmpty()) {
-            throw IllegalArgumentException("No meals found with calories greater than $calories")
+            throw IllegalArgumentException("No meals found with calories greater than $minCalories")
         }
         return filteredMeals.shuffled().toMutableList()
-    }
-
-    private fun filterMealsByMinCalories(
-        meals: List<Meal>,
-        minCalories: Double
-    ): List<Meal> {
-        return meals.filter { it.nutrition.calories > minCalories }
     }
 
     fun getNextMeal(): Meal {

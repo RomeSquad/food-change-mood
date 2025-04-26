@@ -20,21 +20,15 @@ class EggFreeSweetsAction(
         do {
             val randomSweet = getSweetsWithNoEggsUseCase.suggestRandomSweet()
 
-            randomSweet.fold(
-                onSuccess = { sweet ->
-                    displaySweetDetails(ui, sweet)
+                    displaySweetDetails(ui, randomSweet)
 
                     isUserLikeSweet = promptUserForLike(inputReader, ui)
 
                     if (isUserLikeSweet == "y") {
-                        ui.displayResult("Your final sweet is:\n$sweet")
+                        ui.displayResult("Your final sweet is:\n$randomSweet")
                     }
-                },
-                onFailure = { exception ->
-                    ui.displayError(exception.message ?: "Failed to fetch a sweet")
-                    isUserLikeSweet = endLoopText
-                }
-            )
+
+
         } while (isUserLikeSweet == "n")
     }
 

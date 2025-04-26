@@ -15,9 +15,9 @@ class SuggestEggFreeSweetUseCase(
             }
     }
 
-    fun suggestRandomSweet(): Result<Meal> {
-        return suggestEggFreeSweet.randomOrNull()?.let { Result.success(it) }
-            ?: Result.failure(NoSuchElementException("No egg-free sweets available"))
+    fun suggestRandomSweet():Meal {
+        return suggestEggFreeSweet.randomOrNull() ?: throw (NoSuchElementException("No egg-free sweets available"))
+
     }
 
     private companion object {
