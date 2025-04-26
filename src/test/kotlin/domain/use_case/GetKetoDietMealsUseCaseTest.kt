@@ -1,12 +1,12 @@
 package domain.use_case
 
 import data.meal.MealsRepository
-import data.utils.NoMealsFoundException
+import data.model.Meal
+import data.model.Nutrition
+import domain.NoMealsFoundException
 import domain.use_case.suggest.SuggestKetoMealUseCase
 import io.mockk.every
 import io.mockk.mockk
-import model.Meal
-import model.Nutrition
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
