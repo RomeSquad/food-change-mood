@@ -28,10 +28,10 @@ class GetSeafoodMealsUseCase(
     }
 
     private fun isSeafoodMeal(meal: Meal): Boolean {
-        return meal.tags.any { it.contains(TAG_NAME, ignoreCase = true) }
+        return meal.tags.any { it.contains(SEAFOOD_TAG, ignoreCase = true) }
     }
 
     companion object {
-        private const val TAG_NAME = "seafood"
+        private const val SEAFOOD_TAG = "seafood"
     }
 }
