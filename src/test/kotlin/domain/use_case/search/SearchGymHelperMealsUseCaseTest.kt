@@ -17,7 +17,7 @@ import kotlin.test.assertFailsWith
 
 class SearchGymHelperMealsUseCaseTest {
     private lateinit var mealsRepository: MealsRepository
-    private lateinit var useCase: SearchGymHelperMealsUseCase
+    private lateinit var searchGymHelperMeals: SearchGymHelperMealsUseCase
 
     private fun createMeal(
         name: String,
@@ -49,8 +49,8 @@ class SearchGymHelperMealsUseCaseTest {
 
     @BeforeEach
     fun setUp() {
-        mealsRepository = mockk(relaxed = true)
-        useCase = SearchGymHelperMealsUseCase(mealsRepository)
+        mealsRepository = mockk()
+        searchGymHelperMeals = SearchGymHelperMealsUseCase(mealsRepository)
     }
 
     @Test
@@ -65,7 +65,7 @@ class SearchGymHelperMealsUseCaseTest {
         val meal3 = createMeal("Meal 3", 3, 600.0, 30.0)
         every { mealsRepository.getAllMeals() } returns listOf(meal1, meal2, meal3)
 
-        val result = useCase.getMealsByCaloriesAndProtein(input)
+        val result = searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
 
         assertEquals(2, result.size)
     }
@@ -82,7 +82,7 @@ class SearchGymHelperMealsUseCaseTest {
         val meal3 = createMeal("Meal 3", 3, 600.0, 30.0)
         every { mealsRepository.getAllMeals() } returns listOf(meal1, meal2, meal3)
 
-        val result = useCase.getMealsByCaloriesAndProtein(input)
+        val result = searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
 
         assertTrue(result.map { it.name }.containsAll(listOf("Meal 1", "Meal 2")))
     }
@@ -98,7 +98,7 @@ class SearchGymHelperMealsUseCaseTest {
         every { mealsRepository.getAllMeals() } returns listOf(meal1)
 
         assertFailsWith<NoMealsFoundException> {
-            useCase.getMealsByCaloriesAndProtein(input)
+            searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
         }
     }
 
@@ -113,7 +113,7 @@ class SearchGymHelperMealsUseCaseTest {
         every { mealsRepository.getAllMeals() } returns listOf(meal1)
 
         val exception = assertFailsWith<NoMealsFoundException> {
-            useCase.getMealsByCaloriesAndProtein(input)
+            searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
         }
         assertEquals(
             "No meals found matching calories = 500.0 ± 10 and protein = 25.0 ± 1",
@@ -130,7 +130,7 @@ class SearchGymHelperMealsUseCaseTest {
         )
 
         assertFailsWith<IllegalArgumentException> {
-            useCase.getMealsByCaloriesAndProtein(input)
+            searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
         }
     }
 
@@ -143,7 +143,7 @@ class SearchGymHelperMealsUseCaseTest {
         )
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            useCase.getMealsByCaloriesAndProtein(input)
+            searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
         }
         assertEquals("Calories tolerance must be a non-negative integer.", exception.message)
     }
@@ -157,7 +157,7 @@ class SearchGymHelperMealsUseCaseTest {
         )
 
         assertFailsWith<IllegalArgumentException> {
-            useCase.getMealsByCaloriesAndProtein(input)
+            searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
         }
     }
 
@@ -170,7 +170,7 @@ class SearchGymHelperMealsUseCaseTest {
         )
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            useCase.getMealsByCaloriesAndProtein(input)
+            searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
         }
         assertEquals("Protein tolerance must be a non-negative integer.", exception.message)
     }
@@ -185,7 +185,7 @@ class SearchGymHelperMealsUseCaseTest {
         every { mealsRepository.getAllMeals() } returns emptyList()
 
         assertFailsWith<NoMealsFoundException> {
-            useCase.getMealsByCaloriesAndProtein(input)
+            searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
         }
     }
 
@@ -200,7 +200,7 @@ class SearchGymHelperMealsUseCaseTest {
         val meal2 = createMeal("Meal 2", 2, 500.1, 25.1)
         every { mealsRepository.getAllMeals() } returns listOf(meal1, meal2)
 
-        val result = useCase.getMealsByCaloriesAndProtein(input)
+        val result = searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
 
         assertEquals(1, result.size)
     }
@@ -216,7 +216,7 @@ class SearchGymHelperMealsUseCaseTest {
         val meal2 = createMeal("Meal 2", 2, 500.1, 25.1)
         every { mealsRepository.getAllMeals() } returns listOf(meal1, meal2)
 
-        val result = useCase.getMealsByCaloriesAndProtein(input)
+        val result = searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
 
         assertEquals("Meal 1", result[0].name)
     }
@@ -232,7 +232,7 @@ class SearchGymHelperMealsUseCaseTest {
         val meal2 = createMeal("Meal 2", 2, 490.0, 35.0)
         every { mealsRepository.getAllMeals() } returns listOf(meal1, meal2)
 
-        val result = useCase.getMealsByCaloriesAndProtein(input)
+        val result = searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
 
         assertEquals(1, result.size)
     }
@@ -248,8 +248,10 @@ class SearchGymHelperMealsUseCaseTest {
         val meal2 = createMeal("Meal 2", 2, 490.0, 35.0)
         every { mealsRepository.getAllMeals() } returns listOf(meal1, meal2)
 
-        val result = useCase.getMealsByCaloriesAndProtein(input)
+        val result = searchGymHelperMeals.getMealsByCaloriesAndProtein(input)
 
         assertEquals("Meal 1", result[0].name)
     }
+
 }
+
