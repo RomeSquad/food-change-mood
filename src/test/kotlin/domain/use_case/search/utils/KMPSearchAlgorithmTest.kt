@@ -39,7 +39,7 @@ class KMPSearchAlgorithmTest {
         assertEquals(expected, result)
     }
     @Test
-    fun `given un valid search query and list of meals contains the given query should return Result of failure `() {
+    fun `given invalid search query and list of meals contains the given query should return Result of failure `() {
         val query = ""
         val data = data
         assertThrows<Exception> {
