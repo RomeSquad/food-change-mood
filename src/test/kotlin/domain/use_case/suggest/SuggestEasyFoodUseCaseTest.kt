@@ -1,11 +1,11 @@
-package domain.use_case
+package domain.use_case.suggest
 
 import com.google.common.truth.Truth.assertThat
 import data.meal.MealsRepository
-import domain.use_case.FakeData.complexMealsFakeData
-import domain.use_case.FakeData.easyMealsFakeData
-import domain.use_case.FakeData.expectedMealNames
-import domain.use_case.suggest.SuggestEasyFoodUseCase
+import domain.use_case.createFakeMealData
+import domain.use_case.suggest.FakeData.complexMealsFakeData
+import domain.use_case.suggest.FakeData.easyMealsFakeData
+import domain.use_case.suggest.FakeData.expectedMealNames
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
@@ -15,7 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
 
-class GetRandomMealsUseCaseTest {
+class SuggestEasyFoodUseCaseTest {
 
     private lateinit var mealsRepository: MealsRepository
     private lateinit var suggestEasyFoodUseCase: SuggestEasyFoodUseCase

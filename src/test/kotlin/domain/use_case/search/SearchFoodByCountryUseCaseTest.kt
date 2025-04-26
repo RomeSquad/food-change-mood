@@ -93,26 +93,25 @@ class SearchFoodByCountryUseCaseTest {
 
         assertEquals("No meals found related to country: $countryName", exception.message)
     }
+
+    fun createFakeMealsHaveSameCountry(
+        name: String,
+        tags: List<String>,
+        description: String?,
+        ingredients: List<String>,
+        steps: List<String>
+    ) = Meal(
+        id = 1,
+        name = name,
+        minutes = 15,
+        contributorId = 100,
+        submitted = Date(),
+        tags = tags,
+        nutrition = Nutrition(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        stepsCount = 5,
+        steps = steps,
+        description = description,
+        ingredients = ingredients,
+        ingredientsCount = 2
+    )
 }
-
-
-fun createFakeMealsHaveSameCountry(
-    name: String,
-    tags: List<String>,
-    description: String?,
-    ingredients: List<String>,
-    steps: List<String>
-) = Meal(
-    id = 1,
-    name = name,
-    minutes = 15,
-    contributorId = 100,
-    submitted = Date(),
-    tags = tags,
-    nutrition = Nutrition(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-    stepsCount = 5,
-    steps = steps,
-    description = description,
-    ingredients = ingredients,
-    ingredientsCount = 2
-)

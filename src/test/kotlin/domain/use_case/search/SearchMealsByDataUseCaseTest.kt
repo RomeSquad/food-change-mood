@@ -1,21 +1,20 @@
-package domain.use_case
+package domain.use_case.search
 
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import data.meal.MealsRepository
-import domain.use_case.search.SearchMealsByDateUseCase
-import io.mockk.every
-import io.mockk.mockk
 import data.model.Meal
 import data.model.Nutrition
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import java.lang.Exception
 import java.text.SimpleDateFormat
-import kotlin.test.Test
 
-class GetByDateUseCaseTest {
+class SearchMealsByDataUseCaseTest {
 
     private lateinit var mealsRepository: MealsRepository
     private lateinit var searchMealsByDateUseCase: SearchMealsByDateUseCase
@@ -39,7 +38,7 @@ class GetByDateUseCaseTest {
         val result = searchMealsByDateUseCase.searchMealsByDate(date)
 
         // Then
-        assertThat(result).isEqualTo(listOf(getMealList()[1]))
+        Truth.assertThat(result).isEqualTo(listOf(getMealList()[1]))
     }
 
     @ParameterizedTest
@@ -97,7 +96,7 @@ class GetByDateUseCaseTest {
                 1,
                 30,
                 1,
-                SimpleDateFormat(Meal.DATE_FORMAT).parse("2023-10-01"),
+                SimpleDateFormat(Meal.Companion.DATE_FORMAT).parse("2023-10-01"),
                 listOf("Italian"),
                 Nutrition(500.0, 20.0, 10.0, 5.0, 3.0, 1.0, 1.0),
                 3,
@@ -111,7 +110,7 @@ class GetByDateUseCaseTest {
                 2,
                 15,
                 2,
-                SimpleDateFormat(Meal.DATE_FORMAT).parse("1999-7-02"),
+                SimpleDateFormat(Meal.Companion.DATE_FORMAT).parse("1999-7-02"),
                 listOf("Healthy"),
                 Nutrition(200.0, 5.0, 2.0, 3.0, 1.0, 1.0, 2.0),
                 2,

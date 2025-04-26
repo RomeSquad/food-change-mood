@@ -1,13 +1,12 @@
-package domain.use_case
+package domain.use_case.game
 
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import data.meal.MealsRepository
-import domain.use_case.game.IngredientGameUseCase
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GetIngredientGameUseCaseTest {
+class IngredientGameUseCaseTest {
     private lateinit var gameUseCase: IngredientGameUseCase
     private lateinit var mealsRepository: MealsRepository
 
@@ -27,8 +26,8 @@ class GetIngredientGameUseCaseTest {
         val result = gameUseCase.submitAnswer(selected, correct)
 
         // Then
-        assertThat(result).isTrue()
-        assertThat(gameUseCase.getScore()).isEqualTo(initialScore + 1000)
+        Truth.assertThat(result).isTrue()
+        Truth.assertThat(gameUseCase.getScore()).isEqualTo(initialScore + 1000)
     }
 
     @Test
@@ -42,10 +41,7 @@ class GetIngredientGameUseCaseTest {
         val result = gameUseCase.submitAnswer(selected, correct)
 
         // Then
-        assertThat(result).isFalse()
-        assertThat(gameUseCase.getScore()).isEqualTo(initialScore)
+        Truth.assertThat(result).isFalse()
+        Truth.assertThat(gameUseCase.getScore()).isEqualTo(initialScore)
     }
 }
-
-
-

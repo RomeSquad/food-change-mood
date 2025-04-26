@@ -1,19 +1,18 @@
-package domain.use_case
+package domain.use_case.suggest
 
 import data.meal.MealsRepository
 import data.model.Meal
 import data.model.Nutrition
 import domain.NoMealsFoundException
-import domain.use_case.suggest.SuggestKetoMealUseCase
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.*
-import kotlin.test.Test
+import java.util.Date
 
-class GetKetoDietMealsUseCaseTest {
+class SuggestKetoMealUseCaseTest {
 
     private lateinit var mealsRepository: MealsRepository
     private lateinit var getKetoDietMealsUseCase: SuggestKetoMealUseCase
@@ -43,7 +42,7 @@ class GetKetoDietMealsUseCaseTest {
         every { mealsRepository.getAllMeals() } returns someKetoMeals
 
         //when && then
-        assertTrue(ketoMealsCondition(getKetoDietMealsUseCase))
+        Assertions.assertTrue(ketoMealsCondition(getKetoDietMealsUseCase))
 
     }
 
@@ -57,7 +56,7 @@ class GetKetoDietMealsUseCaseTest {
         val secondKetoMeals = getKetoDietMealsUseCase.getNextKetoMeal()
 
         // then
-        assertNotEquals(firstKetoMeal.id, secondKetoMeals.id)
+        Assertions.assertNotEquals(firstKetoMeal.id, secondKetoMeals.id)
 
     }
 
@@ -98,7 +97,7 @@ class GetKetoDietMealsUseCaseTest {
         //when
         val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
         // then
-        assertTrue(ketoMeal.nutrition.carbohydrates < TEN)
+        Assertions.assertTrue(ketoMeal.nutrition.carbohydrates < TEN)
     }
 
     @Test
@@ -109,7 +108,7 @@ class GetKetoDietMealsUseCaseTest {
         //when
         val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
         // then
-        assertTrue(ketoMeal.nutrition.totalFat >= FIFTEEN)
+        Assertions.assertTrue(ketoMeal.nutrition.totalFat >= FIFTEEN)
     }
 
     @Test
@@ -120,7 +119,7 @@ class GetKetoDietMealsUseCaseTest {
         //when
         val ketoMeal = getKetoDietMealsUseCase.getNextKetoMeal()
         // then
-        assertTrue(ketoMeal.nutrition.protein >= TEN)
+        Assertions.assertTrue(ketoMeal.nutrition.protein >= TEN)
     }
 
     fun ketoMealsCondition(getKetoDietMealsUseCase: SuggestKetoMealUseCase): Boolean {

@@ -1,20 +1,18 @@
-package domain.use_case
+package domain.use_case.search
 
 import data.meal.MealsRepository
-import domain.use_case.search.utils.SearchAlgorithm
-import domain.use_case.search.SearchMealsByNameUseCase
-import io.mockk.every
-import io.mockk.mockk
-import junit.framework.TestCase.assertTrue
 import data.model.Meal
 import data.model.Nutrition
+import domain.use_case.search.utils.SearchAlgorithm
+import io.mockk.every
+import io.mockk.mockk
+import junit.framework.TestCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.Date
 import kotlin.test.assertEquals
 
-
-class GetByNameUseCaseTest {
+class SearchMealsByNameUseCaseTest {
 
     private lateinit var repository: MealsRepository
 
@@ -55,7 +53,7 @@ class GetByNameUseCaseTest {
         val result = useCase.searchMealsByName(query)
 
         // then
-        assertTrue(result.isFailure)
+        TestCase.assertTrue(result.isFailure)
         assertEquals("Query must not be empty", result.exceptionOrNull()?.message)
     }
 
@@ -71,7 +69,7 @@ class GetByNameUseCaseTest {
         val result = useCase.searchMealsByName(query)
 
         // then
-        assertTrue(result.isSuccess)
+        TestCase.assertTrue(result.isSuccess)
         assertEquals(meals, result.getOrNull())
     }
 
@@ -87,7 +85,7 @@ class GetByNameUseCaseTest {
         val result = useCase.searchMealsByName(query)
 
         // then
-        assertTrue(result.isSuccess)
+        TestCase.assertTrue(result.isSuccess)
         assertEquals(1, result.getOrNull()?.size)
         assertEquals(meals, result.getOrNull())
     }
