@@ -23,7 +23,6 @@ class GetByDateUseCaseTest {
 
     @BeforeEach
     fun setUp() {
-        // Initialize the MealsRepository mock or stub here
         mealsRepository = mockk()
         searchMealsByDateUseCase = SearchMealsByDateUseCase(mealsRepository)
 
