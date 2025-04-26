@@ -21,7 +21,7 @@ class GetSeafoodMealsUseCase(
         return seafoodMeals.mapIndexed { index, meal ->
             SeafoodMeal(
                 name = meal.name,
-                protein = meal.nutrition.protein
+                proteinPerGram = meal.nutrition.protein
             )
         }
 

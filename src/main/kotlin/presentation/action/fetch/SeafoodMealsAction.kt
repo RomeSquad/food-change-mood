@@ -42,6 +42,6 @@ class SeafoodMealsAction(
     }
 
     private fun displayMealEntry(ui: UiExecutor, position: Int, meal: SeafoodMeal) {
-        ui.displayResult("${position + 1}. ${meal.name} - Protein: ${meal.protein}g")
+        ui.displayResult("${position + 1}. ${meal.name} - Protein: ${meal.proteinPerGram}g")
     }
 }

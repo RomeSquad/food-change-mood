@@ -90,7 +90,7 @@ class GetSeafoodMealsUseCaseTest {
 
         val result = getSeafoodMealsUseCase.getSeafoodMeals()
 
-        assertEquals(35.0, result[0].protein)
+        assertEquals(35.0, result[0].proteinPerGram)
     }
 
     @Test
@@ -116,7 +116,7 @@ class GetSeafoodMealsUseCaseTest {
 
         val result = getSeafoodMealsUseCase.getSeafoodMeals()
 
-        assertEquals(25.0, result[1].protein)
+        assertEquals(25.0, result[1].proteinPerGram)
     }
 
     @Test
@@ -209,7 +209,7 @@ class GetSeafoodMealsUseCaseTest {
 
         val result = getSeafoodMealsUseCase.getSeafoodMeals()
 
-        assertEquals(25.0, result[0].protein)
+        assertEquals(25.0, result[0].proteinPerGram)
     }
 
     @Test
@@ -221,7 +221,7 @@ class GetSeafoodMealsUseCaseTest {
 
         val result = getSeafoodMealsUseCase.getSeafoodMeals()
 
-        assertEquals(25.0, result[1].protein)
+        assertEquals(25.0, result[1].proteinPerGram)
     }
 
 }
