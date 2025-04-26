@@ -22,7 +22,7 @@ class KMPPatternMatcherTest {
         assertTrue(result)
     }
     @Test
-    fun `given text and un matched pattern should return true`() {
+    fun `given text and un matched pattern should return false`() {
         val pattern = "watermelon"
         val text = "pizza"
 
