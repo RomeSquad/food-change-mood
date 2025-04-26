@@ -8,7 +8,8 @@ data class Nutrition(
     val protein: Double,
     val saturatedFat: Double,
     val carbohydrates: Double
-) {
+)
+ {
     override fun toString(): String {
         return String.format(
             "%-10s %-18s %-13s %-13s %-15s %-15s %-15s %-13s",

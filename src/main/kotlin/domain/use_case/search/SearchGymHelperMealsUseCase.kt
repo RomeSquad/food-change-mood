@@ -35,7 +35,7 @@ class SearchGymHelperMealsUseCase(
             val protein = meal.nutrition.protein
 
             val calorieDifference = (calories - input.calories).absoluteValue
-            val proteinDifference = (protein - input.protein).absoluteValue
+            val proteinDifference = (protein - (input.protein)).absoluteValue
 
             calorieDifference <= input.caloriesAndProteinTolerance.caloriesTolerance && proteinDifference <= input.caloriesAndProteinTolerance.proteinTolerance
         }
